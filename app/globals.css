@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  :root {
+    --nav-h: 72px;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
