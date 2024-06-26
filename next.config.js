@@ -3,14 +3,14 @@ const nextConfig = {
   async rewrites() {
     return {
       beforeFiles: [
-        {
-          source: '/sign-up',
-          destination: '/login',
-        },
-        {
-          source: '/sign-in',
-          destination: '/login',
-        },
+        // {
+        //   source: '/sign-up',
+        //   destination: '/login',
+        // },
+        // {
+        //   source: '/sign-in',
+        //   destination: '/login',
+        // },
       ],
     };
   },

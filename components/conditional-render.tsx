@@ -15,7 +15,10 @@ export function ConditionalRender({
   matchedPathRender,
 }: Props) {
   const pathname = usePathname();
-  return (
-    <>{pathToMatch.includes(pathname) ? matchedPathRender : defaultRender}</>
+
+  const isMatch = pathToMatch.some((path) =>
+    new RegExp(`^${path}(/.+)?/?$`, 'i').test(pathname)
   );
+
+  return <>{isMatch ? matchedPathRender : defaultRender}</>;
 }
