@@ -1,10 +1,10 @@
 import React from 'react';
-import { SectionExcludingNav } from '@/components/styled/styled-section';
+import { SectionExcludeNav } from '@/components/section-exclude-nav';
 
 type Props = {};
 
 function UserPage({}: Props) {
-  return <SectionExcludingNav>UserPage</SectionExcludingNav>;
+  return <SectionExcludeNav>UserPage</SectionExcludeNav>;
 }
 
 export default UserPage;

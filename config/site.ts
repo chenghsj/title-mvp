@@ -1,4 +1,4 @@
-export const loginPath = ['/sign-in', '/sign-up'];
+export const loginPath = ['/sign-in/:path*', '/sign-up/:path*'];
 
 export const siteConfig = {
   links: {
@@ -9,3 +9,5 @@ export const siteConfig = {
     sponsor: 'https://patreon.com/jrgarciadev',
   },
 };
+
+export const afterLoginUrl = '/dashboard';

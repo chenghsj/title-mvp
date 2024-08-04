@@ -4,7 +4,8 @@
 
 @layer components {
   :root {
-    --nav-h: 72px;
+    --nav-h-sm: 52px;
+    --nav-h-md: 72px;
   }
 }
 

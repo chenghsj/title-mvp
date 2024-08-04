@@ -87,12 +87,22 @@ const config = {
           from: { transform: 'translateY(-100%)' },
           to: { transform: 'translateY(0)' },
         },
+        'collapsible-down': {
+          from: { height: '0' },
+          to: { height: 'var(--radix-collapsible-content-height)' },
+        },
+        'collapsible-up': {
+          from: { height: 'var(--radix-collapsible-content-height)' },
+          to: { height: '0' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'infinite-scroll-down': 'infinite-scroll-down 25s linear infinite',
         'infinite-scroll-up': 'infinite-scroll-up 25s linear infinite',
+        'collapsible-down': 'collapsible-down 0.2s ease-out',
+        'collapsible-up': 'collapsible-up 0.2s ease-out',
       },
     },
   },

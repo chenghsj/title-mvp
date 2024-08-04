@@ -1,17 +1,23 @@
-'use client';
+import { redirect } from 'next/navigation';
+import { SectionExcludeNav } from '@/components/section-exclude-nav';
+import { getCurrentUser } from '@/lib/session';
+import { DualDirectionCarousel } from './_root/carousel';
+import { MainHomePage, RestHomePage } from './_root/home';
 
-import { ConditionalRender } from '@/components/conditional-render';
-import { SectionExcludingNav } from '@/components/styled/styled-section';
-import { loginPath } from '@/config/site';
+export default async function Home() {
+  const user = await getCurrentUser();
 
-export default function Home() {
-  const defaultRender = <SectionExcludingNav>Home</SectionExcludingNav>;
+  if (user) {
+    redirect('/dashboard');
+  }
 
   return (
-    <ConditionalRender
-      pathToMatch={loginPath}
-      defaultRender={defaultRender}
-      matchedPathRender={null}
-    />
+    <>
+      <SectionExcludeNav className='grid gap-10 md:grid-cols-3 lg:grid-cols-2 xl:gap-20'>
+        <MainHomePage />
+        <DualDirectionCarousel />
+      </SectionExcludeNav>
+      <RestHomePage />
+    </>
   );
 }

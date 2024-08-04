@@ -1,12 +1,7 @@
 import type { Metadata, Viewport } from 'next';
-import { pathname } from 'next-extra/pathname';
-import { DualDirectionCarousel } from '@/components/carousel';
-import { ConditionalRender } from '@/components/conditional-render';
-import { Footer } from '@/components/footer';
-import { LogoLink } from '@/components/nav/logo-link';
-import { Navbar } from '@/components/nav/navbar';
-import { Providers } from '@/components/providers';
-import { SectionExcludingNav } from '@/components/styled/styled-section';
+import { config } from '@fortawesome/fontawesome-svg-core';
+import '@fortawesome/fontawesome-svg-core/styles.css';
+import { ProgressBar } from '@/components/app-progress-bar';
 import {
   fontMono,
   fontMulish,
@@ -14,9 +9,14 @@ import {
   fontRoboto,
   fontSans,
 } from '@/config/fonts';
-import { loginPath } from '@/config/site';
+import { validateRequest } from '@/lib/auth';
 import { cn } from '@/lib/utils';
+import { Navbar } from './_root/_nav/navbar';
+import { Footer } from './_root/footer';
+import { Providers } from './_root/providers';
 import './globals.css';
+
+config.autoAddCss = false;
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -44,50 +44,36 @@ export const metadata: Metadata = {
   manifest: '/manifest.json',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
-  home,
-  auth,
 }: Readonly<{
   children: React.ReactNode;
-  home: React.ReactNode;
-  auth: React.ReactNode;
 }>) {
-  const path = pathname();
+  const session = await validateRequest();
+
   return (
     <html lang='en' suppressHydrationWarning>
       <body
         className={cn(
+          'overflow-x-hidden',
           fontSans.variable,
+          fontRoboto.variable,
           fontMono.variable,
           fontMulish.variable,
-          fontRaleway.variable,
-          fontRoboto.variable
+          fontRaleway.variable
         )}
       >
         <Providers
+          session={session}
           themeProps={{
             attribute: 'class',
             defaultTheme: 'light',
             children,
           }}
         >
-          <Navbar logoLink={<LogoLink />} />
-          <main className='flex h-fit flex-col items-center justify-between px-16'>
-            <ConditionalRender
-              pathToMatch={loginPath.concat('/')}
-              defaultRender={null}
-              matchedPathRender={
-                <SectionExcludingNav className='grid grid-cols-2 gap-20'>
-                  <ConditionalRender
-                    pathToMatch={loginPath}
-                    defaultRender={home}
-                    matchedPathRender={auth}
-                  />
-                  <DualDirectionCarousel />
-                </SectionExcludingNav>
-              }
-            />
+          <ProgressBar />
+          <Navbar />
+          <main className='mx-auto flex h-fit max-w-7xl flex-col items-center justify-between px-3 md:px-10 xl:px-16'>
             {children}
           </main>
           <Footer />
