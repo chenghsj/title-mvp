@@ -1,6 +1,6 @@
 import React from 'react';
-import { Loader2Icon } from 'lucide-react';
 import { useServerAction } from 'zsa-react';
+import { LoaderButton } from '@/components/loader-button';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -66,10 +66,9 @@ export const ConfirmDeleteDialog = ({ userId }: Props) => {
           >
             Close
           </Button>
-          <Button disabled={isPending} onClick={handleConfirmClick}>
-            {isPending && <Loader2Icon className='mr-2 h-4 w-4 animate-spin' />}
+          <LoaderButton isLoading={isPending} onClick={handleConfirmClick}>
             Confirm
-          </Button>
+          </LoaderButton>
         </DialogFooter>
       </DialogContent>
     </Dialog>

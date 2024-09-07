@@ -47,7 +47,6 @@ function LoginForm({ isMail, isSignUp }: Props) {
       email: '',
       password: '',
       confirmPassword: '',
-      role,
     },
   });
 
@@ -86,7 +85,6 @@ function LoginForm({ isMail, isSignUp }: Props) {
       });
     },
     onSuccess({ data }) {
-      setDialogEmail(data.email);
       setDialogOpen(true);
       toast({
         title: 'Email sent successfully!',
@@ -96,6 +94,7 @@ function LoginForm({ isMail, isSignUp }: Props) {
   });
 
   const onSubmit = (values: SignUpFormSchemaType | SignInFormSchemaType) => {
+    setDialogEmail(form.getValues('email'));
     if (isSignUp) {
       execute({ ...values, role });
     } else {
@@ -115,6 +114,10 @@ function LoginForm({ isMail, isSignUp }: Props) {
       form.reset();
     }
   }, [isMail, form]);
+
+  useEffect(() => {
+    form.setValue('role', role);
+  }, [role]);
 
   return (
     <Form {...form}>
@@ -169,7 +172,7 @@ function LoginForm({ isMail, isSignUp }: Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input type='hidden' {...field} value={role} />
+                    <Input type='hidden' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

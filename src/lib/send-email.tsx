@@ -2,7 +2,6 @@
 
 import { render } from '@react-email/render';
 import nodemailer from 'nodemailer';
-import { env } from '@/env';
 import { PublicError } from '@/use-cases/errors';
 
 export async function sendEmail(
@@ -13,8 +12,8 @@ export async function sendEmail(
   const transport = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: env.SMTP_EMAIL,
-      pass: env.SMTP_PASSWORD,
+      user: process.env.SMTP_EMAIL,
+      pass: process.env.SMTP_PASSWORD,
     },
   });
   try {
@@ -26,7 +25,7 @@ export async function sendEmail(
 
   try {
     await transport.sendMail({
-      from: env.SMTP_EMAIL,
+      from: process.env.SMTP_EMAIL,
       to,
       subject,
       html: render(body),

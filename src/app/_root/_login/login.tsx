@@ -26,7 +26,7 @@ export function LoginPage({}: Props) {
 
   const pathname = usePathname();
   const isSignUp = pathname === '/sign-up';
-
+  console.log(isSignUp);
   const handleBackArrowClick = () => {
     setIsMail(false);
   };

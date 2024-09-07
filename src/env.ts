@@ -3,13 +3,14 @@ import { z } from 'zod';
 
 export const env = createEnv({
   server: {
-    DATABASE_URL: z.string().min(1),
+    // DATABASE_URL: z.string().min(1),
+    POSTGRES_URL: z.string().min(1),
     NODE_ENV: z.string().optional(),
     GOOGLE_CLIENT_ID: z.string().min(1),
     GOOGLE_CLIENT_SECRET: z.string().min(1),
     // STRIPE_API_KEY: z.string().min(1),
     // STRIPE_WEBHOOK_SECRET: z.string().min(1),
-    // HOST_NAME: z.string().min(1),
+    HOST_NAME: z.string().min(1),
     // EMAIL_FROM: z.string().min(1),
     SMTP_PASSWORD: z.string().min(1),
     SMTP_EMAIL: z.string().min(1),
@@ -35,7 +36,8 @@ export const env = createEnv({
   },
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
-    DATABASE_URL: process.env.DATABASE_URL,
+    // DATABASE_URL: process.env.DATABASE_URL,
+    POSTGRES_URL: process.env.POSTGRES_URL,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     // STRIPE_API_KEY: process.env.STRIPE_API_KEY,
@@ -43,7 +45,7 @@ export const env = createEnv({
     // NEXT_PUBLIC_PRICE_ID_BASIC: process.env.NEXT_PUBLIC_PRICE_ID_BASIC,
     // NEXT_PUBLIC_PRICE_ID_PREMIUM: process.env.NEXT_PUBLIC_PRICE_ID_PREMIUM,
     // NEXT_PUBLIC_STRIPE_KEY: process.env.NEXT_PUBLIC_STRIPE_KEY,
-    // HOST_NAME: process.env.HOST_NAME,
+    HOST_NAME: process.env.HOST_NAME,
     // EMAIL_SERVER_PASSWORD: process.env.EMAIL_SERVER_PASSWORD,
     // EMAIL_FROM: process.env.EMAIL_FROM,
     SMTP_PASSWORD: process.env.SMTP_PASSWORD,

@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import ReactPlayer from 'react-player';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2Icon } from 'lucide-react';
 import { useServerAction } from 'zsa-react';
+import { LoaderButton } from '@/components/loader-button';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -25,15 +25,19 @@ import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
-import { createResumeAction } from './actions';
+import { Resume, Video } from '@/db/schema';
+import { createResumeAction, updateResumeAction } from './actions';
 import { ResumeFormSchema, ResumeFormSchemaType } from './form-schema';
 import { useResumeDialog } from './hooks';
 
-type Props = {};
+type Props = {
+  resume?: Resume & { video?: Video };
+};
 
-export const CreateResumeDialog = (props: Props) => {
+export const ResumeDialog = ({ resume }: Props) => {
   const { toast } = useToast();
-  const { isOpen, setIsOpen } = useResumeDialog();
+  const { isOpen, setIsOpen, type: dialogType, resumeId } = useResumeDialog();
+  const playerRef = useRef<ReactPlayer>(null);
 
   const form = useForm<ResumeFormSchemaType>({
     resolver: zodResolver(ResumeFormSchema),
@@ -42,30 +46,49 @@ export const CreateResumeDialog = (props: Props) => {
       title: '',
       bio: '',
       url: '',
+      duration: 0,
+    },
+    values: {
+      url: resume?.video?.url || '',
+      title: resume?.title || '',
+      bio: resume?.bio || '',
     },
   });
+
   const url = form.watch('url');
 
-  const { execute, isPending } = useServerAction(createResumeAction, {
-    onSuccess: () => {
-      toast({
-        title: 'Success',
-        description: 'Resume created',
-      });
-      setIsOpen(false);
-    },
-    onError: ({ err }) => {
-      console.log(err.message);
-      toast({
-        title: 'Something went wrong',
-        description: err.message,
-        variant: 'destructive',
-      });
-    },
-  });
+  const { execute, isPending } = useServerAction(
+    dialogType === 'Add' ? createResumeAction : updateResumeAction,
+    {
+      onSuccess: () => {
+        toast({
+          title: 'Success',
+          description: `Resume ${dialogType === 'Add' ? 'created' : 'updated'}`,
+        });
+        setIsOpen(false);
+      },
+      onError: ({ err }) => {
+        console.log(err.message);
+        toast({
+          title: 'Something went wrong',
+          description: err.message,
+          variant: 'destructive',
+        });
+      },
+    }
+  );
 
   const onSubmit = (values: ResumeFormSchemaType) => {
-    execute(values);
+    if (dialogType === 'Edit') {
+      execute({ ...values, resumeId: resumeId! });
+    } else {
+      execute(values);
+    }
+  };
+
+  const handlePlayerReady = () => {
+    const duration = playerRef.current?.getDuration();
+    form.setValue('duration', duration || 0);
   };
 
   useEffect(() => {
@@ -73,7 +96,7 @@ export const CreateResumeDialog = (props: Props) => {
       form.reset();
     }
   }, [isOpen, form]);
-
+  console.log(form.formState.errors);
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent
@@ -83,7 +106,9 @@ export const CreateResumeDialog = (props: Props) => {
         }}
       >
         <DialogHeader>
-          <DialogTitle>Create Resume</DialogTitle>
+          <DialogTitle>
+            {dialogType === 'Add' ? 'Create' : 'Edit'} Resume
+          </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-5'>
@@ -129,16 +154,24 @@ export const CreateResumeDialog = (props: Props) => {
                         <Input {...field} />
                       </FormControl>
                       <FormMessage />
+                      {!form.formState.errors.url &&
+                        form.formState.errors.duration && (
+                          <FormMessage>
+                            {form.formState.errors.duration.message}
+                          </FormMessage>
+                        )}
                     </FormItem>
                   )}
                 />
                 <div className='aspect-video overflow-auto rounded-md'>
                   {ReactPlayer.canPlay(url) ? (
                     <ReactPlayer
+                      ref={playerRef}
                       width={'100%'}
                       height={'100%'}
                       url={url}
                       controls={true}
+                      onReady={handlePlayerReady}
                     />
                   ) : (
                     <Skeleton className='aspect-video' />
@@ -152,12 +185,16 @@ export const CreateResumeDialog = (props: Props) => {
                   Close
                 </Button>
               </DialogClose>
-              <Button disabled={isPending} type='submit'>
-                {isPending && (
-                  <Loader2Icon className='mr-2 h-4 w-4 animate-spin' />
-                )}
-                Create
-              </Button>
+              <LoaderButton
+                disabled={
+                  isPending ||
+                  Object.keys(form.formState.dirtyFields).length === 0
+                }
+                type='submit'
+                isLoading={isPending}
+              >
+                {dialogType === 'Add' ? 'Create' : 'Update'}
+              </LoaderButton>
             </DialogFooter>
           </form>
         </Form>

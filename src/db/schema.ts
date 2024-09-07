@@ -50,6 +50,9 @@ export const profiles = pgTable('profile', {
   displayName: text('displayName'),
   bio: text('bio'),
   image: text('avatar'),
+  imageId: text('image_id'),
+  cover: text('cover'),
+  coverId: text('cover_id'),
   contact: text('contact'),
   birthDate: date('birth_date'),
 });
@@ -59,14 +62,29 @@ export const educations = pgTable('education', {
   userId: uuid('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
-  institution: text('institution').notNull(),
-  degree: text('degree').notNull(),
-  fieldOfStudy: text('field_of_study').notNull(),
-  startDate: date('start_date').notNull(),
+  institution: text('institution'),
+  degree: text('degree'),
+  fieldOfStudy: text('field_of_study'),
+  startDate: date('start_date'),
   endDate: date('end_date'),
   grade: text('grade'),
   activities: text('activities'),
   description: text('description'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
+
+export const jobExperiences = pgTable('job_experience', {
+  id: serial('id').notNull().primaryKey(),
+  userId: uuid('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  company: text('company').notNull(),
+  position: text('position').notNull(),
+  startDate: date('start_date').notNull(),
+  endDate: date('end_date'),
+  responsibilities: text('responsibilities'),
+  achievements: text('achievements'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
@@ -88,7 +106,7 @@ export const resumes = pgTable('resume', {
   userId: uuid('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
-  title: text('title'),
+  title: text('title').notNull(),
   bio: text('bio'),
   tag: text('tag')
     .array()
@@ -118,7 +136,7 @@ export const emailVerificationOTPs = pgTable('email_verification_otp', {
   expiresAt: timestamp('expires_at').notNull(),
 });
 
-const resetTokens = pgTable('reset_token', {
+export const resetTokens = pgTable('reset_token', {
   id: uuid('id').notNull().primaryKey().defaultRandom(),
   userId: uuid('user_id')
     .notNull()
@@ -137,6 +155,9 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   resumes: many(resumes),
   videos: many(videos),
   emailVerificationCode: one(emailVerificationOTPs),
+  resetToken: one(resetTokens),
+  educations: many(educations),
+  jobExperiences: many(jobExperiences),
 }));
 
 export const accountRelations = relations(accounts, ({ one }) => ({
@@ -149,6 +170,20 @@ export const accountRelations = relations(accounts, ({ one }) => ({
 export const profileRelations = relations(profiles, ({ one }) => ({
   user: one(users, {
     fields: [profiles.userId],
+    references: [users.id],
+  }),
+}));
+
+export const educationRelations = relations(educations, ({ one }) => ({
+  user: one(users, {
+    fields: [educations.userId],
+    references: [users.id],
+  }),
+}));
+
+export const jobExperienceRelations = relations(jobExperiences, ({ one }) => ({
+  user: one(users, {
+    fields: [jobExperiences.userId],
     references: [users.id],
   }),
 }));
@@ -208,5 +243,7 @@ export const emailVerificationOTPschema = createInsertSchema(
 
 export type User = typeof users.$inferSelect;
 export type Profile = typeof profiles.$inferSelect;
+export type Education = typeof educations.$inferSelect;
+export type JobExperience = typeof jobExperiences.$inferSelect;
 export type Resume = typeof resumes.$inferSelect;
 export type Video = typeof videos.$inferSelect;

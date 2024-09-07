@@ -39,4 +39,10 @@ module.exports = {
     swcMinify: true,
   }),
   ...nextConfig,
+  experimental: {
+    serverComponentsExternalPackages: [
+      '@aws-sdk/s3-request-presigner',
+      '@aws-sdk/lib-storage',
+    ],
+  },
 };

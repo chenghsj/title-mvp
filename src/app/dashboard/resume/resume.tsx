@@ -10,9 +10,9 @@ import { Resume as ResumeType, Video as VideoType } from '@/db/schema';
 import { useDeviceDetect } from '@/hooks/use-device-detect';
 import { cn } from '@/lib/utils';
 import { ConfirmDeleteDialog } from './confirm-delete-dialog';
-import { CreateResumeDialog } from './create-resume-dialog';
 import { useResumeDialog } from './hooks';
 import { ResumeCard } from './resume-card';
+import { ResumeDialog } from './resume-dialog';
 
 type Props = {
   user: User;
@@ -22,7 +22,12 @@ type Props = {
 
 export const Resume = ({ user, resumes, videos }: Props) => {
   const isClient = useIsClient();
-  const { setIsOpen } = useResumeDialog();
+  const {
+    setIsOpen,
+    type: dialogType,
+    setType: setDialogType,
+    resumeId,
+  } = useResumeDialog();
   const { isMobile } = useDeviceDetect();
 
   const resumesWithVideos = useMemo(
@@ -39,6 +44,7 @@ export const Resume = ({ user, resumes, videos }: Props) => {
 
   const handleCreateClick = () => {
     setIsOpen(true);
+    setDialogType('Add');
   };
 
   if (!isClient) {
@@ -59,20 +65,18 @@ export const Resume = ({ user, resumes, videos }: Props) => {
           {resumesWithVideos.map((resume) => (
             <ResumeCard key={resume.id} resume={resume} />
           ))}
-          {!isMobile && (
-            <Card
-              className='cursor-pointer select-none text-zinc-400'
-              onClick={handleCreateClick}
-            >
-              <Button variant={'ghost'} className='h-full w-full' asChild>
-                <CardContent className='flex aspect-video h-full flex-col items-center justify-center space-y-2 p-0'>
-                  <CirclePlus size='50' />
-                  <p>Create Resume</p>
-                </CardContent>
-              </Button>
-              <CardFooter></CardFooter>
-            </Card>
-          )}
+          <Card
+            className='cursor-pointer select-none text-zinc-400'
+            onClick={handleCreateClick}
+          >
+            <Button variant={'ghost'} className='h-full w-full' asChild>
+              <CardContent className='flex aspect-video h-full flex-col items-center justify-center space-y-2 p-0'>
+                <CirclePlus size='50' />
+                <p>Create Resume</p>
+              </CardContent>
+            </Button>
+            <CardFooter></CardFooter>
+          </Card>
         </>
       ) : (
         <div className='flex h-full w-full flex-col items-center justify-center space-y-4'>
@@ -87,7 +91,13 @@ export const Resume = ({ user, resumes, videos }: Props) => {
           </Button>
         </div>
       )}
-      <CreateResumeDialog />
+      <ResumeDialog
+        resume={
+          dialogType === 'Edit'
+            ? resumesWithVideos.filter((resume) => resume.id === resumeId)[0]
+            : undefined
+        }
+      />
       <ConfirmDeleteDialog userId={user.id} />
     </div>
   );

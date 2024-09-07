@@ -11,6 +11,7 @@ import {
   FaOtter,
 } from 'react-icons/fa';
 import { LuLogOut } from 'react-icons/lu';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ChevronDown } from 'lucide-react';
@@ -66,7 +67,13 @@ export function AvatarWithDropdown({ profile }: Props) {
         <Avatar className={cn(isMobile ? 'h-8 w-8' : 'h-10 w-10')}>
           <AvatarImage src={profile?.image || ''} alt='profile image' />
           <AvatarFallback>
-            <RandomIcon className='h-5 w-5' />
+            <Image
+              className='object-cover'
+              src={'/profile.png'}
+              alt={'Profile image'}
+              fill
+            />
+            {/* <RandomIcon className='h-5 w-5' /> */}
           </AvatarFallback>
         </Avatar>
         <ChevronDown className='ml-2 h-4 w-4 lg:hidden' />

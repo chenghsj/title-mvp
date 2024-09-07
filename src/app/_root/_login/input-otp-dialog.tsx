@@ -44,6 +44,7 @@ export function InputOTPDialog({}: Props) {
   );
 
   const handleOTPComplete = (otp: string) => {
+    console.log({ email, otp });
     execute({ email, OTP: otp });
   };
 

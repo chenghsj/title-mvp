@@ -5,8 +5,8 @@ import { UserId } from '@/use-cases/types';
 
 export async function createResume(
   userId: UserId,
+  title: string,
   bio?: string,
-  title?: string,
   trx = db
 ) {
   const [resume] = await trx
@@ -23,10 +23,14 @@ export async function createResume(
 
 export async function updateResume(
   userId: UserId,
+  resumeId: number,
   updateResume: Partial<Resume>,
   trx = db
 ) {
-  await trx.update(resumes).set(updateResume).where(eq(resumes.userId, userId));
+  await trx
+    .update(resumes)
+    .set(updateResume)
+    .where(and(eq(resumes.userId, userId), eq(resumes.id, resumeId)));
 }
 
 export async function getResume(userId: UserId) {
@@ -34,6 +38,13 @@ export async function getResume(userId: UserId) {
     where: eq(resumes.userId, userId),
   });
 
+  return resume;
+}
+
+export async function getResumeById(userId: UserId, resumeId: number) {
+  const resume = await db.query.resumes.findFirst({
+    where: and(eq(resumes.userId, userId), eq(resumes.id, resumeId)),
+  });
   return resume;
 }
 

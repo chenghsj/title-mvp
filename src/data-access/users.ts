@@ -4,11 +4,17 @@ import { User, users } from '@/db/schema';
 import { UserId } from '@/use-cases/types';
 import { getAccountByUserId, hashPassword } from './accounts';
 
-export async function createUser(email: string) {
+export async function deleteUser(userId: UserId) {
+  console.log('clicked');
+  await db.delete(users).where(eq(users.id, userId));
+}
+
+export async function createUser(email: string, emailVerified?: Date) {
   const [user] = await db
     .insert(users)
     .values({
       email,
+      emailVerified,
     })
     .returning();
   return user;
