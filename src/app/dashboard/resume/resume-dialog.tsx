@@ -26,6 +26,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { Resume, Video } from '@/db/schema';
+import { useDialogState } from '@/hooks/store';
 import { createResumeAction, updateResumeAction } from './actions';
 import { ResumeFormSchema, ResumeFormSchemaType } from './form-schema';
 import { useResumeDialog } from './hooks';
@@ -36,7 +37,8 @@ type Props = {
 
 export const ResumeDialog = ({ resume }: Props) => {
   const { toast } = useToast();
-  const { isOpen, setIsOpen, type: dialogType, resumeId } = useResumeDialog();
+  const { resumeId } = useResumeDialog();
+  const dialogState = useDialogState();
   const playerRef = useRef<ReactPlayer>(null);
 
   const form = useForm<ResumeFormSchemaType>({
@@ -58,14 +60,14 @@ export const ResumeDialog = ({ resume }: Props) => {
   const url = form.watch('url');
 
   const { execute, isPending } = useServerAction(
-    dialogType === 'Add' ? createResumeAction : updateResumeAction,
+    dialogState.mode === 'Add' ? createResumeAction : updateResumeAction,
     {
       onSuccess: () => {
         toast({
           title: 'Success',
-          description: `Resume ${dialogType === 'Add' ? 'created' : 'updated'}`,
+          description: `Resume ${dialogState.mode === 'Add' ? 'created' : 'updated'}`,
         });
-        setIsOpen(false);
+        dialogState.setIsOpen(false);
       },
       onError: ({ err }) => {
         console.log(err.message);
@@ -79,7 +81,7 @@ export const ResumeDialog = ({ resume }: Props) => {
   );
 
   const onSubmit = (values: ResumeFormSchemaType) => {
-    if (dialogType === 'Edit') {
+    if (dialogState.mode === 'Edit') {
       execute({ ...values, resumeId: resumeId! });
     } else {
       execute(values);
@@ -92,13 +94,15 @@ export const ResumeDialog = ({ resume }: Props) => {
   };
 
   useEffect(() => {
-    if (!isOpen) {
+    if (!dialogState.isOpen) {
       form.reset();
     }
-  }, [isOpen, form]);
-  console.log(form.formState.errors);
+  }, [dialogState.isOpen, form]);
+
+  if (dialogState.mode !== 'Add' && dialogState.mode !== 'Edit') return null;
+
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={dialogState.isOpen} onOpenChange={dialogState.setIsOpen}>
       <DialogContent
         className='w-[90%] max-w-[800px] rounded-lg'
         onInteractOutside={(e) => {
@@ -107,7 +111,7 @@ export const ResumeDialog = ({ resume }: Props) => {
       >
         <DialogHeader>
           <DialogTitle>
-            {dialogType === 'Add' ? 'Create' : 'Edit'} Resume
+            {dialogState.mode === 'Add' ? 'Create' : 'Edit'} Resume
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
@@ -135,7 +139,11 @@ export const ResumeDialog = ({ resume }: Props) => {
                     <FormItem className='flex h-full flex-col'>
                       <FormLabel>Description</FormLabel>
                       <FormControl>
-                        <Textarea className='flex-auto' {...field} />
+                        <Textarea
+                          disabled={isPending}
+                          className='flex-auto'
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -193,7 +201,7 @@ export const ResumeDialog = ({ resume }: Props) => {
                 type='submit'
                 isLoading={isPending}
               >
-                {dialogType === 'Add' ? 'Create' : 'Update'}
+                {dialogState.mode === 'Add' ? 'Create' : 'Update'}
               </LoaderButton>
             </DialogFooter>
           </form>

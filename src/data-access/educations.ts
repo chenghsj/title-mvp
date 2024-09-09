@@ -3,14 +3,25 @@ import { db } from '@/db/drizzle';
 import { Education, educations } from '@/db/schema';
 import { UserId } from '@/use-cases/types';
 
-export async function createEducation(
-  userId: UserId,
-  degree: string,
-  fieldOfStudy: string,
-  institution: string,
-  startDate: Date,
-  trx = db
-) {
+export async function createEducation({
+  userId,
+  degree,
+  fieldOfStudy,
+  institution,
+  description,
+  startDate,
+  endDate,
+  trx = db,
+}: {
+  userId: UserId;
+  degree: string;
+  fieldOfStudy: string;
+  institution: string;
+  description: string | null;
+  startDate: Date;
+  endDate: Date | null;
+  trx?: typeof db;
+}) {
   const [education] = await trx
     .insert(educations)
     .values({
@@ -18,7 +29,9 @@ export async function createEducation(
       degree,
       fieldOfStudy,
       institution,
+      description,
       startDate: startDate.toISOString(),
+      endDate: endDate?.toISOString(),
     })
     .onConflictDoNothing()
     .returning();
@@ -27,13 +40,14 @@ export async function createEducation(
 
 export async function updateEducation(
   userId: UserId,
+  educationId: number,
   updateEducation: Partial<Education>,
   trx = db
 ) {
   await trx
     .update(educations)
     .set(updateEducation)
-    .where(eq(educations.userId, userId));
+    .where(and(eq(educations.userId, userId), eq(educations.id, educationId)));
 }
 
 export async function getEducation(userId: UserId) {

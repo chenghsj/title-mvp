@@ -1,43 +1,52 @@
+import { useEffect, useState } from 'react';
 import { create } from 'zustand';
+import { useDialogState } from '@/hooks/store';
 
-export const ModeType = {
-  Edit: 'Edit',
-  Add: 'Add',
-} as const;
-
-export type TMode = keyof typeof ModeType;
-
-type ModeState = {
-  mode: TMode | null;
-  setMode: (mode: TMode) => void;
-};
-
-export const DialogType = {
+const ProfileType = {
   Education: 'Education',
   Job: 'Job',
   Cover: 'Cover',
 } as const;
 
-export type TDialog = keyof typeof DialogType;
+export type FormType = keyof typeof ProfileType;
 
-type DialogState = {
-  isOpen: boolean;
-  setIsOpen: (open: boolean) => void;
-  type: TDialog | null;
-  setType: (type: TDialog) => void;
+type ProfileDialogtate = {
+  type: FormType | null;
+  educationId: number | null;
+  jobId: number | null;
+  coverId: number | null;
+  setType: (type: FormType) => void;
+  setEducationId: (educationId: number) => void;
+  setJobId: (jobId: number) => void;
+  setCoverId: (coverId: number) => void;
 };
 
-/**
- * Hooks
- */
-export const useMode = create<ModeState>((set) => ({
-  mode: null,
-  setMode: (mode) => set({ mode }),
+export const useProfileDialog = create<ProfileDialogtate>((set) => ({
+  type: null,
+  educationId: null,
+  jobId: null,
+  coverId: null,
+  setType: (type) => set({ type }),
+  setEducationId: (educationId) => set({ educationId }),
+  setJobId: (jobId) => set({ jobId }),
+  setCoverId: (coverId) => set({ coverId }),
 }));
 
-export const useDialog = create<DialogState>((set) => ({
-  isOpen: false,
-  setIsOpen: (isOpen) => set({ isOpen }),
-  type: null,
-  setType: (type) => set({ type }),
-}));
+export const useReturnbyFormType = (formType: FormType) => {
+  const [shouldReturn, setShouldReturn] = useState(false);
+  const profileDialog = useProfileDialog();
+  const dialogState = useDialogState();
+
+  useEffect(() => {
+    if (
+      profileDialog.type !== formType ||
+      (dialogState.mode !== 'Add' && dialogState.mode !== 'Edit')
+    ) {
+      setShouldReturn(true);
+    } else {
+      setShouldReturn(false);
+    }
+  }, [profileDialog.type, dialogState.mode]);
+
+  return { shouldReturn };
+};

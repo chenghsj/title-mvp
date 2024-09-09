@@ -7,6 +7,7 @@ import { useIsClient } from 'usehooks-ts';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Resume as ResumeType, Video as VideoType } from '@/db/schema';
+import { useDialogState } from '@/hooks/store';
 import { useDeviceDetect } from '@/hooks/use-device-detect';
 import { cn } from '@/lib/utils';
 import { ConfirmDeleteDialog } from './confirm-delete-dialog';
@@ -22,12 +23,8 @@ type Props = {
 
 export const Resume = ({ user, resumes, videos }: Props) => {
   const isClient = useIsClient();
-  const {
-    setIsOpen,
-    type: dialogType,
-    setType: setDialogType,
-    resumeId,
-  } = useResumeDialog();
+  const resumeDialog = useResumeDialog();
+  const dialogState = useDialogState();
   const { isMobile } = useDeviceDetect();
 
   const resumesWithVideos = useMemo(
@@ -43,8 +40,8 @@ export const Resume = ({ user, resumes, videos }: Props) => {
   );
 
   const handleCreateClick = () => {
-    setIsOpen(true);
-    setDialogType('Add');
+    dialogState.setIsOpen(true);
+    dialogState.setMode('Add');
   };
 
   if (!isClient) {
@@ -93,8 +90,10 @@ export const Resume = ({ user, resumes, videos }: Props) => {
       )}
       <ResumeDialog
         resume={
-          dialogType === 'Edit'
-            ? resumesWithVideos.filter((resume) => resume.id === resumeId)[0]
+          dialogState.mode === 'Edit'
+            ? resumesWithVideos.filter(
+                (resume) => resume.id === resumeDialog.resumeId
+              )[0]
             : undefined
         }
       />

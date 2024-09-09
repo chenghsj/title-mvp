@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { AvatarImage } from '@radix-ui/react-avatar';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Card } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getEducation } from '@/data-access/educations';
 import { getJobExperience } from '@/data-access/job-experiences';
@@ -11,6 +12,8 @@ import { getResumeById } from '@/data-access/resumes';
 import { getVideoById } from '@/data-access/videos';
 import { assertAuthenticated } from '@/lib/session';
 import { cn } from '@/lib/utils';
+import { EducationSection } from '../../profile/education-section';
+import { createSortedEducations } from '../../profile/utils';
 import BackButton from './back-button';
 import { ResumeTab } from './resume-tab';
 
@@ -29,7 +32,14 @@ const SingleResumePage = async ({ params }: Props) => {
   // const resume = await getResumeById(user.id, resumeId);
   const video = await getVideoById(user.id, resumeId);
 
-  const highestEducation = educations.length > 0 ? educations[0] : null;
+  const highestEducation =
+    educations.length > 0
+      ? createSortedEducations(educations).filter(
+          (education, _, edus) =>
+            education.degree === edus[edus.length - 1].degree
+        )
+      : null;
+
   const currentJob = jobExperiences.length > 0 ? jobExperiences[0] : null;
 
   return (
@@ -57,32 +67,24 @@ const SingleResumePage = async ({ params }: Props) => {
               <p>{resume?.bio}</p>
             </div>
           </div>
-          <div className='flex flex-col gap-5 md:flex-row'>
-            <div className='flex flex-col space-y-5'>
-              <Card className='flex flex-col gap-3 p-4'>
-                <div className='text-base font-bold'>Education</div>
-                <div>
-                  {/* {highestEducation && (
-                <>
-                  <p className='text-sm'>
-                    {highestEducation?.institution} - {highestEducation?.degree}
-                  </p>
-                  <p className='text-sm italic'>
-                    {highestEducation?.startDate} -{' '}
-                    {highestEducation.endDate
-                      ? format(new Date(highestEducation.endDate), 'yyyy-MM')
-                      : 'Present'}
-                  </p>
-                </>
-              )} */}
-                  <p className='text-sm'>NCKU - ID</p>
-                  <p className='text-sm italic'>2018/08 - 2022/06</p>
+          <div className='flex flex-col gap-5'>
+            <Card className='flex flex-col gap-3 p-4'>
+              <div className='text-base font-bold'>Highest Education Level</div>
+              {highestEducation?.length && highestEducation.length > 0 && (
+                <div className='flex flex-col gap-3'>
+                  {highestEducation?.map((education, index) => (
+                    <>
+                      <EducationSection key={index} education={education} />
+                      {highestEducation.length - 1 !== index && <Separator />}
+                    </>
+                  ))}
                 </div>
-              </Card>
-              <Card className='flex flex-col gap-3 p-4'>
-                <div className='text-base font-bold'>Current Job</div>
-                <div>
-                  {/* {currentJob && (
+              )}
+            </Card>
+            <Card className='flex flex-col gap-3 p-4'>
+              <div className='text-base font-bold'>Current Job</div>
+              <div>
+                {/* {currentJob && (
                 <>
                   <p className='text-sm'>
                     {currentJob.company} - {currentJob.position}
@@ -95,11 +97,10 @@ const SingleResumePage = async ({ params }: Props) => {
                   </p>
                 </>
               )} */}
-                  <p className='text-sm'>Liteon - RD</p>
-                  <p className='text-sm italic'>2022/07 - Present</p>
-                </div>
-              </Card>
-            </div>
+                <p className='text-sm'>Liteon - RD</p>
+                <p className='text-sm italic'>2022/07 - Present</p>
+              </div>
+            </Card>
             <ResumeTab video={video!} />
           </div>
         </div>

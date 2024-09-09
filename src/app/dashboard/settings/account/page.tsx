@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -64,6 +64,12 @@ function AccountPage({}: Props) {
     deleteAccount();
   };
 
+  useEffect(() => {
+    if (!isOpen) {
+      form.reset();
+    }
+  }, [isOpen]);
+
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
@@ -97,7 +103,11 @@ function AccountPage({}: Props) {
             />
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <LoaderButton isLoading={isPending} variant='destructive'>
+              <LoaderButton
+                disabled={!!form.formState.errors.confirm}
+                isLoading={isPending}
+                variant='destructive'
+              >
                 Delete
               </LoaderButton>
             </AlertDialogFooter>

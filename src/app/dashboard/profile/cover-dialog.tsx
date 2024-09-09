@@ -9,26 +9,27 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { MAX_UPLOAD_IMAGE_SIZE } from '@/config/app';
-import { useDialog, useMode } from './hooks';
+import { useDialogState } from '@/hooks/store';
+import { useReturnbyFormType } from './hooks';
 
 type Props = {};
 
 export const CoverDialog = (props: Props) => {
   const [files, setFiles] = useState<File[]>([]);
-  const dialog = useDialog();
-  const mode = useMode();
-
-  if (dialog.type !== 'Cover') return null;
+  const dialogState = useDialogState();
+  const { shouldReturn } = useReturnbyFormType('Cover');
 
   const onSubmit = () => {
     console.log('clicked');
   };
 
+  if (shouldReturn) return null;
+
   return (
-    <Dialog open={dialog.isOpen} onOpenChange={dialog.setIsOpen}>
-      <DialogContent>
+    <Dialog open={dialogState.isOpen} onOpenChange={dialogState.setIsOpen}>
+      <DialogContent onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader>
-          <DialogTitle>{mode.mode} Cover</DialogTitle>
+          <DialogTitle>{dialogState.mode} Cover</DialogTitle>
         </DialogHeader>
         <FileUploader
           description={`Drag 'n' drop file here, or click to select a file.`}

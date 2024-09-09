@@ -59,7 +59,6 @@ export const ResumeTab = ({ video }: Props) => {
     fetchRandomItem();
   }, []);
 
-  console.log(randomItem);
   return (
     <Tabs defaultValue='video' className='w-full max-w-[640px]'>
       <TabsList>

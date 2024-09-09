@@ -13,7 +13,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Resume, Video } from '@/db/schema';
-import { useConfirmDialog, useResumeDialog } from './hooks';
+import { useDialogState } from '@/hooks/store';
+import { useResumeDialog } from './hooks';
 import { getYouTubeVideoId } from './utils';
 
 type Props = {
@@ -22,24 +23,25 @@ type Props = {
 
 export const ResumeCard = React.memo(({ resume }: Props) => {
   const [isPlayerReady, setIsPlayerReady] = useState(false);
-  const confirmDialog = useConfirmDialog();
   const resumeDialog = useResumeDialog();
-
-  const handleDeleteClick = (e: MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-    confirmDialog.setResumeId(resume.id);
-    confirmDialog.setIsOpen(true);
-    confirmDialog.setResumeTitle(resume.title!);
-  };
+  const dialogState = useDialogState();
 
   const handleTriggerClick = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
   };
 
+  const handleDeleteClick = (e: MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    dialogState.setIsOpen(true);
+    dialogState.setMode('Delete');
+    resumeDialog.setResumeId(resume.id);
+    resumeDialog.setResumeTitle(resume.title!);
+  };
+
   const handleEditClick = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    resumeDialog.setType('Edit');
-    resumeDialog.setIsOpen(true);
+    dialogState.setIsOpen(true);
+    dialogState.setMode('Edit');
     resumeDialog.setResumeId(resume.id);
   };
 
@@ -80,7 +82,7 @@ export const ResumeCard = React.memo(({ resume }: Props) => {
                 data-prevent-nprogress={true}
                 onClick={handleTriggerClick}
               >
-                <Button variant={'ghost'} size={'sm'}>
+                <Button variant={'ghost'} size={'icon'}>
                   <Ellipsis size={'18'} />
                 </Button>
               </DropdownMenuTrigger>

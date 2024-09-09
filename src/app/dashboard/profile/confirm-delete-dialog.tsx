@@ -13,8 +13,8 @@ import {
 import { useToast } from '@/components/ui/use-toast';
 import { useDialogState } from '@/hooks/store';
 import { UserId } from '@/use-cases/types';
-import { deleteResumeAction } from './actions';
-import { useResumeDialog } from './hooks';
+import { deleteEducationAction, deleteJobExperienceAction } from './actions';
+import { useProfileDialog } from './hooks';
 
 type Props = {
   userId: UserId;
@@ -22,28 +22,37 @@ type Props = {
 
 export const ConfirmDeleteDialog = ({ userId }: Props) => {
   const { toast } = useToast();
-  const resumeDialog = useResumeDialog();
+  const profileDialog = useProfileDialog();
   const dialogState = useDialogState();
 
-  const { execute, isPending, error } = useServerAction(deleteResumeAction, {
-    onSuccess: () => {
-      dialogState.setIsOpen(false);
-      toast({
-        title: 'Success',
-        description: 'Resume deleted',
-      });
-    },
-    onError: ({ err }) => {
-      toast({
-        title: 'Error',
-        description: err.message,
-        variant: 'destructive',
-      });
-    },
-  });
+  const { execute, isPending, error } = useServerAction(
+    profileDialog.type === 'Education'
+      ? deleteEducationAction
+      : deleteJobExperienceAction,
+    {
+      onSuccess: () => {
+        dialogState.setIsOpen(false);
+        toast({
+          title: 'Success',
+          description: 'Resume deleted',
+        });
+      },
+      onError: ({ err }) => {
+        toast({
+          title: 'Error',
+          description: err.message,
+          variant: 'destructive',
+        });
+      },
+    }
+  );
 
   const handleConfirmClick = () => {
-    execute({ userId, resumeId: resumeDialog.resumeId! });
+    if (profileDialog.type === 'Education') {
+      execute({ userId, educationId: profileDialog.educationId! });
+    } else {
+      execute({ userId, jobExperienceId: profileDialog.jobId! });
+    }
   };
 
   if (dialogState.mode !== 'Delete') return null;
@@ -57,9 +66,7 @@ export const ConfirmDeleteDialog = ({ userId }: Props) => {
         <DialogHeader>
           <DialogTitle>Confirm Resume Deletion</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete the resume &quot;
-            <span className='font-extrabold'>{resumeDialog.resumeTitle}</span>
-            &quot;?
+            Are you sure you want to delete the item?
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className='gap-y-3'>

@@ -1,24 +1,24 @@
 'use client';
 
-import React, { MouseEvent } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import { User } from 'lucia';
 import { Pencil } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Education, JobExperience, Profile as ProfileType } from '@/db/schema';
+import { useDialogState } from '@/hooks/store';
 import { cn } from '@/lib/utils';
+import { ConfirmDeleteDialog } from './confirm-delete-dialog';
 import { CoverDialog } from './cover-dialog';
 import { EducationDialog } from './education-dialog';
-import {
-  TDialog,
-  TMode,
-  useDialog,
-  useMode,
-} from './hooks';
+import { EducationSection } from './education-section';
+import { useProfileDialog } from './hooks';
 import { JobDialog } from './job-dialog';
+import { ProfileSection } from './profile-section';
+import { ButtonClickHandler } from './type';
+import { createSortedEducations } from './utils';
 
 type Props = {
   user: User;
@@ -27,33 +27,54 @@ type Props = {
   jobExperiences: JobExperience[];
 };
 
-export const Profile = ({ user, profile }: Props) => {
-  const mode = useMode();
-  const dialog = useDialog();
+export const Profile = ({
+  user,
+  profile,
+  educations,
+  jobExperiences,
+}: Props) => {
+  const dialogState = useDialogState();
+  const profileDialog = useProfileDialog();
 
-  const handleEditClick =
-    (modeType: TMode, dialogType: TDialog) =>
-    (e: MouseEvent<HTMLButtonElement>) => {
-      mode.setMode(modeType);
-      dialog.setType(dialogType);
-      dialog.setIsOpen(true);
-    };
+  const handleButtonClick: ButtonClickHandler = (mode, formType, id) => (e) => {
+    if (mode === 'Edit' || mode === 'Delete') {
+      if (formType === 'Education') {
+        profileDialog.setEducationId(id!);
+      } else if (formType === 'Job') {
+        profileDialog.setJobId(id!);
+      } else if (formType === 'Cover') {
+        profileDialog.setCoverId(id!);
+      }
+    }
+    dialogState.setIsOpen(true);
+    dialogState.setMode(mode);
+    profileDialog.setType(formType);
+  };
+
+  const sortedEducations = createSortedEducations(educations);
 
   return (
     <div className='max-w-3xl space-y-3'>
-      <EducationDialog />
+      <EducationDialog
+        education={
+          dialogState.mode === 'Edit'
+            ? educations.find((edu) => edu.id === profileDialog.educationId)
+            : undefined
+        }
+      />
       <JobDialog />
       <CoverDialog />
+      <ConfirmDeleteDialog userId={user.id} />
       <div>
         <div className='relative'>
           <Skeleton className='h-28 w-full sm:h-48' />
           <Button
             variant={'ghost'}
             size={'icon'}
-            className='absolute right-5 top-5 ml-2 h-4 w-4'
-            onClick={handleEditClick('Edit', 'Cover')}
+            className='absolute right-5 top-5 ml-2 h-7 w-7'
+            onClick={handleButtonClick('Edit', 'Cover')}
           >
-            <Pencil />
+            <Pencil size={16} />
           </Button>
         </div>
         <div className='-mt-5 space-y-5 px-5'>
@@ -69,69 +90,40 @@ export const Profile = ({ user, profile }: Props) => {
               <Skeleton className='aspect-square' />
             </AvatarFallback>
           </Avatar>
-          <div className='flex flex-col gap-5 md:flex-row'>
-            <div className='flex flex-col space-y-5'>
-              <Card className='flex flex-col gap-3 p-4'>
-                <div className='flex w-full items-center justify-between text-base font-bold'>
-                  Education
-                  <Button
-                    variant={'ghost'}
-                    size={'icon'}
-                    className='ml-2 h-4 w-4'
-                    onClick={handleEditClick('Edit', 'Education')}
-                  >
-                    <Pencil />
-                  </Button>
-                </div>
+          <div className='flex flex-col gap-5'>
+            <ProfileSection
+              title='Education'
+              items={sortedEducations}
+              formType='Education'
+              handleButtonClick={handleButtonClick}
+              renderItem={(edu) => <EducationSection education={edu} />}
+            />
+            <ProfileSection
+              title='Job Experience'
+              items={jobExperiences}
+              formType='Job'
+              handleButtonClick={handleButtonClick}
+              renderItem={(job) => (
                 <div>
-                  {/* {highestEducation && (
-                <>
                   <p className='text-sm'>
-                    {highestEducation?.institution} - {highestEducation?.degree}
+                    {job.company} - {job.position}
                   </p>
                   <p className='text-sm italic'>
-                    {highestEducation?.startDate} -{' '}
-                    {highestEducation.endDate
-                      ? format(new Date(highestEducation.endDate), 'yyyy-MM')
-                      : 'Present'}
+                    {job.startDate} - {job.endDate || 'Present'}
                   </p>
-                </>
-              )} */}
-                  <p className='text-sm'>NCKU - ID</p>
-                  <p className='text-sm italic'>2018/08 - 2022/06</p>
-                </div>
-              </Card>
-              <Card className='flex flex-col gap-3 p-4'>
-                <div className='flex w-full items-center justify-between text-base font-bold'>
-                  Job Experience
-                  <Button
-                    variant={'ghost'}
-                    size={'icon'}
-                    className='ml-2 h-4 w-4'
-                    onClick={handleEditClick('Edit', 'Job')}
-                  >
-                    <Pencil />
-                  </Button>
-                </div>
-                <div>
-                  {/* {currentJob && (
-                <>
                   <p className='text-sm'>
-                    {currentJob.company} - {currentJob.position}
+                    {job.achievements
+                      ? job.achievements.split('\n').map((line, index) => (
+                          <React.Fragment key={index}>
+                            {line}
+                            <br />
+                          </React.Fragment>
+                        ))
+                      : ''}
                   </p>
-                  <p className='text-sm italic'>
-                    {currentJob?.startDate} -{' '}
-                    {currentJob.endDate
-                      ? format(new Date(currentJob.endDate), 'yyyy-MM')
-                      : 'Present'}
-                  </p>
-                </>
-              )} */}
-                  <p className='text-sm'>Liteon - RD</p>
-                  <p className='text-sm italic'>2022/07 - Present</p>
                 </div>
-              </Card>
-            </div>
+              )}
+            />
           </div>
         </div>
       </div>

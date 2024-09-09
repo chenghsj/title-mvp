@@ -5,21 +5,22 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useDialog, useMode } from './hooks';
+import { useDialogState } from '@/hooks/store';
+import { useReturnbyFormType } from './hooks';
 
 type Props = {};
 
 export const JobDialog = (props: Props) => {
-  const dialog = useDialog();
-  const mode = useMode();
+  const dialogState = useDialogState();
+  const { shouldReturn } = useReturnbyFormType('Job');
 
-  if (dialog.type !== 'Job') return null;
+  if (shouldReturn) return null;
 
   return (
-    <Dialog open={dialog.isOpen} onOpenChange={dialog.setIsOpen}>
+    <Dialog open={dialogState.isOpen} onOpenChange={dialogState.setIsOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{mode.mode} Job</DialogTitle>
+          <DialogTitle>{dialogState.mode} Job</DialogTitle>
           <DialogDescription>
             This action cannot be undone. This will permanently delete your
             account and remove your data from our servers.
