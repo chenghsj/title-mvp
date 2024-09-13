@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1725696429692,
-      "tag": "0000_tearful_genesis",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1725757773408,
-      "tag": "0001_lean_dormammu",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1725797691944,
-      "tag": "0002_demonic_lizard",
+      "when": 1726463984595,
+      "tag": "0000_slimy_drax",
       "breakpoints": true
     }
   ]

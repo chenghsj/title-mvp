@@ -10,14 +10,14 @@ import {
 } from '@/components/ui/dialog';
 import { MAX_UPLOAD_IMAGE_SIZE } from '@/config/app';
 import { useDialogState } from '@/hooks/store';
-import { useReturnbyFormType } from './hooks';
+import { useReturnByFormType } from './hooks';
 
 type Props = {};
 
 export const CoverDialog = (props: Props) => {
   const [files, setFiles] = useState<File[]>([]);
   const dialogState = useDialogState();
-  const { shouldReturn } = useReturnbyFormType('Cover');
+  const { shouldReturn } = useReturnByFormType('Cover');
 
   const onSubmit = () => {
     console.log('clicked');

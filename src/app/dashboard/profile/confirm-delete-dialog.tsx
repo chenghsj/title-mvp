@@ -34,7 +34,7 @@ export const ConfirmDeleteDialog = ({ userId }: Props) => {
         dialogState.setIsOpen(false);
         toast({
           title: 'Success',
-          description: 'Resume deleted',
+          description: `${profileDialog.type === 'Education' ? 'Education' : 'Experience'} deleted`,
         });
       },
       onError: ({ err }) => {
@@ -66,7 +66,17 @@ export const ConfirmDeleteDialog = ({ userId }: Props) => {
         <DialogHeader>
           <DialogTitle>Confirm Resume Deletion</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete the item?
+            Are you sure you want to delete the{' '}
+            <span className='font-bold'>
+              {profileDialog.type === 'Education'
+                ? profileDialog.educations?.find(
+                    (edu) => edu.id === profileDialog.educationId
+                  )?.degree
+                : profileDialog.jobExperiences?.find(
+                    (job) => job.id === profileDialog.jobId
+                  )?.company}
+            </span>{' '}
+            {profileDialog.type === 'Education' ? 'degree' : 'experience'}?
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className='gap-y-3'>

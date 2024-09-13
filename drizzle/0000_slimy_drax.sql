@@ -15,10 +15,10 @@ CREATE TABLE IF NOT EXISTS "account" (
 CREATE TABLE IF NOT EXISTS "education" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"user_id" uuid NOT NULL,
-	"institution" text NOT NULL,
-	"degree" text NOT NULL,
-	"field_of_study" text NOT NULL,
-	"start_date" date NOT NULL,
+	"institution" text,
+	"degree" text,
+	"field_of_study" text,
+	"start_date" date,
 	"end_date" date,
 	"grade" text,
 	"activities" text,
@@ -38,12 +38,12 @@ CREATE TABLE IF NOT EXISTS "email_verification_otp" (
 CREATE TABLE IF NOT EXISTS "job_experience" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"user_id" uuid NOT NULL,
+	"title" text NOT NULL,
 	"company" text NOT NULL,
-	"position" text NOT NULL,
+	"description" text,
+	"employment_type" text,
 	"start_date" date NOT NULL,
 	"end_date" date,
-	"responsibilities" text,
-	"achievements" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
@@ -56,6 +56,9 @@ CREATE TABLE IF NOT EXISTS "profile" (
 	"displayName" text,
 	"bio" text,
 	"avatar" text,
+	"image_id" text,
+	"cover" text,
+	"cover_id" text,
 	"contact" text,
 	"birth_date" date
 );
@@ -70,7 +73,7 @@ CREATE TABLE IF NOT EXISTS "reset_token" (
 CREATE TABLE IF NOT EXISTS "resume" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"user_id" uuid NOT NULL,
-	"title" text,
+	"title" text NOT NULL,
 	"bio" text,
 	"tag" text[] DEFAULT '{}'::text[] NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL

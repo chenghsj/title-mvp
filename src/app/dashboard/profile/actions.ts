@@ -7,10 +7,14 @@ import {
   deleteEducation,
   updateEducation,
 } from '@/data-access/educations';
-import { deleteJobExperience } from '@/data-access/job-experiences';
+import {
+  createJobExperience,
+  deleteJobExperience,
+  updateJobExperience,
+} from '@/data-access/job-experiences';
 import { authenticatedAction } from '@/lib/safe-action';
 import { getCurrentUser } from '@/lib/session';
-import { EducationFormSchema } from './form-schema';
+import { EducationFormSchema, JobExperienceFormSchema } from './form-schema';
 
 /**
  * Education actions
@@ -59,6 +63,39 @@ export const deleteEducationAction = authenticatedAction
 /**
  * Job actions
  */
+
+export const createJobExperienceAction = authenticatedAction
+  .createServerAction()
+  .input(JobExperienceFormSchema)
+  .handler(async ({ input }) => {
+    const user = await getCurrentUser();
+    await createJobExperience({
+      userId: user?.id!,
+      title: input.title,
+      company: input.company,
+      employmentType: input.employmentType,
+      skill: input.skill || [],
+      description: input.description || null,
+      endDate: input.endDate || null,
+      startDate: input.startDate,
+    });
+
+    revalidatePath('/dashboard/profile');
+  });
+
+export const updateJobExperienceAction = authenticatedAction
+  .createServerAction()
+  .input(JobExperienceFormSchema)
+  .handler(async ({ input }) => {
+    const user = await getCurrentUser();
+    await updateJobExperience(user?.id!, input.jobExperienceId!, {
+      ...input,
+      startDate: input.startDate.toISOString(),
+      endDate: input.endDate?.toISOString() || null,
+    });
+
+    revalidatePath('/dashboard/profile');
+  });
 
 export const deleteJobExperienceAction = authenticatedAction
   .createServerAction()

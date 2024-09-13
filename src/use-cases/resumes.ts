@@ -1,7 +1,11 @@
 import { ResumeFormSchemaType } from '@/app/dashboard/resume/form-schema';
-import { createResume, deleteResume } from '@/data-access/resumes';
+import {
+  createResume,
+  deleteResume,
+  updateResume,
+} from '@/data-access/resumes';
 import { createTransaction } from '@/data-access/utils';
-import { createVideo } from '@/data-access/videos';
+import { createVideo, updateVideo } from '@/data-access/videos';
 import { UserId } from './types';
 
 export const createResumeUseCase = async ({
@@ -15,6 +19,18 @@ export const createResumeUseCase = async ({
   await createTransaction(async (trx) => {
     const resume = await createResume(userId, title, bio, trx);
     const video = await createVideo(userId, resume.id, url, trx);
+  });
+};
+
+export const updateResumeUseCase = async ({
+  userId,
+  ...input
+}: {
+  userId: UserId;
+} & ResumeFormSchemaType) => {
+  await createTransaction(async (trx) => {
+    await updateResume(userId, input.resumeId!, input, trx);
+    await updateVideo(userId, input.resumeId!, { url: input.url }, trx);
   });
 };
 

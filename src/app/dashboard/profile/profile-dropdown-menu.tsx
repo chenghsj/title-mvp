@@ -7,36 +7,36 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { FormType } from './hooks';
-import { ButtonClickHandler } from './type';
+import { useCreateHandleMenuButtonClick } from './utils';
 
 export const ProfileDropdownMenu = ({
   formType,
   id,
-  handleMenuItemClick,
 }: {
   formType: FormType;
   id?: number;
-  handleMenuItemClick: ButtonClickHandler;
-}) => (
-  <DropdownMenu modal={false}>
-    <DropdownMenuTrigger asChild>
-      <Button variant={'ghost'} size={'icon'} className='h-7 w-7'>
-        <Ellipsis size={'16'} />
-      </Button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent>
-      <DropdownMenuItem
-        onClick={(e) => handleMenuItemClick('Edit', formType, id)(e)}
-      >
-        <Pencil className='mr-2 h-4 w-4' />
-        Edit
-      </DropdownMenuItem>
-      <DropdownMenuItem
-        onClick={(e) => handleMenuItemClick('Delete', formType, id)(e)}
-      >
-        <Trash className='mr-2 h-4 w-4' />
-        Delete
-      </DropdownMenuItem>
-    </DropdownMenuContent>
-  </DropdownMenu>
-);
+}) => {
+  const { handleMenuButtonClick } = useCreateHandleMenuButtonClick();
+
+  return (
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger asChild>
+        <Button variant={'ghost'} size={'icon'} className='h-7 w-7'>
+          <Ellipsis size={'16'} />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuItem onClick={handleMenuButtonClick('Edit', formType, id)}>
+          <Pencil className='mr-2 h-4 w-4' />
+          Edit
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={handleMenuButtonClick('Delete', formType, id)}
+        >
+          <Trash className='mr-2 h-4 w-4' />
+          Delete
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};

@@ -1,22 +1,29 @@
 import { and, desc, eq } from 'drizzle-orm';
+import { EmploymentType } from '@/app/dashboard/profile/type';
 import { db } from '@/db/drizzle';
 import { JobExperience, jobExperiences } from '@/db/schema';
 import { UserId } from '@/use-cases/types';
 
-export async function createJobExperience(
-  userId: UserId,
-  company: string,
-  position: string,
-  startDate: Date,
-  trx = db
-) {
+export async function createJobExperience({
+  trx = db,
+  ...rest
+}: {
+  userId: UserId;
+  title: string;
+  company: string;
+  skill: string[];
+  employmentType: EmploymentType;
+  description: string | null;
+  startDate: Date;
+  endDate: Date | null;
+  trx?: typeof db;
+}) {
   const [job] = await trx
     .insert(jobExperiences)
     .values({
-      userId,
-      company,
-      position,
-      startDate: startDate.toISOString(),
+      ...rest,
+      startDate: rest.startDate.toISOString(),
+      endDate: rest.endDate?.toISOString() || null,
     })
     .onConflictDoNothing()
     .returning();
@@ -25,13 +32,19 @@ export async function createJobExperience(
 
 export async function updateJobExperience(
   userId: UserId,
+  jobExperienceId: number,
   updateJobExperience: Partial<JobExperience>,
   trx = db
 ) {
   await trx
     .update(jobExperiences)
     .set(updateJobExperience)
-    .where(eq(jobExperiences.userId, userId));
+    .where(
+      and(
+        eq(jobExperiences.userId, userId),
+        eq(jobExperiences.id, jobExperienceId)
+      )
+    );
 }
 
 export async function getJobExperience(userId: UserId) {

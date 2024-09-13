@@ -10,13 +10,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { createInsertSchema } from 'drizzle-zod';
 import { RoleTypeEnum } from '@/app/_root/types';
-
-// export const users = pgTable('user', {
-//   id: uuid('id').notNull().primaryKey().defaultRandom(),
-//   username: varchar('username', { length: 255 }).notNull(),
-//   email: varchar('email', { length: 255 }).notNull(),
-//   role: json('role').$type<Role>(),
-// });
+import { degrees, employmentTypes } from '@/app/dashboard/profile/type';
 
 export const accountTypeEnum = ['email', 'google', 'github'] as const;
 
@@ -63,7 +57,7 @@ export const educations = pgTable('education', {
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
   institution: text('institution'),
-  degree: text('degree'),
+  degree: text('degree', { enum: degrees }),
   fieldOfStudy: text('field_of_study'),
   startDate: date('start_date'),
   endDate: date('end_date'),
@@ -79,12 +73,12 @@ export const jobExperiences = pgTable('job_experience', {
   userId: uuid('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
+  title: text('title').notNull(),
   company: text('company').notNull(),
-  position: text('position').notNull(),
+  description: text('description'),
+  employmentType: text('employment_type', { enum: employmentTypes }),
   startDate: date('start_date').notNull(),
   endDate: date('end_date'),
-  responsibilities: text('responsibilities'),
-  achievements: text('achievements'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });

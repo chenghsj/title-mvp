@@ -8,7 +8,6 @@ import { useServerAction } from 'zsa-react';
 import { LoaderButton } from '@/components/loader-button';
 import {
   AlertDialog,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -28,8 +27,10 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import { deleteAccountAction } from './actions';
 
+const confirmDeleteString = 'Delete account';
+
 const deleteSchema = z.object({
-  confirm: z.string().refine((v) => v === 'Delete account'),
+  confirm: z.string().refine((v) => v === confirmDeleteString),
 });
 
 type Props = {};
@@ -39,6 +40,10 @@ function AccountPage({}: Props) {
   const { toast } = useToast();
   const form = useForm<z.infer<typeof deleteSchema>>({
     resolver: zodResolver(deleteSchema),
+    mode: 'onChange',
+    defaultValues: {
+      confirm: undefined,
+    },
   });
 
   const { execute: deleteAccount, isPending } = useServerAction(
@@ -95,14 +100,20 @@ function AccountPage({}: Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} placeholder={confirmDeleteString} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <Button
+                variant={'secondary'}
+                type='button'
+                onClick={(e) => setIsOpen(false)}
+              >
+                Cancel
+              </Button>
               <LoaderButton
                 disabled={!!form.formState.errors.confirm}
                 isLoading={isPending}

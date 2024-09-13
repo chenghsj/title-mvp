@@ -1,5 +1,5 @@
 {
-  "id": "52418b18-d148-4ff9-a869-9a1279333425",
+  "id": "f2dafb78-51e1-4c25-80a6-2f43f5cf2670",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -108,25 +108,25 @@
           "name": "institution",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "degree": {
           "name": "degree",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "field_of_study": {
           "name": "field_of_study",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "start_date": {
           "name": "start_date",
           "type": "date",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "end_date": {
           "name": "end_date",
@@ -249,17 +249,29 @@
           "primaryKey": false,
           "notNull": true
         },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "company": {
           "name": "company",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
-        "position": {
-          "name": "position",
+        "description": {
+          "name": "description",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
+        },
+        "employment_type": {
+          "name": "employment_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         },
         "start_date": {
           "name": "start_date",
@@ -270,18 +282,6 @@
         "end_date": {
           "name": "end_date",
           "type": "date",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "responsibilities": {
-          "name": "responsibilities",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "achievements": {
-          "name": "achievements",
-          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
@@ -357,6 +357,24 @@
         },
         "avatar": {
           "name": "avatar",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "image_id": {
+          "name": "image_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cover": {
+          "name": "cover",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cover_id": {
+          "name": "cover_id",
           "type": "text",
           "primaryKey": false,
           "notNull": false
@@ -454,7 +472,7 @@
           "name": "title",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "bio": {
           "name": "bio",

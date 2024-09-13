@@ -1,20 +1,15 @@
 import { and, desc, eq } from 'drizzle-orm';
+import { DegreeType } from '@/app/dashboard/profile/type';
 import { db } from '@/db/drizzle';
 import { Education, educations } from '@/db/schema';
 import { UserId } from '@/use-cases/types';
 
 export async function createEducation({
-  userId,
-  degree,
-  fieldOfStudy,
-  institution,
-  description,
-  startDate,
-  endDate,
   trx = db,
+  ...rest
 }: {
   userId: UserId;
-  degree: string;
+  degree: DegreeType;
   fieldOfStudy: string;
   institution: string;
   description: string | null;
@@ -25,13 +20,9 @@ export async function createEducation({
   const [education] = await trx
     .insert(educations)
     .values({
-      userId,
-      degree,
-      fieldOfStudy,
-      institution,
-      description,
-      startDate: startDate.toISOString(),
-      endDate: endDate?.toISOString(),
+      ...rest,
+      startDate: rest.startDate.toISOString(),
+      endDate: rest.endDate?.toISOString(),
     })
     .onConflictDoNothing()
     .returning();

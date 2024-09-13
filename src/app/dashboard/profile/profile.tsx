@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import { useEffect } from 'react';
 import Image from 'next/image';
 import { User } from 'lucia';
 import { Pencil } from 'lucide-react';
@@ -16,9 +16,12 @@ import { EducationDialog } from './education-dialog';
 import { EducationSection } from './education-section';
 import { useProfileDialog } from './hooks';
 import { JobDialog } from './job-dialog';
+import { JobSection } from './job-section';
 import { ProfileSection } from './profile-section';
-import { ButtonClickHandler } from './type';
-import { createSortedEducations } from './utils';
+import {
+  createSortedEducations,
+  useCreateHandleMenuButtonClick,
+} from './utils';
 
 type Props = {
   user: User;
@@ -36,22 +39,13 @@ export const Profile = ({
   const dialogState = useDialogState();
   const profileDialog = useProfileDialog();
 
-  const handleButtonClick: ButtonClickHandler = (mode, formType, id) => (e) => {
-    if (mode === 'Edit' || mode === 'Delete') {
-      if (formType === 'Education') {
-        profileDialog.setEducationId(id!);
-      } else if (formType === 'Job') {
-        profileDialog.setJobId(id!);
-      } else if (formType === 'Cover') {
-        profileDialog.setCoverId(id!);
-      }
-    }
-    dialogState.setIsOpen(true);
-    dialogState.setMode(mode);
-    profileDialog.setType(formType);
-  };
-
   const sortedEducations = createSortedEducations(educations);
+  const { handleMenuButtonClick } = useCreateHandleMenuButtonClick();
+
+  useEffect(() => {
+    profileDialog.setEducations(educations);
+    profileDialog.setJobExperiences(jobExperiences);
+  }, [educations, jobExperiences]);
 
   return (
     <div className='max-w-3xl space-y-3'>
@@ -62,7 +56,13 @@ export const Profile = ({
             : undefined
         }
       />
-      <JobDialog />
+      <JobDialog
+        jobExperience={
+          dialogState.mode === 'Edit'
+            ? jobExperiences.find((job) => job.id === profileDialog.jobId)
+            : undefined
+        }
+      />
       <CoverDialog />
       <ConfirmDeleteDialog userId={user.id} />
       <div>
@@ -72,7 +72,7 @@ export const Profile = ({
             variant={'ghost'}
             size={'icon'}
             className='absolute right-5 top-5 ml-2 h-7 w-7'
-            onClick={handleButtonClick('Edit', 'Cover')}
+            onClick={handleMenuButtonClick('Edit', 'Cover')}
           >
             <Pencil size={16} />
           </Button>
@@ -92,37 +92,16 @@ export const Profile = ({
           </Avatar>
           <div className='flex flex-col gap-5'>
             <ProfileSection
-              title='Education'
+              title={'Education'}
               items={sortedEducations}
               formType='Education'
-              handleButtonClick={handleButtonClick}
               renderItem={(edu) => <EducationSection education={edu} />}
             />
             <ProfileSection
               title='Job Experience'
               items={jobExperiences}
               formType='Job'
-              handleButtonClick={handleButtonClick}
-              renderItem={(job) => (
-                <div>
-                  <p className='text-sm'>
-                    {job.company} - {job.position}
-                  </p>
-                  <p className='text-sm italic'>
-                    {job.startDate} - {job.endDate || 'Present'}
-                  </p>
-                  <p className='text-sm'>
-                    {job.achievements
-                      ? job.achievements.split('\n').map((line, index) => (
-                          <React.Fragment key={index}>
-                            {line}
-                            <br />
-                          </React.Fragment>
-                        ))
-                      : ''}
-                  </p>
-                </div>
-              )}
+              renderItem={(job) => <JobSection jobExperience={job} />}
             />
           </div>
         </div>
