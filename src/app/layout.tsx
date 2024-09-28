@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { getLocale, getMessages, getTimeZone } from 'next-intl/server';
 import { ProgressBar } from '@/components/app-progress-bar';
 import { Toaster } from '@/components/ui/toaster';
 import {
@@ -47,6 +48,9 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await validateRequest();
+  const locale = await getLocale();
+  const timeZone = await getTimeZone();
+  const messages = await getMessages();
 
   return (
     <html lang='en' suppressHydrationWarning>
@@ -67,6 +71,9 @@ export default async function RootLayout({
             defaultTheme: 'light',
             children,
           }}
+          messages={messages}
+          locale={locale}
+          timeZone={timeZone}
         >
           <ProgressBar />
           <Navbar />

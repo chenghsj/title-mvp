@@ -26,15 +26,16 @@ export const useDialogState = create<DialogState>((set) => {
   };
 });
 
-// export const useDialogState = () => {
-//   const dialogState = _useDialogState();
+type DropdownState = {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+};
 
-//   const pathname = usePathname();
-
-//   useEffect(() => {
-//     dialogState.setIsOpen(false);
-//     dialogState.setMode(null);
-//   }, [pathname]);
-
-//   return _useDialogState();
-// };
+export const useDropdownState = create<DropdownState>((set) => {
+  return {
+    isOpen: false,
+    setIsOpen: (isOpen) => {
+      set({ isOpen });
+    },
+  };
+});

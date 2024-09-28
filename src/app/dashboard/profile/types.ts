@@ -1,13 +1,3 @@
-import { MouseEvent } from 'react';
-import { ModeType } from '@/hooks/store';
-import { FormType } from './hooks';
-
-export type ButtonClickHandler = (
-  mode: ModeType,
-  formType: FormType,
-  id?: number
-) => (e: MouseEvent<HTMLButtonElement | HTMLDivElement>) => void;
-
 export const degrees = ['High School', 'Bachelor', 'Master', 'PhD'] as const;
 
 export type DegreeType = (typeof degrees)[number];
@@ -28,3 +18,6 @@ export const employmentTypes = [
 ] as const;
 
 export type EmploymentType = (typeof employmentTypes)[number];
+
+export const profileImageType = ['avatar', 'cover'] as const;
+export type ProfileImage = (typeof profileImageType)[number];

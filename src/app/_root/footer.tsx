@@ -20,7 +20,7 @@ export function Footer() {
           </div>
 
           <span className='text-xs italic text-zinc-100 sm:text-sm'>
-            © 2024 Lorem ipsum dolor sit amet
+            © 2024 Title
           </span>
         </div>
         <div className='flex gap-x-3'>

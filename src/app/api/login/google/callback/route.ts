@@ -3,11 +3,11 @@ import { OAuth2RequestError } from 'arctic';
 import { Role } from '@/app/_root/types';
 import { afterLoginUrl } from '@/config/site';
 import { googleProvider } from '@/lib/auth';
+import { redirectToErrorPage } from '@/lib/errors';
 import { setSession } from '@/lib/session';
 import { getAccountByGoogleIdUseCase } from '@/use-cases/accounts';
 import { RoleError } from '@/use-cases/errors';
 import { createGoogleUserUseCase } from '@/use-cases/users';
-import { redirectToErrorPage } from '@/utils/errors';
 
 export async function GET(request: Request): Promise<Response> {
   const url = new URL(request.url);

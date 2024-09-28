@@ -8,16 +8,15 @@ import {
   timestamp,
   uuid,
 } from 'drizzle-orm/pg-core';
-import { createInsertSchema } from 'drizzle-zod';
 import { RoleTypeEnum } from '@/app/_root/types';
-import { degrees, employmentTypes } from '@/app/dashboard/profile/type';
+import { degrees, employmentTypes } from '@/app/dashboard/profile/types';
 
 export const accountTypeEnum = ['email', 'google', 'github'] as const;
 
 export const users = pgTable('user', {
   id: uuid('id').notNull().primaryKey().defaultRandom(),
   email: text('email').unique(),
-  emailVerified: timestamp('email_verified'),
+  emailVerified: timestamp('email_verified', { withTimezone: true }),
 });
 
 export const accounts = pgTable('account', {
@@ -45,7 +44,6 @@ export const profiles = pgTable('profile', {
   bio: text('bio'),
   image: text('avatar'),
   imageId: text('image_id'),
-  cover: text('cover'),
   coverId: text('cover_id'),
   contact: text('contact'),
   birthDate: date('birth_date'),
@@ -64,8 +62,12 @@ export const educations = pgTable('education', {
   grade: text('grade'),
   activities: text('activities'),
   description: text('description'),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
 });
 
 export const jobExperiences = pgTable('job_experience', {
@@ -79,8 +81,12 @@ export const jobExperiences = pgTable('job_experience', {
   employmentType: text('employment_type', { enum: employmentTypes }),
   startDate: date('start_date').notNull(),
   endDate: date('end_date'),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
 });
 
 export const videos = pgTable('video', {
@@ -92,7 +98,9 @@ export const videos = pgTable('video', {
     .notNull()
     .references(() => resumes.id, { onDelete: 'cascade' }),
   url: text('url').notNull(),
-  uploadedAt: timestamp('uploaded_at').notNull().defaultNow(),
+  uploadedAt: timestamp('uploaded_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
 });
 
 export const resumes = pgTable('resume', {
@@ -106,7 +114,14 @@ export const resumes = pgTable('resume', {
     .array()
     .notNull()
     .default(sql`'{}'::text[]`),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  educationId: integer('education_id'),
+  jobExperienceId: integer('job_experience_id'),
 });
 
 export const sessions = pgTable('session', {
@@ -127,7 +142,7 @@ export const emailVerificationOTPs = pgTable('email_verification_otp', {
     .references(() => users.id, { onDelete: 'cascade' }),
   OTP: text('code').notNull(),
   email: text('email').notNull(),
-  expiresAt: timestamp('expires_at').notNull(),
+  expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
 });
 
 export const resetTokens = pgTable('reset_token', {
@@ -136,10 +151,11 @@ export const resetTokens = pgTable('reset_token', {
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
   token: text('token').notNull(),
-  expiresAt: timestamp('expires_at').notNull(),
+  expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
 });
 
 /**
+ *
  * Relations
  */
 export const usersRelations = relations(users, ({ one, many }) => ({
@@ -225,16 +241,9 @@ export const resetTokenRelations = relations(resetTokens, ({ one }) => ({
 }));
 
 /**
+ *
  * Schemas
  */
-
-export const ProfileSchema = createInsertSchema(profiles);
-
-// Define the insert schema
-export const emailVerificationOTPschema = createInsertSchema(
-  emailVerificationOTPs
-);
-
 export type User = typeof users.$inferSelect;
 export type Profile = typeof profiles.$inferSelect;
 export type Education = typeof educations.$inferSelect;

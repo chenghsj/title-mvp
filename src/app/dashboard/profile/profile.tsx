@@ -1,46 +1,47 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
-import { User } from 'lucia';
 import { Pencil } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Education, JobExperience, Profile as ProfileType } from '@/db/schema';
 import { useDialogState } from '@/hooks/store';
-import { cn } from '@/lib/utils';
+import { AvatarWithMenu } from './avatar-with-menu';
 import { ConfirmDeleteDialog } from './confirm-delete-dialog';
-import { CoverDialog } from './cover-dialog';
+import { DisplayName } from './display-name';
 import { EducationDialog } from './education-dialog';
 import { EducationSection } from './education-section';
-import { useProfileDialog } from './hooks';
+import { useCreateHandleMenuButtonClick, useProfileDialog } from './hooks';
 import { JobDialog } from './job-dialog';
 import { JobSection } from './job-section';
 import { ProfileSection } from './profile-section';
-import {
-  createSortedEducations,
-  useCreateHandleMenuButtonClick,
-} from './utils';
+import { UploadImageDialog } from './upload-image-dialog';
+import { createSortedEducations } from './utils';
 
-type Props = {
-  user: User;
+type DashboardInfo = {
   profile: ProfileType;
   educations: Education[];
   jobExperiences: JobExperience[];
+  avatarUrl: string | null;
+  coverUrl: string | null;
+};
+type Props = {
+  dashboardInfo: DashboardInfo;
 };
 
-export const Profile = ({
-  user,
-  profile,
-  educations,
-  jobExperiences,
-}: Props) => {
+export const Profile = ({ dashboardInfo }: Props) => {
+  const { profile, educations, jobExperiences, avatarUrl, coverUrl } =
+    dashboardInfo;
+
   const dialogState = useDialogState();
   const profileDialog = useProfileDialog();
 
   const sortedEducations = createSortedEducations(educations);
   const { handleMenuButtonClick } = useCreateHandleMenuButtonClick();
+
+  const tProfile = useTranslations('profile');
 
   useEffect(() => {
     profileDialog.setEducations(educations);
@@ -63,11 +64,24 @@ export const Profile = ({
             : undefined
         }
       />
-      <CoverDialog />
-      <ConfirmDeleteDialog userId={user.id} />
+      <UploadImageDialog formType='Cover' type='cover' />
+      <UploadImageDialog formType='Avatar' type='avatar' />
+      <ConfirmDeleteDialog />
       <div>
         <div className='relative'>
-          <Skeleton className='h-28 w-full sm:h-48' />
+          <div className='aspect-[16/6] w-full sm:aspect-[16/5]'>
+            {coverUrl ? (
+              <Image
+                className='h-full w-full rounded-md object-contain'
+                src={coverUrl}
+                fill
+                alt='profile cover image'
+              />
+            ) : (
+              <Skeleton className='h-full w-full rounded-md' />
+            )}
+          </div>
+
           <Button
             variant={'ghost'}
             size={'icon'}
@@ -77,28 +91,20 @@ export const Profile = ({
             <Pencil size={16} />
           </Button>
         </div>
-        <div className='-mt-5 space-y-5 px-5'>
-          <Avatar className={cn('aspect-square h-20 w-20', 'sm:h-28 sm:w-28')}>
-            <AvatarImage src={profile?.image || ''} />
-            <AvatarFallback>
-              <Image
-                className='object-cover'
-                src={'/profile.png'}
-                alt={'Profile image'}
-                fill
-              />
-              <Skeleton className='aspect-square' />
-            </AvatarFallback>
-          </Avatar>
+        <div className='-mt-2 space-y-5 px-5 sm:-mt-4'>
+          <div className='flex items-center gap-4 sm:gap-6'>
+            <AvatarWithMenu profile={profile} avatarUrl={avatarUrl} />
+            <DisplayName displayName={profile.displayName!} />
+          </div>
           <div className='flex flex-col gap-5'>
             <ProfileSection
-              title={'Education'}
+              title={tProfile('educations.title')}
               items={sortedEducations}
               formType='Education'
               renderItem={(edu) => <EducationSection education={edu} />}
             />
             <ProfileSection
-              title='Job Experience'
+              title={tProfile('jobExperiences.title')}
               items={jobExperiences}
               formType='Job'
               renderItem={(job) => <JobSection jobExperience={job} />}

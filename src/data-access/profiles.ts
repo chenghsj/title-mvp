@@ -37,3 +37,7 @@ export async function getProfile(userId: UserId) {
 
   return profile;
 }
+
+export async function updateDisplayName(userId: UserId, displayName: string) {
+  await updateProfile(userId, { displayName });
+}

@@ -2,11 +2,23 @@
 
 import { useMemo } from 'react';
 import { User } from 'lucia';
-import { CirclePlus, Video } from 'lucide-react';
+import { CirclePlus, FilePlus2, Video } from 'lucide-react';
 import { useIsClient } from 'usehooks-ts';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Resume as ResumeType, Video as VideoType } from '@/db/schema';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Education,
+  JobExperience,
+  Resume as ResumeType,
+  Video as VideoType,
+} from '@/db/schema';
 import { useDialogState } from '@/hooks/store';
 import { useDeviceDetect } from '@/hooks/use-device-detect';
 import { cn } from '@/lib/utils';
@@ -19,9 +31,17 @@ type Props = {
   user: User;
   resumes: ResumeType[];
   videos: VideoType[];
+  educations: Education[];
+  jobExperiences: JobExperience[];
 };
 
-export const Resume = ({ user, resumes, videos }: Props) => {
+export const Resume = ({
+  user,
+  resumes,
+  videos,
+  educations,
+  jobExperiences,
+}: Props) => {
   const isClient = useIsClient();
   const resumeDialog = useResumeDialog();
   const dialogState = useDialogState();
@@ -57,13 +77,34 @@ export const Resume = ({ user, resumes, videos }: Props) => {
           : 'h-full'
       )}
     >
+      <div className='col-span-full flex justify-between'>
+        <Select>
+          <SelectTrigger className='w-[180px]'>
+            <SelectValue placeholder='Sorted by' />
+          </SelectTrigger>
+          <SelectContent className=''>
+            <SelectItem value='light'>Light</SelectItem>
+            <SelectItem value='dark'>Dark</SelectItem>
+            <SelectItem value='system'>System</SelectItem>
+          </SelectContent>
+        </Select>
+        <Button
+          className='text-zinc-900 sm:hidden'
+          variant={'ghost'}
+          onClick={handleCreateClick}
+          size={'icon'}
+        >
+          <FilePlus2 />
+        </Button>
+      </div>
+
       {resumesWithVideos.length > 0 ? (
         <>
           {resumesWithVideos.map((resume) => (
             <ResumeCard key={resume.id} resume={resume} />
           ))}
           <Card
-            className='cursor-pointer select-none text-zinc-400'
+            className='hidden cursor-pointer select-none text-zinc-400 sm:block'
             onClick={handleCreateClick}
           >
             <Button variant={'ghost'} className='h-full w-full' asChild>
@@ -96,8 +137,10 @@ export const Resume = ({ user, resumes, videos }: Props) => {
               )[0]
             : undefined
         }
+        educations={educations}
+        jobExperiences={jobExperiences}
       />
-      <ConfirmDeleteDialog userId={user.id} />
+      <ConfirmDeleteDialog />
     </div>
   );
 };

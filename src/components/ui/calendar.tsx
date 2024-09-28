@@ -2,6 +2,8 @@
 
 import * as React from 'react';
 import { DayPicker, DropdownProps } from 'react-day-picker';
+import { useLocale } from 'next-intl';
+import { Locale, enUS, zhTW } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { buttonVariants } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -22,6 +24,12 @@ function Calendar({
   showOutsideDays = true,
   ...calendarProps
 }: CalendarProps) {
+  const locale = useLocale();
+  const locales: Record<string, Locale> = {
+    'en-US': enUS,
+    'zh-TW': zhTW,
+  };
+
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
@@ -31,7 +39,7 @@ function Calendar({
         month: 'space-y-4',
         caption: 'flex justify-center pt-1 relative items-center',
         caption_label: 'text-sm font-medium',
-        caption_dropdowns: 'flex justify-center gap-1',
+        caption_dropdowns: 'flex flex-row-reverse justify-center gap-1',
         nav: 'space-x-1 flex items-center',
         nav_button: cn(
           buttonVariants({ variant: 'outline' }),
@@ -59,6 +67,7 @@ function Calendar({
         day_hidden: 'invisible',
         ...classNames,
       }}
+      locale={locales[locale]}
       components={{
         Dropdown: ({ value, onChange, children, ...props }: DropdownProps) => {
           const options = React.Children.toArray(

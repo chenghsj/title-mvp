@@ -1,18 +1,11 @@
-import { useEffect } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslations } from 'next-intl';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { camelCase } from 'lodash';
 import { useServerAction } from 'zsa-react';
 import { FormDatePicker } from '@/components/form-date-picker';
-import { LoaderButton } from '@/components/loader-button';
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { ResponsiveDialog } from '@/components/responsive-dialog';
 import {
   Form,
   FormControl,
@@ -36,13 +29,25 @@ import { useDialogState } from '@/hooks/store';
 import { createEducationAction, updateEducationAction } from './actions';
 import { EducationFormSchema, EducationFormSchemaType } from './form-schema';
 import { useProfileDialog, useReturnByFormType } from './hooks';
-import { DegreeType, degrees } from './type';
+import { DegreeType, degrees } from './types';
 
 type Props = {
   education?: Education;
 };
 
 export const EducationDialog = ({ education }: Props) => {
+  const tResponsiveDialog = useTranslations('components.responsiveDialog');
+  const tProfileEducations = useTranslations('profile.educations');
+  const tProfileEducationsFormLabels = useTranslations(
+    'profile.educations.form.labels'
+  );
+  const tProfileEducationsFormPlaceholders = useTranslations(
+    'profile.educations.form.placeholders'
+  );
+  const tProfileEducationsDegrees = useTranslations(
+    'profile.educations.degrees'
+  );
+
   const { toast } = useToast();
   const dialogState = useDialogState();
   const profileDialog = useProfileDialog();
@@ -93,12 +98,131 @@ export const EducationDialog = ({ education }: Props) => {
   );
 
   const onSubmit = (values: EducationFormSchemaType) => {
+    console.log(values);
     if (dialogState.mode === 'Edit') {
       execute({ ...values, educationId: profileDialog.educationId! });
     } else {
       execute(values);
     }
   };
+
+  const formContent = (footer: ReactNode) => (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-3'>
+        <div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
+          <FormField
+            control={form.control}
+            name='degree'
+            render={({ field }) => (
+              <FormItem className='col-span-2 sm:col-span-1'>
+                <FormLabel>{tProfileEducationsFormLabels('degree')}</FormLabel>
+                <FormControl>
+                  <Select
+                    disabled={isPending}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className='w-full'>
+                      <SelectValue
+                        placeholder={tProfileEducationsFormPlaceholders(
+                          'degree'
+                        )}
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {degrees.map((degree) => (
+                        <SelectItem key={degree} value={degree}>
+                          {tProfileEducationsDegrees(
+                            camelCase(
+                              degree
+                            ) as keyof IntlMessages['profile']['educations']['degrees']
+                          )}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className='col-span-1 hidden sm:block' />
+          <FormField
+            control={form.control}
+            name='institution'
+            render={({ field }) => (
+              <FormItem className='col-span-2 sm:col-span-1'>
+                <FormLabel>{tProfileEducationsFormLabels('school')}</FormLabel>
+                <FormControl>
+                  <Input disabled={isPending} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='fieldOfStudy'
+            render={({ field }) => (
+              <FormItem className='col-span-2 sm:col-span-1'>
+                <FormLabel>
+                  {tProfileEducationsFormLabels('fieldOfStudy')}
+                </FormLabel>
+                <FormControl>
+                  <Input disabled={isPending} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormDatePicker
+            form={form}
+            label={tProfileEducationsFormLabels('startFrom')}
+            name='startDate'
+            formItemProps={{
+              className: 'col-span-2 sm:col-span-1',
+            }}
+            buttonProps={{
+              disabled: isPending,
+            }}
+          />
+          <FormDatePicker
+            form={form}
+            label={tProfileEducationsFormLabels('endAt')}
+            name='endDate'
+            formItemProps={{
+              className: 'col-span-2 sm:col-span-1',
+            }}
+            calendarProps={{
+              disabled: (date) =>
+                date > new Date() || date <= form.getValues('startDate'),
+            }}
+          />
+          <FormField
+            disabled={false}
+            control={form.control}
+            name='description'
+            render={({ field }) => (
+              <FormItem className='col-span-2 flex h-full flex-col'>
+                <FormLabel>
+                  {tProfileEducationsFormLabels('description')}
+                </FormLabel>
+                <FormControl>
+                  <Textarea
+                    disabled={isPending}
+                    className='flex-auto'
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        {footer}
+      </form>
+    </Form>
+  );
 
   useEffect(() => {
     if (dialogState.isOpen) {
@@ -109,140 +233,33 @@ export const EducationDialog = ({ education }: Props) => {
   if (shouldReturn) return null;
 
   return (
-    <Dialog open={dialogState.isOpen} onOpenChange={dialogState.setIsOpen}>
-      <DialogContent
-        className='w-[90%] max-w-[800px] rounded-lg'
-        onInteractOutside={(e) => {
-          e.preventDefault();
-        }}
-      >
-        <DialogHeader>
-          <DialogTitle>{dialogState.mode} Education</DialogTitle>
-        </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-5'>
-            <div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
-              <FormField
-                control={form.control}
-                name='degree'
-                render={({ field }) => (
-                  <FormItem className='col-span-2 sm:col-span-1'>
-                    <FormLabel>Degree</FormLabel>
-                    <FormControl>
-                      <Select
-                        disabled={isPending}
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <SelectTrigger className='w-full'>
-                          <SelectValue placeholder='Select a degree' />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {degrees.map((degree) => (
-                            <SelectItem key={degree} value={degree}>
-                              {degree}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className='col-span-1 hidden sm:block' />
-              <FormField
-                control={form.control}
-                name='institution'
-                render={({ field }) => (
-                  <FormItem className='col-span-2 sm:col-span-1'>
-                    <FormLabel>School</FormLabel>
-                    <FormControl>
-                      <Input disabled={isPending} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='fieldOfStudy'
-                render={({ field }) => (
-                  <FormItem className='col-span-2 sm:col-span-1'>
-                    <FormLabel>Department</FormLabel>
-                    <FormControl>
-                      <Input disabled={isPending} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormDatePicker
-                form={form}
-                label='Start From'
-                name='startDate'
-                formItemProps={{
-                  className: 'col-span-2 sm:col-span-1',
-                }}
-                buttonProps={{
-                  disabled: isPending,
-                }}
-              />
-              <FormDatePicker
-                form={form}
-                label='End At'
-                name='endDate'
-                formItemProps={{
-                  className: 'col-span-2 sm:col-span-1',
-                }}
-                buttonProps={{
-                  disabled: isPending || !form.getValues('startDate'),
-                }}
-                calendarProps={{
-                  disabled: (date) =>
-                    date > new Date() || date <= form.getValues('startDate'),
-                }}
-              />
-              <FormField
-                disabled={false}
-                control={form.control}
-                name='description'
-                render={({ field }) => (
-                  <FormItem className='col-span-2 flex h-full flex-col'>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        disabled={isPending}
-                        className='flex-auto'
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <DialogFooter className='gap-y-3'>
-              <DialogClose asChild>
-                <Button disabled={isPending} type='button' variant='secondary'>
-                  Close
-                </Button>
-              </DialogClose>
-              <LoaderButton
-                disabled={
-                  isPending ||
-                  (dialogState.mode === 'Edit' &&
-                    Object.keys(form.formState.dirtyFields).length === 0)
-                }
-                type='submit'
-                isLoading={isPending}
-              >
-                {dialogState.mode === 'Add' ? 'Add' : 'Save'}
-              </LoaderButton>
-            </DialogFooter>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+    <ResponsiveDialog
+      title={tProfileEducations('dialogTitle', {
+        mode:
+          dialogState.mode === 'Add'
+            ? tResponsiveDialog('buttons.add')
+            : tResponsiveDialog('buttons.edit'),
+        title: tProfileEducations('title'),
+      })}
+      content={formContent}
+      submitButton={{
+        title:
+          dialogState.mode === 'Add'
+            ? tResponsiveDialog('buttons.add')
+            : tResponsiveDialog('buttons.save'),
+        props: {
+          isLoading: isPending,
+          disabled:
+            isPending ||
+            (dialogState.mode === 'Edit' &&
+              Object.keys(form.formState.dirtyFields).length === 0),
+        },
+      }}
+      closeButton={{
+        props: {
+          disabled: isPending,
+        },
+      }}
+    />
   );
 };

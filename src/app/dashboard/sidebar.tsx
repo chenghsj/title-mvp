@@ -3,15 +3,12 @@
 import { HTMLAttributes } from 'react';
 import { Menu } from '@/components/menu/menu';
 import { useDashboardMenu } from '@/components/menu/store';
-import { Profile } from '@/db/schema';
 import { cn } from '@/lib/utils';
 import { SidebarToggle } from './sidebar-toggle';
 
-type Props = {
-  profile: Profile;
-} & HTMLAttributes<HTMLElement>;
+type Props = {} & HTMLAttributes<HTMLElement>;
 
-function Sidebar({ className, profile, ...props }: Props) {
+function Sidebar({ className, ...props }: Props) {
   const { isOpen } = useDashboardMenu();
 
   return (

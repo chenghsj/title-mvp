@@ -17,8 +17,9 @@ const BackButton = (props: Props) => {
         router.back();
       }}
       variant={'ghost'}
+      className='h-7 w-7'
     >
-      <ChevronLeft />
+      <ChevronLeft size={16} />
     </Button>
   );
 };

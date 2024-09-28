@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { LuMenu } from 'react-icons/lu';
+import { Menu as MenuIcon } from 'lucide-react';
 import { Menu } from '@/components/menu/menu';
 import { useNavMenu } from '@/components/menu/store';
 import { Button } from '@/components/ui/button';
@@ -25,14 +25,18 @@ export function Sidebar({ isMobile }: Props) {
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild className='md:hidden'>
         <Button
-          className='h-8 w-9 border-opacity-25 dark:border-zinc-600'
-          variant='outline'
+          className='h-8 w-9 dark:border-zinc-600'
+          variant='ghost'
           size={'icon'}
         >
-          <LuMenu size={20} />
+          <MenuIcon size={20} />
         </Button>
       </SheetTrigger>
-      <SheetContent className='w-64' side={'left'}>
+      <SheetContent
+        className='w-64'
+        side={'left'}
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <SheetHeader>
           <div className='relative flex h-7 w-full justify-center'>
             <div

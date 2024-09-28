@@ -1,13 +1,15 @@
 import * as React from 'react';
 import { cache } from 'react';
+import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { deviceDetect } from '@/lib/device-check';
 import { getCurrentUser } from '@/lib/session';
 import { cn } from '@/lib/utils';
-import { getUserProfileUseCase } from '@/use-cases/users';
+import { getDashboardProfileUseCase } from '@/use-cases/users';
 import { Sidebar } from '../sidebar';
-import { AvatarWithDropdown } from './avatar-with-dropdown';
+import { AvatarWithDropdownMenu } from './avatar-with-dropdown-menu';
+import LocaleSwitcher from './locale-switch';
 import { LogoLink } from './logo-link';
 import { Navigation } from './navigation';
 import { ThemeSwitch } from './theme-switch';
@@ -16,15 +18,20 @@ type Props = {
   children?: React.ReactNode;
 };
 
-const profilerLoader = cache(getUserProfileUseCase);
+const profilerLoader = cache(getDashboardProfileUseCase);
 
 export async function Navbar({ children }: Props) {
+  const t = await getTranslations('navbar');
   const user = await getCurrentUser();
   const { isMobile } = deviceDetect();
-  let profile = undefined;
+  let profile = null;
+  let avatarUrl = null;
 
   if (user) {
-    profile = await profilerLoader(user.id);
+    const { profile: fetchedProfile, avatarUrl: fetchedAvatarUrl } =
+      await profilerLoader(user.id);
+    profile = fetchedProfile;
+    avatarUrl = fetchedAvatarUrl;
   }
 
   return (
@@ -50,9 +57,12 @@ export async function Navbar({ children }: Props) {
       <div className='flex'>
         <Navigation />
         <div className='ml-4 flex items-center gap-2 md:gap-3'>
-          <ThemeSwitch />
+          <div>
+            <ThemeSwitch />
+            <LocaleSwitcher />
+          </div>
           {user ? (
-            <AvatarWithDropdown profile={profile} />
+            <AvatarWithDropdownMenu profile={profile!} avatarUrl={avatarUrl} />
           ) : (
             <>
               <Button
@@ -60,13 +70,13 @@ export async function Navbar({ children }: Props) {
                 variant='outline'
                 asChild
               >
-                <Link href={'/sign-up'}>Sign Up</Link>
+                <Link href={'/sign-up'}>{t('buttons.sign-up')}</Link>
               </Button>
               <Button
                 className={cn('text-xs md:text-sm', isMobile ? 'h-8' : 'h-9')}
                 asChild
               >
-                <Link href={'/sign-in'}>Login</Link>
+                <Link href={'/sign-in'}>{t('buttons.sign-in')}</Link>
               </Button>
             </>
           )}

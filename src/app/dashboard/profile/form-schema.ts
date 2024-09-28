@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { degrees, employmentTypes } from './type';
+import {
+  MAX_UPLOAD_IMAGE_SIZE,
+  MAX_UPLOAD_IMAGE_SIZE_IN_MB,
+} from '@/config/app';
+import { degrees, employmentTypes } from './types';
 
 export const EducationFormSchema = z
   .object({
@@ -8,8 +12,8 @@ export const EducationFormSchema = z
     }),
     institution: z.string().min(1, 'Required'),
     fieldOfStudy: z.string().min(1, 'Required'),
-    startDate: z.date(),
-    endDate: z.date().optional(),
+    startDate: z.date({ invalid_type_error: 'Invalid date' }),
+    endDate: z.date().nullish().optional(),
     description: z.string().max(500).optional(),
     educationId: z.number().optional(),
   })
@@ -33,10 +37,9 @@ export const JobExperienceFormSchema = z
     employmentType: z.enum(employmentTypes, {
       message: 'Required',
     }),
-    skill: z.array(z.string()).optional(),
     description: z.string().max(500).optional(),
     startDate: z.date(),
-    endDate: z.date().optional(),
+    endDate: z.date().nullish().optional(),
     jobExperienceId: z.number().optional(),
   })
   .refine(
@@ -52,7 +55,28 @@ export const JobExperienceFormSchema = z
     }
   );
 
+export const DisplayNameSchema = z.object({
+  displayName: z.string().min(1, 'Required').max(50),
+});
+
+export const UpdateProfileImageFormSchema = z.object({
+  files: z
+    .array(
+      z.instanceof(File).refine((file) => file.size < MAX_UPLOAD_IMAGE_SIZE, {
+        message: `File size must be less than ${MAX_UPLOAD_IMAGE_SIZE_IN_MB}MB`,
+      })
+    )
+    .max(1, {
+      message: 'Maximum 1 file is allowed',
+    })
+    .nullable(),
+});
+
 export type EducationFormSchemaType = z.infer<typeof EducationFormSchema>;
 export type JobExperienceFormSchemaType = z.infer<
   typeof JobExperienceFormSchema
+>;
+export type DisplayNameSchemaType = z.infer<typeof DisplayNameSchema>;
+export type UpdateProfileImageFormSchemaType = z.infer<
+  typeof UpdateProfileImageFormSchema
 >;

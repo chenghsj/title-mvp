@@ -1,0 +1,158 @@
+{
+  "not-found": {
+    "title": "404 Not Found",
+    "description": "您要查找的頁面不存在。",
+    "buttons": {
+      "back-to-home": "返回首頁"
+    }
+  },
+  "components": {
+    "responsiveDropdownMenu": {
+      "buttons": {
+        "edit": "編輯",
+        "delete": "刪除",
+        "upload": "上傳",
+        "remove": "移除",
+        "cancel": "取消"
+      }
+    },
+    "responsiveDialog": {
+      "buttons": {
+        "add": "新增",
+        "edit": "編輯",
+        "save": "儲存",
+        "create": "新增",
+        "update": "更新",
+        "cancel": "取消"
+      }
+    }
+  },
+  "LandingPage": {
+    "title": "發掘影音履歷的力量",
+    "description": "透過動態影音履歷展示您的技能和個性，脫穎而出。",
+    "buttons": {
+      "explore": "探索",
+      "sign-up": "註冊"
+    }
+  },
+  "navbar": {
+    "buttons": {
+      "sign-in": "登入",
+      "sign-up": "註冊",
+      "sign-out": "登出"
+    },
+    "theme": {
+      "light": "明亮",
+      "dark": "黑暗",
+      "system": "系統"
+    },
+    "language": {
+      "en-US": "English",
+      "zh-TW": "繁體中文"
+    },
+    "navMenuList": {
+      "about-us": "關於我們",
+      "services": "服務",
+      "contact": "聯絡方式"
+    },
+    "dashboardMenuList": {
+      "profile": "個人檔案",
+      "resume": "履歷",
+      "settings": {
+        "title": "設定",
+        "submenus": {
+          "account": "帳戶",
+          "notifications": "通知",
+          "security": "安全"
+        }
+      }
+    }
+  },
+  "profile": {
+    "image": {
+      "type": {
+        "avatar": "頭像",
+        "cover": "封面"
+      },
+      "title": "圖片",
+      "dialogTitle": "{mode} {type}{title}",
+      "uploadMessage": "點擊或拖放圖片到此處",
+      "buttons": {
+        "upload": "上傳",
+        "remove": "移除",
+        "cancel": "取消"
+      }
+    },
+    "displayName": {
+      "buttons": {
+        "save": "儲存",
+        "cancel": "取消"
+      }
+    },
+    "educations": {
+      "title": "學歷",
+      "dialogTitle": "{mode} {title}",
+      "degrees": {
+        "highSchool": "高中",
+        "bachelor": "學士",
+        "master": "碩士",
+        "phD": "博士"
+      },
+      "form": {
+        "labels": {
+          "school": "學校",
+          "degree": "學位",
+          "fieldOfStudy": "科系",
+          "startFrom": "開始日期",
+          "endAt": "結束日期",
+          "description": "描述"
+        },
+        "placeholders": {
+          "degree": "選擇學位"
+        }
+      }
+    },
+    "jobExperiences": {
+      "title": "工作經驗",
+      "dialogTitle": "{mode} {title}",
+      "employmentTypes": {
+        "fullTime": "全職",
+        "partTime": "兼職",
+        "internship": "實習",
+        "contract": "合約",
+        "freelance": "自由職業"
+      },
+      "form": {
+        "labels": {
+          "title": "職稱",
+          "company": "公司",
+          "employmentType": "僱用類型",
+          "startFrom": "開始日期",
+          "endAt": "結束日期",
+          "description": "描述"
+        },
+        "placeholders": {
+          "employmentType": "選擇僱用類型"
+        }
+      }
+    }
+  },
+  "resume": {
+    "form": {
+      "labels": {
+        "education": "學歷",
+        "jobExperience": "工作經驗",
+        "title": "標題",
+        "url": "影片網址",
+        "description": "描述"
+      },
+      "placeholders": {
+        "education": "選擇顯示的學歷",
+        "jobExperience": "選擇顯示的工作經驗"
+      },
+      "selectItem": {
+        "hide": "隱藏"
+      }
+    }
+  }
+}

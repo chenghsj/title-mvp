@@ -44,7 +44,6 @@ export function InputOTPDialog({}: Props) {
   );
 
   const handleOTPComplete = (otp: string) => {
-    console.log({ email, otp });
     execute({ email, OTP: otp });
   };
 
@@ -59,9 +58,7 @@ export function InputOTPDialog({}: Props) {
       <DialogContent
         className='w-fit justify-start rounded-md py-8 sm:p-10'
         onInteractOutside={(e) => {
-          if (isPending) {
-            e.preventDefault();
-          }
+          e.preventDefault();
         }}
         hideCloseButton={isPending}
       >

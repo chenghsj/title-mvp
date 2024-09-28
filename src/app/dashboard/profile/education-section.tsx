@@ -1,4 +1,6 @@
 import React from 'react';
+import { useTranslations } from 'next-intl';
+import { camelCase } from 'lodash';
 import { GraduationCap } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Education } from '@/db/schema';
@@ -8,12 +10,18 @@ type Props = {
 };
 
 export const EducationSection = ({ education }: Props) => {
+  const tDegrees = useTranslations('profile.educations.degrees');
+
   return (
     <div className='relative flex w-full flex-col gap-2'>
       <div className='text-sm font-bold'>
         <div className='flex items-center gap-2'>
           <GraduationCap size={18} />
-          {education.degree}
+          {tDegrees(
+            camelCase(
+              education.degree?.toLowerCase()
+            ) as keyof IntlMessages['profile']['educations']['degrees']
+          )}
         </div>
       </div>
       <div className='flex flex-col gap-1'>
@@ -26,7 +34,6 @@ export const EducationSection = ({ education }: Props) => {
           {education.startDate} - {education.endDate || 'Present'}
         </div>
       </div>
-
       {education.description && (
         <div className='mt-2 w-full rounded-md p-2 text-sm outline-dashed outline-2 outline-zinc-200 dark:outline-zinc-800'>
           {education.description.split('\n').map((line, index) => (

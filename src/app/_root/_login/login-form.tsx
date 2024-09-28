@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2Icon, Send } from 'lucide-react';
@@ -34,6 +34,7 @@ type Props = {
 };
 
 function LoginForm({ isMail, isSignUp }: Props) {
+  const isSignUpRef = useRef(isSignUp);
   const { toast } = useToast();
   const { isMobile } = useDeviceDetect();
   const { setIsOpen: setDialogOpen, setEmail: setDialogEmail } =
@@ -61,7 +62,7 @@ function LoginForm({ isMail, isSignUp }: Props) {
         });
       },
       onSuccess() {
-        if (isSignUp) {
+        if (isSignUpRef.current) {
           setDialogOpen(true);
           toast({
             title: 'Email sent successfully!',
@@ -118,6 +119,10 @@ function LoginForm({ isMail, isSignUp }: Props) {
   useEffect(() => {
     form.setValue('role', role);
   }, [role]);
+
+  useEffect(() => {
+    isSignUpRef.current = isSignUp;
+  }, [isSignUp]);
 
   return (
     <Form {...form}>

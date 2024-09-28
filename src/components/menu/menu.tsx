@@ -2,8 +2,8 @@
 
 import { FaEllipsis } from 'react-icons/fa6';
 import { LuLogOut } from 'react-icons/lu';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
@@ -12,18 +12,16 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { getDashboardMenuList, getNavMenuList } from '@/config/menu-list';
 import { useLogout } from '@/hooks/use-log-out';
 import { cn } from '@/lib/utils';
 import { CollapseMenuButton } from './collapse-menu-button';
-import { useMenu } from './hooks';
+import { useLocalMenuListByType, useMenu } from './hooks';
 import { MenuProps } from './types';
 
 export function Menu({ type }: MenuProps) {
-  const pathname = usePathname();
+  const tNavbarButtons = useTranslations('navbar.buttons');
+  const menuList = useLocalMenuListByType(type);
   const { handleLogout } = useLogout();
-  const menuList =
-    type === 'nav' ? getNavMenuList(pathname) : getDashboardMenuList(pathname);
   const { isOpen, setIsOpen } = useMenu(type);
 
   const handleItemClick = () => {
@@ -142,12 +140,14 @@ export function Menu({ type }: MenuProps) {
                           isOpen === false ? 'hidden opacity-0' : 'opacity-100'
                         )}
                       >
-                        Sign out
+                        {tNavbarButtons('sign-out')}
                       </p>
                     </Button>
                   </TooltipTrigger>
                   {isOpen === false && (
-                    <TooltipContent side='right'>Sign out</TooltipContent>
+                    <TooltipContent side='right'>
+                      {tNavbarButtons('sign-out')}
+                    </TooltipContent>
                   )}
                 </Tooltip>
               </TooltipProvider>

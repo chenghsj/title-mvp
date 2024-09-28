@@ -1,14 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { MouseEvent, useEffect, useState } from 'react';
 import { create } from 'zustand';
 import { Education, JobExperience } from '@/db/schema';
-import { useDialogState } from '@/hooks/store';
+import { ModeType, useDialogState } from '@/hooks/store';
 
 const ProfileType = {
   Education: 'Education',
   Job: 'Job',
   Cover: 'Cover',
+  Avatar: 'Avatar',
 } as const;
 
 export type FormType = keyof typeof ProfileType;
@@ -60,4 +61,33 @@ export const useReturnByFormType = (formType: FormType) => {
   }, [profileDialog.type, dialogState.mode]);
 
   return { shouldReturn };
+};
+
+type ButtonClickHandler = (
+  mode: ModeType,
+  formType: FormType,
+  id?: number
+) => (e: MouseEvent<HTMLButtonElement | HTMLDivElement>) => void;
+
+export const useCreateHandleMenuButtonClick = () => {
+  const dialogState = useDialogState();
+  const profileDialog = useProfileDialog();
+
+  const handleMenuButtonClick: ButtonClickHandler =
+    (mode, formType, id) => (e) => {
+      if (mode === 'Edit' || mode === 'Delete') {
+        if (formType === 'Education') {
+          profileDialog.setEducationId(id!);
+        } else if (formType === 'Job') {
+          profileDialog.setJobId(id!);
+        } else if (formType === 'Cover') {
+          profileDialog.setCoverId(id!);
+        }
+      }
+      dialogState.setIsOpen(true);
+      dialogState.setMode(mode);
+      profileDialog.setType(formType);
+    };
+
+  return { handleMenuButtonClick };
 };

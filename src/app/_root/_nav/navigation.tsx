@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useLocalMenuListByType } from '@/components/menu/hooks';
 import { Button } from '@/components/ui/button';
 import {
   NavigationMenu,
@@ -11,17 +11,16 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
-import { getNavMenuList } from '@/config/menu-list';
 
 type Props = {};
 
 export function Navigation({}: Props) {
-  const pathname = usePathname();
-  const menuList = getNavMenuList(pathname);
+  const navMenuList = useLocalMenuListByType('nav');
+
   return (
     <NavigationMenu className='hidden font-roboto md:flex'>
       <NavigationMenuList>
-        {menuList.map(({ menus }, index) => (
+        {navMenuList.map(({ menus }, index) => (
           <React.Fragment key={index}>
             {menus.map((menu, index) =>
               menu.submenus.length > 0 ? (

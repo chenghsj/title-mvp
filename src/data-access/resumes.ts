@@ -7,6 +7,8 @@ export async function createResume(
   userId: UserId,
   title: string,
   bio?: string,
+  educationId?: number | null,
+  jobExperienceId?: number | null,
   trx = db
 ) {
   const [resume] = await trx
@@ -15,6 +17,8 @@ export async function createResume(
       userId,
       bio,
       title,
+      educationId,
+      jobExperienceId,
     })
     .onConflictDoNothing()
     .returning();

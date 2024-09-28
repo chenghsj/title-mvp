@@ -5,7 +5,6 @@ import { UserId } from '@/use-cases/types';
 import { getAccountByUserId, hashPassword } from './accounts';
 
 export async function deleteUser(userId: UserId) {
-  console.log('clicked');
   await db.delete(users).where(eq(users.id, userId));
 }
 
@@ -23,6 +22,14 @@ export async function createUser(email: string, emailVerified?: Date) {
 export async function getUserByEmail(email: string) {
   const user = await db.query.users.findFirst({
     where: eq(users.email, email),
+  });
+
+  return user;
+}
+
+export async function getUserById(userId: UserId) {
+  const user = await db.query.users.findFirst({
+    where: eq(users.id, userId),
   });
 
   return user;

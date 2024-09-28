@@ -18,7 +18,7 @@ type Props = {
   video: Video;
 };
 
-export const ResumeTab = ({ video }: Props) => {
+export const SingleResume = ({ video }: Props) => {
   const [randomItem, setRandomItem] = useState<Review | null>(null);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
   const playerRef = useRef<ReactPlayer>(null);
@@ -63,7 +63,7 @@ export const ResumeTab = ({ video }: Props) => {
     <Tabs defaultValue='video' className='w-full max-w-[640px]'>
       <TabsList>
         <TabsTrigger value='video'>Video</TabsTrigger>
-        <TabsTrigger value='review'>Review</TabsTrigger>
+        <TabsTrigger value='review'>Review✨</TabsTrigger>
       </TabsList>
       <TabsContent value='video'>
         <div className='relative aspect-video w-full overflow-hidden rounded-lg'>
@@ -73,6 +73,7 @@ export const ResumeTab = ({ video }: Props) => {
               width={'100%'}
               height={'100%'}
               url={video?.url}
+              fallback={<Skeleton className='aspect-video' />}
             />
           ) : (
             <Skeleton className='absolute h-full w-full' />

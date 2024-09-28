@@ -1,20 +1,38 @@
-import { animals, colors, uniqueNamesGenerator } from 'unique-names-generator';
 import { Role } from '@/app/_root/types';
 import { GoogleUser } from '@/app/api/login/google/callback/route';
+import {
+  EducationFormSchemaType,
+  JobExperienceFormSchemaType,
+} from '@/app/dashboard/profile/form-schema';
+import { ProfileImage } from '@/app/dashboard/profile/types';
 import {
   MAX_UPLOAD_IMAGE_SIZE,
   MAX_UPLOAD_IMAGE_SIZE_IN_MB,
 } from '@/config/app';
 import { createAccount, createAccountViaGoogle } from '@/data-access/accounts';
 import {
+  createEducation,
+  deleteEducation,
+  getEducation,
+  updateEducation,
+} from '@/data-access/educations';
+import {
+  createJobExperience,
+  deleteJobExperience,
+  getJobExperience,
+  updateJobExperience,
+} from '@/data-access/job-experiences';
+import {
   createProfile,
   getProfile,
   updateProfile,
 } from '@/data-access/profiles';
+import { getResume } from '@/data-access/resumes';
 import {
   createUser,
   deleteUser,
   getUserByEmail,
+  getUserById,
   updateUser,
   verifyPassword,
 } from '@/data-access/users';
@@ -22,8 +40,15 @@ import {
   deleteVerifyEmailOTP,
   verifyEmailOTP,
 } from '@/data-access/verify-email';
-import { getFileUrl, uploadFileToBucket } from '@/lib/files';
-import { createUUID } from '@/utils/uuid';
+import { getVideo } from '@/data-access/videos';
+import {
+  deleteDirectoryFromBucket,
+  deleteFileFromBucket,
+  getFileUrl,
+  uploadFileToBucket,
+} from '@/lib/files';
+import { assertAuthenticated } from '@/lib/session';
+import { createUUID } from '@/lib/uuid';
 import { sendEmailOTPUseCase } from './email-otp';
 import {
   EmailVerificationError,
@@ -41,6 +66,7 @@ export async function deleteUserUseCase(
     throw new PublicError('You can only delete your own account');
   }
 
+  await deleteProfileImagesUseCase(userToDeleteId);
   await deleteUser(userToDeleteId);
 }
 
@@ -77,12 +103,12 @@ export async function registerUserUseCase(
     user = await createUser(email);
     await createAccount(user.id, password, role);
 
-    const displayName = uniqueNamesGenerator({
-      dictionaries: [colors, animals],
-      separator: ' ',
-      style: 'capital',
-    });
-    await createProfile(user.id, displayName);
+    // const displayName = uniqueNamesGenerator({
+    //   dictionaries: [colors, animals],
+    //   separator: ' ',
+    //   style: 'capital',
+    // });
+    await createProfile(user.id, email);
   }
 
   await sendEmailOTPUseCase(user!.id, email);
@@ -110,6 +136,13 @@ export async function signInUseCase(email: string, password: string) {
   return user;
 }
 
+export async function getUserUseCase() {
+  const user = await assertAuthenticated();
+  const userById = await getUserById(user.id);
+
+  return userById;
+}
+
 export async function getUserProfileUseCase(userId: UserId) {
   const profile = await getProfile(userId);
 
@@ -118,6 +151,35 @@ export async function getUserProfileUseCase(userId: UserId) {
   }
 
   return profile;
+}
+
+export async function getDashboardProfileUseCase(userId: UserId) {
+  const profile = await getProfile(userId);
+
+  if (!profile) {
+    throw new NotFoundError();
+  }
+
+  const educations = await getEducation(userId);
+  const jobExperiences = await getJobExperience(userId);
+  const avatarUrl = profile?.imageId
+    ? getProfileImageUrl(userId, profile.imageId)
+    : null;
+  const coverUrl = profile?.coverId
+    ? getProfileImageUrl(userId, profile.coverId)
+    : null;
+  const resumes = await getResume(userId);
+  const videos = await getVideo(userId);
+
+  return {
+    profile,
+    educations,
+    jobExperiences,
+    avatarUrl,
+    coverUrl,
+    resumes,
+    videos,
+  };
 }
 
 export async function verifyEmailOTPUseCase(email: string, OTP: string) {
@@ -134,13 +196,95 @@ export async function verifyEmailOTPUseCase(email: string, OTP: string) {
 }
 
 /**
+ * Profile
+ */
+export async function createEducationUseCase(
+  userId: UserId,
+  input: EducationFormSchemaType
+) {
+  await createEducation({
+    ...input,
+    userId,
+    description: input.description ?? null,
+    startDate: input.startDate.toLocaleDateString(),
+    endDate: input.endDate?.toLocaleDateString() ?? null,
+  });
+}
+
+export async function updateEducationUseCase(
+  userId: UserId,
+  educationId: number,
+  input: EducationFormSchemaType
+) {
+  await updateEducation(userId, educationId, {
+    ...input,
+    startDate: input.startDate.toLocaleDateString(),
+    endDate: input.endDate?.toLocaleDateString() ?? null,
+  });
+}
+
+export async function deleteEducationUseCase(
+  userId: UserId,
+  educationId: number
+) {
+  await deleteEducation(userId, educationId);
+}
+
+export async function createJobExperienceUseCase(
+  userId: UserId,
+  input: JobExperienceFormSchemaType
+) {
+  await createJobExperience({
+    ...input,
+    userId,
+    description: input.description ?? null,
+    startDate: input.startDate.toLocaleDateString(),
+    endDate: input.endDate?.toLocaleDateString() ?? null,
+  });
+}
+
+export async function updateJobExperienceUseCase(
+  userId: UserId,
+  jobExperienceId: number,
+  input: JobExperienceFormSchemaType
+) {
+  await updateJobExperience(userId, jobExperienceId, {
+    ...input,
+    startDate: input.startDate.toLocaleDateString(),
+    endDate: input.endDate?.toLocaleDateString() ?? null,
+  });
+}
+
+export async function deleteJobExperienceUseCase(
+  userId: UserId,
+  jobExperienceId: number
+) {
+  await deleteJobExperience(userId, jobExperienceId);
+}
+
+export async function updateDisplayNameUseCase(
+  userId: UserId,
+  displayName: string
+) {
+  await updateProfile(userId, { displayName });
+}
+
+/**
  * IMAGE UPLOAD
  */
 export function getProfileImageKey(userId: UserId, imageId: string) {
   return `users/${userId}/images/${imageId}`;
 }
 
-export async function updateProfileImageUseCase(file: File, userId: UserId) {
+export function getProfileCoverKey(userId: UserId, coverId: string) {
+  return `users/${userId}/images/${coverId}`;
+}
+
+export async function updateProfileImageUseCase(
+  file: File,
+  userId: UserId,
+  type: ProfileImage
+) {
   if (!file.type.startsWith('image/')) {
     throw new PublicError('File should be an image.');
   }
@@ -153,12 +297,47 @@ export async function updateProfileImageUseCase(file: File, userId: UserId) {
 
   const imageId = createUUID();
 
+  const oldImageId = (await getProfile(userId))?.[
+    type === 'avatar' ? 'imageId' : 'coverId'
+  ];
+
+  if (oldImageId) {
+    await deleteFileFromBucket(getProfileImageKey(userId, oldImageId));
+  }
+
   await uploadFileToBucket(file, getProfileImageKey(userId, imageId));
-  await updateProfile(userId, { imageId });
+  await updateProfile(
+    userId,
+    type === 'avatar' ? { imageId: imageId } : { coverId: imageId }
+  );
+}
+
+export async function deleteProfileImageUseCase(
+  userId: UserId,
+  type: ProfileImage
+) {
+  const imageId = (await getProfile(userId))?.[
+    type === 'avatar' ? 'imageId' : 'coverId'
+  ];
+  if (imageId) {
+    await deleteFileFromBucket(getProfileImageKey(userId, imageId));
+  }
+  await updateProfile(
+    userId,
+    type === 'avatar' ? { imageId: null } : { coverId: null }
+  );
+}
+
+export async function deleteProfileImagesUseCase(userId: UserId) {
+  const profile = await getProfile(userId);
+
+  if (profile) {
+    await deleteDirectoryFromBucket(`users/${userId}`);
+  }
 }
 
 export function getProfileImageUrl(userId: UserId, imageId: string) {
-  return `${process.env.HOST_NAME}/api/users/${userId}/images/${imageId ?? 'default'}`;
+  return `${process.env.HOST_NAME}/api/users/${userId}/images/${imageId}`;
 }
 
 export function getDefaultImage(userId: UserId) {

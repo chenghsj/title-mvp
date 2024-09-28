@@ -13,11 +13,20 @@ export const createResumeUseCase = async ({
   title,
   bio,
   url,
+  educationId,
+  jobExperienceId,
 }: {
   userId: UserId;
 } & ResumeFormSchemaType) => {
   await createTransaction(async (trx) => {
-    const resume = await createResume(userId, title, bio, trx);
+    const resume = await createResume(
+      userId,
+      title,
+      bio,
+      educationId,
+      jobExperienceId,
+      trx
+    );
     const video = await createVideo(userId, resume.id, url, trx);
   });
 };

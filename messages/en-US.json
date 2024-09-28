@@ -1,0 +1,158 @@
+{
+  "not-found": {
+    "title": "404 Not Found",
+    "description": "The page you are looking for does not exist.",
+    "buttons": {
+      "back-to-home": "Back to Home"
+    }
+  },
+  "components": {
+    "responsiveDropdownMenu": {
+      "buttons": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "upload": "Upload",
+        "remove": "Remove",
+        "cancel": "Cancel"
+      }
+    },
+    "responsiveDialog": {
+      "buttons": {
+        "add": "Add",
+        "edit": "Edit",
+        "save": "Save",
+        "create": "Create",
+        "update": "Update",
+        "cancel": "Cancel"
+      }
+    }
+  },
+  "LandingPage": {
+    "title": "Discover the power of video resumes",
+    "description": "Stand out from the crowd with a dynamic video resume that showcases your skills and personality.",
+    "buttons": {
+      "explore": "Explore",
+      "sign-up": "Sign Up"
+    }
+  },
+  "navbar": {
+    "buttons": {
+      "sign-in": "Sign In",
+      "sign-up": "Sign Up",
+      "sign-out": "Sign Out"
+    },
+    "theme": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "language": {
+      "en-US": "English",
+      "zh-TW": "繁體中文"
+    },
+    "navMenuList": {
+      "about-us": "About us",
+      "services": "Services",
+      "contact": "Contact"
+    },
+    "dashboardMenuList": {
+      "profile": "Profile",
+      "resume": "Resume",
+      "settings": {
+        "title": "Settings",
+        "submenus": {
+          "account": "Account",
+          "notifications": "Notifications",
+          "security": "Security"
+        }
+      }
+    }
+  },
+  "profile": {
+    "image": {
+      "type": {
+        "avatar": "Avatar",
+        "cover": "Cover"
+      },
+      "title": "Image",
+      "dialogTitle": "{mode} {type} {title}",
+      "uploadMessage": "Drag and drop an image here or click to upload.",
+      "buttons": {
+        "upload": "Upload",
+        "remove": "Remove",
+        "cancel": "Cancel"
+      }
+    },
+    "displayName": {
+      "buttons": {
+        "save": "Save",
+        "cancel": "Cancel"
+      }
+    },
+    "educations": {
+      "title": "Education",
+      "dialogTitle": "{mode} {title}",
+      "degrees": {
+        "highSchool": "High School",
+        "bachelor": "Bachelor",
+        "master": "Master",
+        "phD": "PhD"
+      },
+      "form": {
+        "labels": {
+          "degree": "Degree",
+          "school": "School",
+          "fieldOfStudy": "Department",
+          "startFrom": "Start From",
+          "endAt": "End At",
+          "description": "Description"
+        },
+        "placeholders": {
+          "degree": "Select a degree"
+        }
+      }
+    },
+    "jobExperiences": {
+      "title": "Job Experience",
+      "dialogTitle": "{mode} {title}",
+      "employmentTypes": {
+        "fullTime": "Full-time",
+        "partTime": "Part-time",
+        "internship": "Internship",
+        "contract": "Contract",
+        "freelance": "Freelance"
+      },
+      "form": {
+        "labels": {
+          "title": "Title",
+          "company": "Company",
+          "employmentType": "Employment Type",
+          "startFrom": "Start From",
+          "endAt": "End At",
+          "description": "Description"
+        },
+        "placeholders": {
+          "employmentType": "Select an employment type"
+        }
+      }
+    }
+  },
+  "resume": {
+    "form": {
+      "labels": {
+        "education": "Education",
+        "jobExperience": "Job Experience",
+        "title": "Title",
+        "url": "URL",
+        "description": "Description"
+      },
+      "placeholders": {
+        "education": "Select a diaplayed education",
+        "jobExperience": "Select a displayed job experience"
+      },
+      "selectItem": {
+        "hide": "Hide"
+      }
+    }
+  }
+}

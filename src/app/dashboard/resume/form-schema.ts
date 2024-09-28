@@ -8,7 +8,10 @@ export const ResumeFormSchema = z.object({
     .number()
     .max(120, 'The duration must be less than 120 seconds')
     .optional(),
+  tag: z.string().array().optional(),
   resumeId: z.number().optional(),
+  educationId: z.number().nullable(),
+  jobExperienceId: z.number().nullable(),
 });
 
 export type ResumeFormSchemaType = z.infer<typeof ResumeFormSchema>;

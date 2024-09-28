@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { SectionExcludeNav } from '@/components/section-exclude-nav';
 import { getCurrentUser } from '@/lib/session';
 import { DualDirectionCarousel } from './_root/carousel';
-import { MainHomePage, RestHomePage } from './_root/home';
+import { MainHomePage } from './_root/home';
 
 export default async function Home() {
   const user = await getCurrentUser();
@@ -17,7 +17,7 @@ export default async function Home() {
         <MainHomePage />
         <DualDirectionCarousel />
       </SectionExcludeNav>
-      <RestHomePage />
+      {/* <RestHomePage /> */}
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { Loader2Icon } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { Button, ButtonProps } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -15,7 +15,7 @@ export function LoaderButton({
       {...props}
       className={cn('flex min-w-[70px] justify-center gap-2', className)}
     >
-      {isLoading && <Loader2Icon className='h-4 w-4 animate-spin' />}
+      {isLoading && <Loader2 className='h-4 w-4 animate-spin' />}
       {children}
     </Button>
   );

@@ -1,4 +1,4 @@
-import { LuChevronLeft } from 'react-icons/lu';
+import { PanelLeft } from 'lucide-react';
 import { useDashboardMenu } from '@/components/menu/store';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -11,19 +11,18 @@ export function SidebarToggle({}: SidebarToggleProps) {
   return (
     <div
       className={cn(
-        'invisible absolute z-20 flex w-full justify-center px-2 lg:visible'
+        'invisible absolute z-20 flex w-full justify-start px-2 lg:visible'
       )}
     >
       <Button
         onClick={setIsOpen}
-        className='h-10 w-full rounded-md'
+        className='h-10 rounded-md'
         variant='ghost'
         size='icon'
       >
-        <LuChevronLeft
+        <PanelLeft
           className={cn(
-            'h-4 w-4 transition-transform duration-300 ease-in-out',
-            isOpen === false ? 'rotate-180' : 'rotate-0'
+            'h-5 w-5 transition-transform duration-300 ease-in-out'
           )}
         />
       </Button>

@@ -1,18 +1,13 @@
+'use client';
+
 import { useEffect, useRef } from 'react';
-import { useForm } from 'react-hook-form';
+import { useController, useForm } from 'react-hook-form';
 import ReactPlayer from 'react-player';
+import { useTranslations } from 'next-intl';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { camelCase } from 'lodash';
 import { useServerAction } from 'zsa-react';
-import { LoaderButton } from '@/components/loader-button';
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { ResponsiveDialog } from '@/components/responsive-dialog';
 import {
   Form,
   FormControl,
@@ -22,20 +17,37 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
-import { Resume, Video } from '@/db/schema';
+import { Education, JobExperience, Resume, Video } from '@/db/schema';
 import { useDialogState } from '@/hooks/store';
+import { FormType } from '../profile/hooks';
 import { createResumeAction, updateResumeAction } from './actions';
 import { ResumeFormSchema, ResumeFormSchemaType } from './form-schema';
 import { useResumeDialog } from './hooks';
 
 type Props = {
   resume?: Resume & { video?: Video };
+  educations: Education[];
+  jobExperiences: JobExperience[];
 };
 
-export const ResumeDialog = ({ resume }: Props) => {
+export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
+  const tResumeFormLabels = useTranslations('resume.form.labels');
+  const tResumeFormPlaceholders = useTranslations('resume.form.placeholders');
+  const tResumeFormSelectItem = useTranslations('resume.form.selectItem');
+  const tProfileEducationsDegrees = useTranslations(
+    'profile.educations.degrees'
+  );
+
   const { toast } = useToast();
   const { resumeId } = useResumeDialog();
   const dialogState = useDialogState();
@@ -49,11 +61,15 @@ export const ResumeDialog = ({ resume }: Props) => {
       bio: '',
       url: '',
       duration: 0,
+      educationId: -1,
+      jobExperienceId: -1,
     },
     values: {
       url: resume?.video?.url || '',
       title: resume?.title || '',
       bio: resume?.bio || '',
+      educationId: resume?.educationId || null,
+      jobExperienceId: resume?.jobExperienceId || null,
     },
   });
 
@@ -80,7 +96,23 @@ export const ResumeDialog = ({ resume }: Props) => {
     }
   );
 
+  const { field: educationField } = useController({
+    name: 'educationId',
+    control: form.control,
+  });
+  const { field: jobExperiencField } = useController({
+    name: 'jobExperienceId',
+    control: form.control,
+  });
+
+  const handleSelectChange = (type: FormType) => (value: string) => {
+    (type === 'Education' ? educationField : jobExperiencField).onChange(
+      +value < 0 ? null : +value
+    );
+  };
+
   const onSubmit = (values: ResumeFormSchemaType) => {
+    console.log(values);
     if (dialogState.mode === 'Edit') {
       execute({ ...values, resumeId: resumeId! });
     } else {
@@ -101,112 +133,168 @@ export const ResumeDialog = ({ resume }: Props) => {
 
   if (dialogState.mode !== 'Add' && dialogState.mode !== 'Edit') return null;
 
+  const formContent = (footer: React.ReactNode) => (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-3'>
+        <div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
+          <FormField
+            control={form.control}
+            name='educationId'
+            render={({ field }) => (
+              <FormItem className='col-span-2 sm:col-span-1'>
+                <FormLabel>{tResumeFormLabels('education')}</FormLabel>
+                <FormControl>
+                  <Select
+                    disabled={isPending}
+                    onValueChange={handleSelectChange('Education')}
+                    defaultValue={field.value?.toString()}
+                  >
+                    <SelectTrigger className='w-full'>
+                      <SelectValue
+                        placeholder={tResumeFormPlaceholders('education')}
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={'-1'}>
+                        {tResumeFormSelectItem('hide')}
+                      </SelectItem>
+                      {educations?.map((edu) => (
+                        <SelectItem key={edu.id} value={edu.id.toString()}>
+                          {tProfileEducationsDegrees(
+                            camelCase(
+                              edu.degree!
+                            ) as keyof IntlMessages['profile']['educations']['degrees']
+                          )}{' '}
+                          | {edu.institution}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='jobExperienceId'
+            render={({ field }) => (
+              <FormItem className='col-span-2 sm:col-span-1'>
+                <FormLabel>{tResumeFormLabels('jobExperience')}</FormLabel>
+                <FormControl>
+                  <Select
+                    disabled={isPending}
+                    onValueChange={handleSelectChange('Job')}
+                    defaultValue={field.value?.toString()}
+                  >
+                    <SelectTrigger className='w-full'>
+                      <SelectValue
+                        placeholder={tResumeFormPlaceholders('jobExperience')}
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={'-1'}>
+                        {tResumeFormSelectItem('hide')}
+                      </SelectItem>
+                      {jobExperiences?.map((job) => (
+                        <SelectItem key={job.id} value={job.id.toString()}>
+                          {job.title} | {job.company}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='title'
+            render={({ field }) => (
+              <FormItem className='col-span-2 sm:col-span-1'>
+                <FormLabel>{tResumeFormLabels('title')}</FormLabel>
+                <FormControl>
+                  <Input disabled={isPending} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            disabled={isPending}
+            control={form.control}
+            name='url'
+            render={({ field }) => (
+              <FormItem className='col-span-2 sm:col-span-1'>
+                <FormLabel>{tResumeFormLabels('url')}</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+                {!form.formState.errors.url &&
+                  form.formState.errors.duration && (
+                    <FormMessage>
+                      {form.formState.errors.duration.message}
+                    </FormMessage>
+                  )}
+              </FormItem>
+            )}
+          />
+          <FormField
+            disabled={isPending}
+            control={form.control}
+            name='bio'
+            render={({ field }) => (
+              <FormItem className='col-span-2 flex h-full flex-col sm:col-span-1'>
+                <FormLabel>{tResumeFormLabels('description')}</FormLabel>
+                <FormControl>
+                  <Textarea
+                    disabled={isPending}
+                    className='flex-auto'
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className='col-span-2 sm:col-span-1'>
+            {ReactPlayer.canPlay(url) ? (
+              <ReactPlayer
+                ref={playerRef}
+                width={'100%'}
+                height={'100%'}
+                url={url}
+                controls={true}
+                onReady={handlePlayerReady}
+              />
+            ) : (
+              <Skeleton className='aspect-video' />
+            )}
+          </div>
+        </div>
+        {footer}
+      </form>
+    </Form>
+  );
+
   return (
-    <Dialog open={dialogState.isOpen} onOpenChange={dialogState.setIsOpen}>
-      <DialogContent
-        className='w-[90%] max-w-[800px] rounded-lg'
-        onInteractOutside={(e) => {
-          e.preventDefault();
-        }}
-      >
-        <DialogHeader>
-          <DialogTitle>
-            {dialogState.mode === 'Add' ? 'Create' : 'Edit'} Resume
-          </DialogTitle>
-        </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-5'>
-            <div className='grid gap-x-3 sm:grid-cols-2'>
-              <div className='flex h-full flex-col space-y-3'>
-                <FormField
-                  control={form.control}
-                  name='title'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Title</FormLabel>
-                      <FormControl>
-                        <Input disabled={isPending} {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  disabled={isPending}
-                  control={form.control}
-                  name='bio'
-                  render={({ field }) => (
-                    <FormItem className='flex h-full flex-col'>
-                      <FormLabel>Description</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          disabled={isPending}
-                          className='flex-auto'
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className='flex flex-col space-y-3'>
-                <FormField
-                  disabled={isPending}
-                  control={form.control}
-                  name='url'
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>URL</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                      {!form.formState.errors.url &&
-                        form.formState.errors.duration && (
-                          <FormMessage>
-                            {form.formState.errors.duration.message}
-                          </FormMessage>
-                        )}
-                    </FormItem>
-                  )}
-                />
-                <div className='aspect-video overflow-auto rounded-md'>
-                  {ReactPlayer.canPlay(url) ? (
-                    <ReactPlayer
-                      ref={playerRef}
-                      width={'100%'}
-                      height={'100%'}
-                      url={url}
-                      controls={true}
-                      onReady={handlePlayerReady}
-                    />
-                  ) : (
-                    <Skeleton className='aspect-video' />
-                  )}
-                </div>
-              </div>
-            </div>
-            <DialogFooter className='gap-y-3'>
-              <DialogClose asChild>
-                <Button disabled={isPending} type='button' variant='secondary'>
-                  Close
-                </Button>
-              </DialogClose>
-              <LoaderButton
-                disabled={
-                  isPending ||
-                  Object.keys(form.formState.dirtyFields).length === 0
-                }
-                type='submit'
-                isLoading={isPending}
-              >
-                {dialogState.mode === 'Add' ? 'Create' : 'Update'}
-              </LoaderButton>
-            </DialogFooter>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+    <ResponsiveDialog
+      title={`${dialogState.mode === 'Add' ? 'Create' : 'Edit'} Resume`}
+      content={formContent}
+      submitButton={{
+        props: {
+          isLoading: isPending,
+          disabled:
+            isPending || Object.keys(form.formState.dirtyFields).length === 0,
+        },
+      }}
+      closeButton={{
+        props: {
+          disabled: isPending,
+        },
+      }}
+    />
   );
 };

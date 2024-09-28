@@ -1,4 +1,10 @@
-import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  DeleteObjectCommand,
+  DeleteObjectsCommand,
+  GetObjectCommand,
+  ListObjectsV2Command,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import { createPresignedPost } from '@aws-sdk/s3-presigned-post';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
@@ -49,6 +55,60 @@ export async function uploadFileToBucket(file: File, filename: string) {
   }
 
   return res;
+}
+
+export async function deleteFileFromBucket(filename: string) {
+  const Key = filename;
+  const Bucket = process.env.CLOUDFLARE_BUCKET_NAME;
+
+  try {
+    const command = new DeleteObjectCommand({
+      Bucket,
+      Key,
+    });
+    await s3Client.send(command);
+    console.log(`File ${filename} deleted successfully.`);
+  } catch (error) {
+    console.error('Error deleting file:', error);
+    throw error;
+  }
+}
+
+export async function deleteDirectoryFromBucket(directory: string) {
+  const Bucket = process.env.CLOUDFLARE_BUCKET_NAME;
+  const Prefix = directory.endsWith('/') ? directory : `${directory}/`;
+
+  try {
+    // List all objects in the directory
+    const listCommand = new ListObjectsV2Command({
+      Bucket,
+      Prefix,
+    });
+    const listResponse = await s3Client.send(listCommand);
+
+    if (!listResponse.Contents || listResponse.Contents.length === 0) {
+      console.log(`No objects found in directory ${directory}`);
+      return;
+    }
+
+    // Prepare objects for deletion
+    const objectsToDelete = listResponse.Contents.map((item) => ({
+      Key: item.Key,
+    }));
+
+    // Delete the objects
+    const deleteCommand = new DeleteObjectsCommand({
+      Bucket,
+      Delete: {
+        Objects: objectsToDelete,
+      },
+    });
+    await s3Client.send(deleteCommand);
+    console.log(`Directory ${directory} deleted successfully.`);
+  } catch (error) {
+    console.error('Error deleting directory:', error);
+    throw error;
+  }
 }
 
 export async function getPresignedPostUrl(

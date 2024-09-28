@@ -23,8 +23,8 @@ CREATE TABLE IF NOT EXISTS "education" (
 	"grade" text,
 	"activities" text,
 	"description" text,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "email_verification_otp" (
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS "email_verification_otp" (
 	"user_id" uuid NOT NULL,
 	"code" text NOT NULL,
 	"email" text NOT NULL,
-	"expires_at" timestamp NOT NULL
+	"expires_at" timestamp with time zone NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "job_experience" (
@@ -44,8 +44,8 @@ CREATE TABLE IF NOT EXISTS "job_experience" (
 	"employment_type" text,
 	"start_date" date NOT NULL,
 	"end_date" date,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "profile" (
@@ -57,7 +57,6 @@ CREATE TABLE IF NOT EXISTS "profile" (
 	"bio" text,
 	"avatar" text,
 	"image_id" text,
-	"cover" text,
 	"cover_id" text,
 	"contact" text,
 	"birth_date" date
@@ -67,7 +66,7 @@ CREATE TABLE IF NOT EXISTS "reset_token" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" uuid NOT NULL,
 	"token" text NOT NULL,
-	"expires_at" timestamp NOT NULL
+	"expires_at" timestamp with time zone NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "resume" (
@@ -76,7 +75,10 @@ CREATE TABLE IF NOT EXISTS "resume" (
 	"title" text NOT NULL,
 	"bio" text,
 	"tag" text[] DEFAULT '{}'::text[] NOT NULL,
-	"created_at" timestamp DEFAULT now() NOT NULL
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"education_id" integer,
+	"job_experience_id" integer
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "session" (
@@ -88,7 +90,7 @@ CREATE TABLE IF NOT EXISTS "session" (
 CREATE TABLE IF NOT EXISTS "user" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"email" text,
-	"email_verified" timestamp,
+	"email_verified" timestamp with time zone,
 	CONSTRAINT "user_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
@@ -97,7 +99,7 @@ CREATE TABLE IF NOT EXISTS "video" (
 	"user_id" uuid NOT NULL,
 	"resume_id" integer NOT NULL,
 	"url" text NOT NULL,
-	"uploaded_at" timestamp DEFAULT now() NOT NULL
+	"uploaded_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 DO $$ BEGIN

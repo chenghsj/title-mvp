@@ -1,29 +1,25 @@
 import { and, desc, eq } from 'drizzle-orm';
-import { DegreeType } from '@/app/dashboard/profile/type';
+import { DegreeType } from '@/app/dashboard/profile/types';
 import { db } from '@/db/drizzle';
 import { Education, educations } from '@/db/schema';
 import { UserId } from '@/use-cases/types';
 
 export async function createEducation({
   trx = db,
-  ...rest
+  ...input
 }: {
   userId: UserId;
   degree: DegreeType;
   fieldOfStudy: string;
   institution: string;
   description: string | null;
-  startDate: Date;
-  endDate: Date | null;
+  startDate: string;
+  endDate: string | null;
   trx?: typeof db;
 }) {
   const [education] = await trx
     .insert(educations)
-    .values({
-      ...rest,
-      startDate: rest.startDate.toISOString(),
-      endDate: rest.endDate?.toISOString(),
-    })
+    .values(input)
     .onConflictDoNothing()
     .returning();
   return education;
@@ -37,7 +33,14 @@ export async function updateEducation(
 ) {
   await trx
     .update(educations)
-    .set(updateEducation)
+    .set({
+      ...updateEducation,
+      startDate: new Date(updateEducation.startDate!).toLocaleDateString(),
+      endDate: updateEducation.endDate
+        ? new Date(updateEducation.endDate).toLocaleDateString()
+        : null,
+      updatedAt: new Date(),
+    })
     .where(and(eq(educations.userId, userId), eq(educations.id, educationId)));
 }
 

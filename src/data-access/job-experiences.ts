@@ -1,30 +1,25 @@
 import { and, desc, eq } from 'drizzle-orm';
-import { EmploymentType } from '@/app/dashboard/profile/type';
+import { EmploymentType } from '@/app/dashboard/profile/types';
 import { db } from '@/db/drizzle';
 import { JobExperience, jobExperiences } from '@/db/schema';
 import { UserId } from '@/use-cases/types';
 
 export async function createJobExperience({
   trx = db,
-  ...rest
+  ...input
 }: {
   userId: UserId;
   title: string;
   company: string;
-  skill: string[];
   employmentType: EmploymentType;
   description: string | null;
-  startDate: Date;
-  endDate: Date | null;
+  startDate: string;
+  endDate: string | null;
   trx?: typeof db;
 }) {
   const [job] = await trx
     .insert(jobExperiences)
-    .values({
-      ...rest,
-      startDate: rest.startDate.toISOString(),
-      endDate: rest.endDate?.toISOString() || null,
-    })
+    .values(input)
     .onConflictDoNothing()
     .returning();
   return job;
@@ -38,7 +33,14 @@ export async function updateJobExperience(
 ) {
   await trx
     .update(jobExperiences)
-    .set(updateJobExperience)
+    .set({
+      ...updateJobExperience,
+      startDate: new Date(updateJobExperience.startDate!).toLocaleDateString(),
+      endDate: updateJobExperience.endDate
+        ? new Date(updateJobExperience.endDate).toLocaleDateString()
+        : null,
+      updatedAt: new Date(),
+    })
     .where(
       and(
         eq(jobExperiences.userId, userId),
