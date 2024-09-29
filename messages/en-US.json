@@ -7,6 +7,23 @@
     }
   },
   "components": {
+    "toast": {
+      "error": "Something went wrong",
+      "success": {
+        "inputOTPDialog": {
+          "title": "Email verified",
+          "description": "Redirect to dashboard"
+        },
+        "loginForm": {
+          "title": "Email sent successfully!",
+          "description": "Please check your email for the OTP"
+        },
+        "comfirmDeleteDialog": {
+          "title": "Success",
+          "description": "{title} deleted"
+        }
+      }
+    },
     "responsiveDropdownMenu": {
       "buttons": {
         "edit": "Edit",
@@ -23,7 +40,8 @@
         "save": "Save",
         "create": "Create",
         "update": "Update",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "confirm": "Confirm"
       }
     }
   },
@@ -33,6 +51,30 @@
     "buttons": {
       "explore": "Explore",
       "sign-up": "Sign Up"
+    }
+  },
+  "login": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "candidate": "Candidate",
+    "company": "Company",
+    "withEmail": "With Email",
+    "withGoogle": "With Google",
+    "description": "Choose your identity",
+    "inputOTP": {
+      "title": "Verify OTP",
+      "description": "Enter the 6-digit code sent to your email"
+    },
+    "form": {
+      "labels": {
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm Password"
+      },
+      "buttons": {
+        "submit": "Submit",
+        "sendOTP": "Send OTP"
+      }
     }
   },
   "navbar": {
@@ -69,9 +111,26 @@
     }
   },
   "profile": {
+    "confirmDeleteDialog": {
+      "type": {
+        "education": "Education",
+        "degree": "degree",
+        "jobExperience": "Job Experience",
+        "expreience": "experience",
+        "avatar": "Profile",
+        "cover": "Cover",
+        "image": "Image"
+      },
+      "title": "Confirm {title} Deletion",
+      "description": "Are you sure you want to delete this <strong>{prefix}</strong> {suffix}?",
+      "buttons": {
+        "confirm": "Confirm",
+        "cancel": "Cancel"
+      }
+    },
     "image": {
       "type": {
-        "avatar": "Avatar",
+        "avatar": "Profile",
         "cover": "Cover"
       },
       "title": "Image",
@@ -84,14 +143,20 @@
       }
     },
     "displayName": {
-      "buttons": {
-        "save": "Save",
-        "cancel": "Cancel"
+      "title": "Name",
+      "dialogTitle": "{mode} {title}",
+      "form": {
+        "labels": {
+          "displayName": "Name"
+        }
       }
     },
     "educations": {
       "title": "Education",
       "dialogTitle": "{mode} {title}",
+      "date": {
+        "present": "Present"
+      },
       "degrees": {
         "highSchool": "High School",
         "bachelor": "Bachelor",
@@ -115,6 +180,9 @@
     "jobExperiences": {
       "title": "Job Experience",
       "dialogTitle": "{mode} {title}",
+      "date": {
+        "present": "Present"
+      },
       "employmentTypes": {
         "fullTime": "Full-time",
         "partTime": "Part-time",
@@ -138,6 +206,16 @@
     }
   },
   "resume": {
+    "confirmDeleteDialog": {
+      "title": "Confirm Resume Deletion",
+      "description": "Are you sure you want to delete the resume <strong>{resumeTitle}</strong>?"
+    },
+    "title": "Resume",
+    "dialogTitle": "{mode} {title}",
+    "description": "Create your first resume",
+    "date": {
+      "createdAt": "Created at {date}"
+    },
     "form": {
       "labels": {
         "education": "Education",

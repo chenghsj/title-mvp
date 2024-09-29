@@ -1,5 +1,6 @@
 import React, { ComponentProps, useEffect, useState } from 'react';
 import ReactPlayer from 'react-player/youtube';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { ResponsiveDropdownMenu } from '@/components/responsive-dropdown-menu';
@@ -14,6 +15,7 @@ type Props = {
 };
 
 export const ResumeCard = React.memo(({ resume }: Props) => {
+  const tResume = useTranslations('resume');
   const [isPlayerReady, setIsPlayerReady] = useState(false);
 
   const { handleMenuButtonClick } = useCreateHandleMenuButtonClick();
@@ -60,7 +62,9 @@ export const ResumeCard = React.memo(({ resume }: Props) => {
           <ResponsiveDropdownMenu {...responsiveDropdownMenuProps} />
         </div>
         <p className='text-sm text-zinc-500'>
-          created at {format(new Date(resume.createdAt), 'yyyy-MM-dd')}
+          {tResume('date.createdAt', {
+            date: format(new Date(resume.createdAt), 'yyyy-MM-dd'),
+          })}
         </p>
       </CardFooter>
     </Card>

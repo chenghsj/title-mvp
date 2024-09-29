@@ -12,7 +12,7 @@ type ProfileSectionProps<T> = {
   renderItem: (item: T) => React.ReactNode;
 };
 
-export const ProfileSection = <
+export const ProfileSectionCard = <
   T extends { id: number; startDate: string | null; endDate?: string | null },
 >({
   title,

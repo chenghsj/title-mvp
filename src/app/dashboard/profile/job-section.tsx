@@ -1,5 +1,6 @@
 import React from 'react';
 import { IoBriefcaseOutline } from 'react-icons/io5';
+import { useTranslations } from 'next-intl';
 import { Separator } from '@/components/ui/separator';
 import { JobExperience } from '@/db/schema';
 
@@ -8,6 +9,9 @@ type Props = {
 };
 
 export const JobSection = ({ jobExperience: job }: Props) => {
+  const tProfileJobExperiencesDate = useTranslations(
+    'profile.jobExperiences.date'
+  );
   return (
     <div className='relative flex w-full flex-col gap-2'>
       <div className='text-sm font-bold'>
@@ -23,7 +27,8 @@ export const JobSection = ({ jobExperience: job }: Props) => {
           {job.employmentType}
         </div>
         <div className='text-xs italic'>
-          {job.startDate} - {job.endDate || 'Present'}
+          {job.startDate} -{' '}
+          {job.endDate || tProfileJobExperiencesDate('present')}
         </div>
       </div>
       {job.description && (

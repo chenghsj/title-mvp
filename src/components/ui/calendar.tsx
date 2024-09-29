@@ -90,7 +90,10 @@ function Calendar({
               <SelectTrigger className='h-[28px] pr-1.5'>
                 <SelectValue>{selected?.props?.children}</SelectValue>
               </SelectTrigger>
-              <SelectContent position='popper'>
+              <SelectContent
+                onCloseAutoFocus={(e) => e.preventDefault()}
+                position='popper'
+              >
                 <ScrollArea className='h-80'>
                   {options.map((option, id: number) => (
                     <SelectItem

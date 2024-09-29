@@ -36,7 +36,9 @@ type Props = {
 };
 
 export const EducationDialog = ({ education }: Props) => {
-  const tResponsiveDialog = useTranslations('components.responsiveDialog');
+  const tComponentsResponsiveDialog = useTranslations(
+    'components.responsiveDialog'
+  );
   const tProfileEducations = useTranslations('profile.educations');
   const tProfileEducationsFormLabels = useTranslations(
     'profile.educations.form.labels'
@@ -129,7 +131,7 @@ export const EducationDialog = ({ education }: Props) => {
                         )}
                       />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent onCloseAutoFocus={(e) => e.preventDefault()}>
                       {degrees.map((degree) => (
                         <SelectItem key={degree} value={degree}>
                           {tProfileEducationsDegrees(
@@ -237,16 +239,16 @@ export const EducationDialog = ({ education }: Props) => {
       title={tProfileEducations('dialogTitle', {
         mode:
           dialogState.mode === 'Add'
-            ? tResponsiveDialog('buttons.add')
-            : tResponsiveDialog('buttons.edit'),
+            ? tComponentsResponsiveDialog('buttons.add')
+            : tComponentsResponsiveDialog('buttons.edit'),
         title: tProfileEducations('title'),
       })}
       content={formContent}
       submitButton={{
         title:
           dialogState.mode === 'Add'
-            ? tResponsiveDialog('buttons.add')
-            : tResponsiveDialog('buttons.save'),
+            ? tComponentsResponsiveDialog('buttons.add')
+            : tComponentsResponsiveDialog('buttons.save'),
         props: {
           isLoading: isPending,
           disabled:

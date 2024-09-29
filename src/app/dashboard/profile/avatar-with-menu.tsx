@@ -28,7 +28,7 @@ export const AvatarWithMenu = ({ profile, avatarUrl }: Props) => {
         avatarUrl={avatarUrl || profile?.image}
         avatarProps={{
           className: cn(
-            'ring-3 box-content aspect-square h-20 w-20 cursor-pointer border-4 border-zinc-50 bg-zinc-500 dark:border-zinc-900',
+            'ring-3 box-content aspect-square h-20 w-20 cursor-pointer border-4 border-white bg-zinc-500 dark:border-zinc-900',
             'sm:h-28 sm:w-28'
           ),
         }}
@@ -57,6 +57,7 @@ export const AvatarWithMenu = ({ profile, avatarUrl }: Props) => {
       <DropdownMenuItem
         className='rounded-full'
         onClick={handleMenuButtonClick('Delete', 'Avatar')}
+        disabled={!avatarUrl}
       >
         <Trash size={18} />
       </DropdownMenuItem>
@@ -71,6 +72,9 @@ export const AvatarWithMenu = ({ profile, avatarUrl }: Props) => {
       }}
       deleteButton={{
         text: tProfileImageButtons('remove'),
+        buttonProps: {
+          disabled: !avatarUrl,
+        },
       }}
       handleEditClick={handleMenuButtonClick('Edit', 'Avatar')}
       handleDeleteClick={handleMenuButtonClick('Delete', 'Avatar')}

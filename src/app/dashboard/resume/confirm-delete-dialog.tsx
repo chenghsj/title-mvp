@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useServerAction } from 'zsa-react';
 import { ResponsiveDialog } from '@/components/responsive-dialog';
 import { useToast } from '@/components/ui/use-toast';
@@ -10,6 +11,10 @@ import { useResumeDialog } from './hooks';
 type Props = {};
 
 export const ConfirmDeleteDialog = ({}: Props) => {
+  const tComponentsResponsiveDialog = useTranslations(
+    'components.responsiveDialog'
+  );
+  const tResume = useTranslations('resume');
   const { toast } = useToast();
   const resumeDialog = useResumeDialog();
   const dialogState = useDialogState();
@@ -39,19 +44,16 @@ export const ConfirmDeleteDialog = ({}: Props) => {
 
   return (
     <ResponsiveDialog
-      title='Confirm Resume Deletion'
-      description={
-        <>
-          Are you sure you want to delete the resume {'"'}
-          <span className='font-extrabold'>{resumeDialog.resumeTitle}</span>
-          {'"'}?
-        </>
-      }
+      title={tResume('confirmDeleteDialog.title')}
+      description={tResume.rich('confirmDeleteDialog.description', {
+        resumeTitle: resumeDialog.resumeTitle,
+        strong: (chunks) => <span className='font-extrabold'>{chunks}</span>,
+      })}
       dialogContentProps={{
         className: 'max-w-[500px]',
       }}
       submitButton={{
-        title: 'Confirm',
+        title: tComponentsResponsiveDialog('buttons.confirm'),
         props: {
           onClick: handleConfirmClick,
           isLoading: isPending,

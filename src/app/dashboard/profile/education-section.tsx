@@ -10,16 +10,19 @@ type Props = {
 };
 
 export const EducationSection = ({ education }: Props) => {
-  const tDegrees = useTranslations('profile.educations.degrees');
+  const tProfileEducationsDegrees = useTranslations(
+    'profile.educations.degrees'
+  );
+  const tProfileEducationsDate = useTranslations('profile.educations.date');
 
   return (
     <div className='relative flex w-full flex-col gap-2'>
       <div className='text-sm font-bold'>
         <div className='flex items-center gap-2'>
           <GraduationCap size={18} />
-          {tDegrees(
+          {tProfileEducationsDegrees(
             camelCase(
-              education.degree?.toLowerCase()
+              education.degree!
             ) as keyof IntlMessages['profile']['educations']['degrees']
           )}
         </div>
@@ -31,7 +34,8 @@ export const EducationSection = ({ education }: Props) => {
           {education.fieldOfStudy}
         </div>
         <div className='text-xs italic'>
-          {education.startDate} - {education.endDate || 'Present'}
+          {education.startDate} -{' '}
+          {education.endDate || tProfileEducationsDate('present')}
         </div>
       </div>
       {education.description && (

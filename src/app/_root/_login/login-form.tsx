@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslations } from 'next-intl';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2Icon, Send } from 'lucide-react';
 import { useServerAction } from 'zsa-react';
@@ -34,6 +35,8 @@ type Props = {
 };
 
 function LoginForm({ isMail, isSignUp }: Props) {
+  const tLoginForm = useTranslations('login.form');
+  const tComponentsToast = useTranslations('components.toast');
   const isSignUpRef = useRef(isSignUp);
   const { toast } = useToast();
   const { isMobile } = useDeviceDetect();
@@ -56,7 +59,7 @@ function LoginForm({ isMail, isSignUp }: Props) {
     {
       onError({ err }) {
         toast({
-          title: 'Something went wrong',
+          title: tComponentsToast('error'),
           description: err.message,
           variant: 'destructive',
         });
@@ -65,8 +68,8 @@ function LoginForm({ isMail, isSignUp }: Props) {
         if (isSignUpRef.current) {
           setDialogOpen(true);
           toast({
-            title: 'Email sent successfully!',
-            description: 'Please check your email for the OTP.',
+            title: tComponentsToast('success.loginForm.title'),
+            description: tComponentsToast('success.loginForm.description'),
           });
         }
       },
@@ -80,7 +83,7 @@ function LoginForm({ isMail, isSignUp }: Props) {
   } = useServerAction(sendEmailOTPAction, {
     onError({ err }) {
       toast({
-        title: 'Something went wrong',
+        title: tComponentsToast('error'),
         description: err.message,
         variant: 'destructive',
       });
@@ -88,8 +91,8 @@ function LoginForm({ isMail, isSignUp }: Props) {
     onSuccess({ data }) {
       setDialogOpen(true);
       toast({
-        title: 'Email sent successfully!',
-        description: 'Please check your email for the OTP.',
+        title: tComponentsToast('success.loginForm.title'),
+        description: tComponentsToast('success.loginForm.description'),
       });
     },
   });
@@ -132,7 +135,7 @@ function LoginForm({ isMail, isSignUp }: Props) {
           name='email'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Eamil</FormLabel>
+              <FormLabel>{tLoginForm('labels.email')}</FormLabel>
               <FormControl>
                 <Input className={cn(isMobile && 'h-9')} {...field} />
               </FormControl>
@@ -145,7 +148,7 @@ function LoginForm({ isMail, isSignUp }: Props) {
           name='password'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>{tLoginForm('labels.password')}</FormLabel>
               <FormControl>
                 <Input.password className={cn(isMobile && 'h-9')} {...field} />
               </FormControl>
@@ -160,7 +163,7 @@ function LoginForm({ isMail, isSignUp }: Props) {
               name='confirmPassword'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
+                  <FormLabel>{tLoginForm('labels.confirmPassword')}</FormLabel>
                   <FormControl>
                     <Input.password
                       className={cn(isMobile && 'h-9')}
@@ -185,21 +188,13 @@ function LoginForm({ isMail, isSignUp }: Props) {
             />
           </>
         )}
-        {/* {error && (
-          <Alert variant='destructive'>
-            <Terminal className='h-4 w-4' />
-            <AlertTitle>Uh-oh, we couldn&apos;t log you in</AlertTitle>
-            <AlertDescription>{error.message}</AlertDescription>
-          </Alert>
-        )} */}
-
         <Button
           type='submit'
           className={cn('!mt-8 w-full', isMobile && 'h-9')}
           disabled={isPending || sendEmailOTPIsPending}
         >
           {isPending && <Loader2Icon className='mr-2 h-4 w-4 animate-spin' />}
-          Submit
+          {tLoginForm('buttons.submit')}
         </Button>
       </form>
       {!isSignUp &&
@@ -215,7 +210,7 @@ function LoginForm({ isMail, isSignUp }: Props) {
             ) : (
               <Send className='mr-2 h-4 w-4' />
             )}
-            Send OTP
+            {tLoginForm('buttons.sendOTP')}
           </Button>
         )}
     </Form>

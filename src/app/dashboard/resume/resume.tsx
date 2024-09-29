@@ -1,51 +1,32 @@
 'use client';
 
 import { useMemo } from 'react';
-import { User } from 'lucia';
-import { CirclePlus, FilePlus2, Video } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { CirclePlus, Plus, Video } from 'lucide-react';
 import { useIsClient } from 'usehooks-ts';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  Education,
-  JobExperience,
-  Resume as ResumeType,
-  Video as VideoType,
-} from '@/db/schema';
 import { useDialogState } from '@/hooks/store';
-import { useDeviceDetect } from '@/hooks/use-device-detect';
 import { cn } from '@/lib/utils';
+import { DashboardDetails } from '../type';
 import { ConfirmDeleteDialog } from './confirm-delete-dialog';
 import { useResumeDialog } from './hooks';
 import { ResumeCard } from './resume-card';
 import { ResumeDialog } from './resume-dialog';
 
 type Props = {
-  user: User;
-  resumes: ResumeType[];
-  videos: VideoType[];
-  educations: Education[];
-  jobExperiences: JobExperience[];
+  dashboardDetails: DashboardDetails;
 };
 
-export const Resume = ({
-  user,
-  resumes,
-  videos,
-  educations,
-  jobExperiences,
-}: Props) => {
+export const Resume = ({ dashboardDetails }: Props) => {
+  const { resumes, videos, educations, jobExperiences } = dashboardDetails;
+  const tComponentsResponsiveDialog = useTranslations(
+    'components.responsiveDialog'
+  );
+  const tResume = useTranslations('resume');
   const isClient = useIsClient();
   const resumeDialog = useResumeDialog();
   const dialogState = useDialogState();
-  const { isMobile } = useDeviceDetect();
 
   const resumesWithVideos = useMemo(
     () =>
@@ -77,26 +58,29 @@ export const Resume = ({
           : 'h-full'
       )}
     >
-      <div className='col-span-full flex justify-between'>
-        <Select>
+      {resumesWithVideos.length > 0 && (
+        <div className='col-span-full flex justify-between'>
+          {/* <Select>
           <SelectTrigger className='w-[180px]'>
             <SelectValue placeholder='Sorted by' />
           </SelectTrigger>
-          <SelectContent className=''>
+          <SelectContent onCloseAutoFocus={(e) => e.preventDefault()}>
             <SelectItem value='light'>Light</SelectItem>
             <SelectItem value='dark'>Dark</SelectItem>
             <SelectItem value='system'>System</SelectItem>
           </SelectContent>
-        </Select>
-        <Button
-          className='text-zinc-900 sm:hidden'
-          variant={'ghost'}
-          onClick={handleCreateClick}
-          size={'icon'}
-        >
-          <FilePlus2 />
-        </Button>
-      </div>
+        </Select> */}
+          <Button
+            className='sm:hidden'
+            variant={'outline'}
+            onClick={handleCreateClick}
+            size={'sm'}
+          >
+            <Plus size={16} className='mr-2' />
+            {tComponentsResponsiveDialog('buttons.create')}
+          </Button>
+        </div>
+      )}
 
       {resumesWithVideos.length > 0 ? (
         <>
@@ -119,13 +103,9 @@ export const Resume = ({
       ) : (
         <div className='flex h-full w-full flex-col items-center justify-center space-y-4'>
           <Video size='50' />
-          <p className='text-2xl'>Create your first resume</p>
-          <Button
-            rounded={'full'}
-            variant={'outline'}
-            onClick={handleCreateClick}
-          >
-            Create
+          <p className='text-2xl'>{tResume('description')}</p>
+          <Button variant={'outline'} onClick={handleCreateClick}>
+            {tComponentsResponsiveDialog('buttons.create')}
           </Button>
         </div>
       )}

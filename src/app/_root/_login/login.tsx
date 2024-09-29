@@ -4,6 +4,7 @@ import { MouseEventHandler, RefObject, useEffect, useState } from 'react';
 import { useOverflowDetector } from 'react-detectable-overflow';
 import { FaGoogle, FaRegEnvelope } from 'react-icons/fa';
 import { LuArrowLeft } from 'react-icons/lu';
+import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
 import { AnimatedHeight } from '@/components/animated-height';
 import { Button } from '@/components/ui/button';
@@ -18,6 +19,7 @@ import { RoleSwitch } from './role-switch';
 type Props = {};
 
 export function LoginPage({}: Props) {
+  const tLogin = useTranslations('login');
   const [isMail, setIsMail] = useState(false);
   const router = useRouter();
   const { ref: isOverflowRef, overflow } = useOverflowDetector({});
@@ -52,9 +54,9 @@ export function LoginPage({}: Props) {
           <CardContent className='flex flex-col items-start gap-5 p-3 sm:gap-7 sm:p-6'>
             <CardTitle className='grid gap-2'>
               <p className='text-2xl font-medium sm:text-3xl'>
-                Sign {isSignUp ? 'up' : 'in'}
+                {tLogin(isSignUp ? 'signUp' : 'signIn')}
               </p>
-              <p className='text-sm font-normal'>Choose your identity</p>
+              <p className='text-sm font-normal'>{tLogin('description')}</p>
             </CardTitle>
             <RoleSwitch />
             <div className='w-full'>
@@ -76,7 +78,7 @@ export function LoginPage({}: Props) {
                   disabled={isMail}
                 >
                   <FaRegEnvelope className='mr-2 h-4 w-4' />
-                  With Email
+                  {tLogin('withEmail')}
                 </Button>
               </div>
 
@@ -100,7 +102,7 @@ export function LoginPage({}: Props) {
                 onClick={handleOAuthClick}
               >
                 <FaGoogle className='mr-2 h-4 w-4' />
-                With Google
+                {tLogin('withGoogle')}
               </Button>
             )}
           </CardContent>

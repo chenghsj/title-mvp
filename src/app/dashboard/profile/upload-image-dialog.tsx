@@ -12,8 +12,6 @@ import {
   FileUploaderItem,
 } from '@/components/extension/file-uploader';
 import { ResponsiveDialog } from '@/components/responsive-dialog';
-
-
 import { Form, FormField, FormItem } from '@/components/ui/form';
 import { useToast } from '@/components/ui/use-toast';
 import { MAX_UPLOAD_IMAGE_SIZE } from '@/config/app';

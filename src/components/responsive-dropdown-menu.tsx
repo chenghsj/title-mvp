@@ -44,7 +44,7 @@ type Props = {
   deleteButton?: ResponsiveDropdownMenuButtonType;
   closeButton?: ResponsiveDropdownMenuButtonType;
   handleEditClick: (e: MouseEvent<HTMLDivElement | HTMLButtonElement>) => void;
-  handleDeleteClick: (
+  handleDeleteClick?: (
     e: MouseEvent<HTMLDivElement | HTMLButtonElement>
   ) => void;
   renderDropdownMenuContent?: ReactNode;
@@ -82,7 +82,7 @@ export const ResponsiveDropdownMenu = ({
   const EditIcon = editButton?.icon || Pencil;
   const DeleteIcon = deleteButton?.icon || Trash;
 
-  const menuItems: MenuItem[] = [
+  const menuItems: (MenuItem | null)[] = [
     {
       text: editButton?.text || t('edit'),
       icon: (
@@ -97,20 +97,22 @@ export const ResponsiveDropdownMenu = ({
       },
       buttonProps: editButton?.buttonProps,
     },
-    {
-      text: deleteButton?.text || t('delete'),
-      icon: (
-        <DeleteIcon
-          {...deleteButton?.iconProps}
-          className={cn('mr-2 h-4 w-4', deleteButton?.iconProps?.className)}
-        />
-      ),
-      onClick: (e: MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
-        handleDeleteClick(e);
-        setIsDropdownOpen(false);
-      },
-      buttonProps: deleteButton?.buttonProps,
-    },
+    handleDeleteClick
+      ? {
+          text: deleteButton?.text || t('delete'),
+          icon: (
+            <DeleteIcon
+              {...deleteButton?.iconProps}
+              className={cn('mr-2 h-4 w-4', deleteButton?.iconProps?.className)}
+            />
+          ),
+          onClick: (e: MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
+            handleDeleteClick(e);
+            setIsDropdownOpen(false);
+          },
+          buttonProps: deleteButton?.buttonProps,
+        }
+      : null,
   ];
 
   const drawerContent = renderDrawerContent || (
@@ -118,6 +120,7 @@ export const ResponsiveDropdownMenu = ({
       hideHandle
       className='border-none bg-transparent outline-none dark:bg-transparent'
       {...drawerContentProps}
+      onCloseAutoFocus={(e) => e.preventDefault()}
     >
       <div className='hidden'>
         <DrawerHeader>
@@ -127,29 +130,32 @@ export const ResponsiveDropdownMenu = ({
       </div>
       <DrawerFooter className='space-y-1 pb-7'>
         <Card className='overflow-hidden rounded-2xl border-none'>
-          <CardContent className='space-y-2 p-0 py-2'>
-            {menuItems.map((item, index) => (
-              <React.Fragment key={index}>
-                {index > 0 && <Separator className='dark:bg-zinc-900' />}
-                <div className='mx-2'>
-                  <Button
-                    variant='ghost'
-                    {...item.buttonProps}
-                    className={cn(
-                      'w-full rounded-xl text-base ring-0 focus-visible:ring-0 focus-visible:ring-offset-0',
-                      item.buttonProps?.className
-                    )}
-                    onClick={item.onClick}
-                  >
-                    {item.text}
-                  </Button>
-                </div>
-              </React.Fragment>
-            ))}
+          <CardContent className='space-y-2 p-0 py-2 dark:bg-zinc-900'>
+            {menuItems.map(
+              (item, index) =>
+                item && (
+                  <React.Fragment key={index}>
+                    {index > 0 && <Separator className='dark:bg-zinc-800' />}
+                    <div className='mx-2'>
+                      <Button
+                        variant='ghost'
+                        {...item.buttonProps}
+                        className={cn(
+                          'w-full rounded-xl text-base ring-0 focus-visible:ring-0 focus-visible:ring-offset-0',
+                          item.buttonProps?.className
+                        )}
+                        onClick={item.onClick}
+                      >
+                        {item.text}
+                      </Button>
+                    </div>
+                  </React.Fragment>
+                )
+            )}
           </CardContent>
         </Card>
         <Card className='overflow-hidden rounded-2xl border-none'>
-          <CardContent className='p-0 py-2'>
+          <CardContent className='p-0 py-2 dark:bg-zinc-900'>
             <div className='mx-2'>
               <DrawerClose asChild>
                 <Button
@@ -171,17 +177,23 @@ export const ResponsiveDropdownMenu = ({
   );
 
   const dropdownContent = renderDropdownMenuContent || (
-    <DropdownMenuContent {...dropdownMenuContentProps}>
-      {menuItems.map((item, index) => (
-        <DropdownMenuItem
-          key={index}
-          onClick={item.onClick}
-          {...dropdownMenuItemProps}
-        >
-          {item.icon}
-          {item.text}
-        </DropdownMenuItem>
-      ))}
+    <DropdownMenuContent
+      {...dropdownMenuContentProps}
+      onCloseAutoFocus={(e) => e.preventDefault()}
+    >
+      {menuItems.map(
+        (item, index) =>
+          item && (
+            <DropdownMenuItem
+              key={index}
+              onClick={item.onClick}
+              {...dropdownMenuItemProps}
+            >
+              {item.icon}
+              {item.text}
+            </DropdownMenuItem>
+          )
+      )}
     </DropdownMenuContent>
   );
 

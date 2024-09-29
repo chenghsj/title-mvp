@@ -6,9 +6,9 @@ type Props = {};
 
 async function ProfilePage({}: Props) {
   const user = await assertAuthenticated();
-  const dashboardInfo = await getDashboardProfileUseCase(user.id);
+  const dashboardDetails = await getDashboardProfileUseCase(user.id);
 
-  return <Profile dashboardInfo={dashboardInfo} />;
+  return <Profile dashboardDetails={dashboardDetails} />;
 }
 
 export default ProfilePage;

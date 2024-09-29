@@ -167,7 +167,7 @@ export const JobDialog = ({ jobExperience }: Props) => {
                         )}
                       />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent onCloseAutoFocus={(e) => e.preventDefault()}>
                       {employmentTypes.map((type, index) => (
                         <SelectItem key={index} value={type}>
                           {tProfileJobExperiencesEmploymentTypes(
@@ -253,7 +253,10 @@ export const JobDialog = ({ jobExperience }: Props) => {
       })}
       content={formContent}
       submitButton={{
-        title: dialogState.mode === 'Add' ? 'Add' : 'Save',
+        title:
+          dialogState.mode === 'Add'
+            ? tResponsiveDialog('buttons.add')
+            : tResponsiveDialog('buttons.save'),
         props: {
           isLoading: isPending,
           disabled:

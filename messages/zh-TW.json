@@ -7,6 +7,23 @@
     }
   },
   "components": {
+    "toast": {
+      "error": "出了點問題",
+      "success": {
+        "inputOTPDialog": {
+          "title": "電子郵件驗證成功",
+          "description": "將重新導向至控制台"
+        },
+        "loginForm": {
+          "title": "電子郵件發送成功！",
+          "description": "請查看您的電子郵件以獲取 OTP"
+        },
+        "comfirmDeleteDialog": {
+          "title": "成功",
+          "description": "{title}已刪除"
+        }
+      }
+    },
     "responsiveDropdownMenu": {
       "buttons": {
         "edit": "編輯",
@@ -23,7 +40,8 @@
         "save": "儲存",
         "create": "新增",
         "update": "更新",
-        "cancel": "取消"
+        "cancel": "取消",
+        "confirm": "確認"
       }
     }
   },
@@ -33,6 +51,30 @@
     "buttons": {
       "explore": "探索",
       "sign-up": "註冊"
+    }
+  },
+  "login": {
+    "signIn": "登入",
+    "signUp": "註冊",
+    "candidate": "求職者",
+    "company": "公司",
+    "withEmail": "使用電子郵件",
+    "withGoogle": "使用 Google 帳號",
+    "description": "選擇您的身份",
+    "inputOTP": {
+      "title": "驗證 OTP",
+      "description": "輸入發送到您的電子郵件的6位數代碼"
+    },
+    "form": {
+      "labels": {
+        "email": "電子郵件",
+        "password": "密碼",
+        "confirmPassword": "確認密碼"
+      },
+      "buttons": {
+        "submit": "提交",
+        "sendOTP": "發送 OTP"
+      }
     }
   },
   "navbar": {
@@ -69,6 +111,19 @@
     }
   },
   "profile": {
+    "confirmDeleteDialog": {
+      "type": {
+        "education": "學歷",
+        "degree": "學位",
+        "jobExperience": "工作經驗",
+        "expreience": "經驗",
+        "avatar": "頭像",
+        "cover": "封面",
+        "image": "圖片"
+      },
+      "title": "確認刪除{title}",
+      "description": "您確定要刪除 <strong>{prefix}</strong> {suffix}嗎？"
+    },
     "image": {
       "type": {
         "avatar": "頭像",
@@ -84,14 +139,20 @@
       }
     },
     "displayName": {
-      "buttons": {
-        "save": "儲存",
-        "cancel": "取消"
+      "title": "名稱",
+      "dialogTitle": "{mode} {title}",
+      "form": {
+        "labels": {
+          "displayName": "名稱"
+        }
       }
     },
     "educations": {
       "title": "學歷",
       "dialogTitle": "{mode} {title}",
+      "date": {
+        "present": "現在"
+      },
       "degrees": {
         "highSchool": "高中",
         "bachelor": "學士",
@@ -115,6 +176,9 @@
     "jobExperiences": {
       "title": "工作經驗",
       "dialogTitle": "{mode} {title}",
+      "date": {
+        "present": "現在"
+      },
       "employmentTypes": {
         "fullTime": "全職",
         "partTime": "兼職",
@@ -138,6 +202,16 @@
     }
   },
   "resume": {
+    "confirmDeleteDialog": {
+      "title": "確認刪除履歷",
+      "description": "您確定要刪除 <strong>{resumeTitle}</strong> 履歷嗎？"
+    },
+    "title": "履歷",
+    "dialogTitle": "{mode} {title}",
+    "description": "建立您的第一份履歷",
+    "date": {
+      "createdAt": "建立於 {date}"
+    },
     "form": {
       "labels": {
         "education": "學歷",

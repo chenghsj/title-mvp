@@ -1,6 +1,6 @@
 'use client';
 
-import { startCase } from 'lodash';
+import { useTranslations } from 'next-intl';
 import { parseAsStringLiteral, useQueryState } from 'nuqs';
 import { RoleTypeEnum } from '@/app/_root/types';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 type Props = {};
 
 export function RoleSwitch({}: Props) {
+  const tLogin = useTranslations('login');
   const [role, setRole] = useQueryState(
     'role',
     parseAsStringLiteral(RoleTypeEnum).withDefault('candidate')
@@ -39,7 +40,7 @@ export function RoleSwitch({}: Props) {
             value={role}
             onClick={() => setRole(role)}
           >
-            {startCase(role)}
+            {tLogin(role)}
           </TabsTrigger>
         ))}
       </TabsList>

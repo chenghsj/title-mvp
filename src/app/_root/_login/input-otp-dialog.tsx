@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { useServerAction } from 'zsa-react';
 import {
   Dialog,
@@ -20,6 +21,8 @@ import { useEmailOTPDialog } from './hooks';
 type Props = {};
 
 export function InputOTPDialog({}: Props) {
+  const tComponentsToast = useTranslations('components.toast');
+  const tLoginInputOTP = useTranslations('login.inputOTP');
   const { toast } = useToast();
   const { isOpen, setIsOpen, email } = useEmailOTPDialog();
 
@@ -28,7 +31,7 @@ export function InputOTPDialog({}: Props) {
     {
       onError: ({ err }) => {
         toast({
-          title: 'Something went wrong',
+          title: tComponentsToast('error'),
           description: err.message,
           variant: 'destructive',
         });
@@ -36,8 +39,8 @@ export function InputOTPDialog({}: Props) {
       onSuccess: () => {
         setIsOpen(false);
         toast({
-          title: 'Email verified',
-          description: 'Redirect to dashboard',
+          title: tComponentsToast('success.inputOTPDialog.title'),
+          description: tComponentsToast('success.inputOTPDialog.description'),
         });
       },
     }
@@ -63,11 +66,9 @@ export function InputOTPDialog({}: Props) {
         hideCloseButton={isPending}
       >
         <DialogHeader>
-          <DialogTitle>Verify OTP</DialogTitle>
+          <DialogTitle>{tLoginInputOTP('title')}</DialogTitle>
         </DialogHeader>
-        <DialogDescription>
-          Enter the 6-digit code sent to your email address
-        </DialogDescription>
+        <DialogDescription>{tLoginInputOTP('description')}</DialogDescription>
         <div
           className={cn(
             'mx-auto mt-2 sm:mt-4',

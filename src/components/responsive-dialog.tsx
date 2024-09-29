@@ -1,6 +1,5 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { useTranslations } from 'next-intl';
-import { useResizeObserver } from 'usehooks-ts';
 import { LoaderButton } from '@/components/loader-button';
 import { Button } from '@/components/ui/button';
 import {
@@ -54,11 +53,9 @@ export const ResponsiveDialog = ({
   dialogFooterProps,
   drawerFooterProps,
 }: Props) => {
-  const t = useTranslations('components.responsiveDialog.buttons');
-  const contentRef = useRef<HTMLDivElement>(null);
-  const { height } = useResizeObserver({
-    ref: contentRef,
-  });
+  const tComponentsResponsiveDialogButtons = useTranslations(
+    'components.responsiveDialog.buttons'
+  );
 
   const dialogState = useDialogState();
   const { isMobile } = useDeviceDetect();
@@ -72,7 +69,7 @@ export const ResponsiveDialog = ({
         dialogState.setIsOpen(false);
       }}
     >
-      {closeButton?.title || t('cancel')}
+      {closeButton?.title || tComponentsResponsiveDialogButtons('cancel')}
     </Button>
   );
 
@@ -83,7 +80,9 @@ export const ResponsiveDialog = ({
       {...submitButton?.props}
     >
       {submitButton?.title ||
-        (dialogState.mode === 'Add' ? t('create') : t('update'))}
+        (dialogState.mode === 'Add'
+          ? tComponentsResponsiveDialogButtons('create')
+          : tComponentsResponsiveDialogButtons('save'))}
     </LoaderButton>
   );
 
@@ -121,19 +120,15 @@ export const ResponsiveDialog = ({
   ) : (
     <Dialog open={dialogState.isOpen} onOpenChange={dialogState.setIsOpen}>
       <DialogContent
-        ref={contentRef}
-        className='h-fit max-h-[80%] w-[90%] max-w-[800px] rounded-lg'
+        className='h-fit max-h-[80%] w-[90%] max-w-[800px] overflow-y-auto rounded-lg'
         onOpenAutoFocus={(e) => e.preventDefault()}
         {...dialogContentProps}
-        style={{ height }}
       >
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
-        <ScrollArea className='overflow-y-auto'>
-          <div className='mx-1'>{Content}</div>
-        </ScrollArea>
+        {Content}
       </DialogContent>
     </Dialog>
   );

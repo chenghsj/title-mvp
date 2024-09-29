@@ -41,6 +41,10 @@ type Props = {
 };
 
 export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
+  const tComponentsResponsiveDialog = useTranslations(
+    'components.responsiveDialog'
+  );
+  const tResume = useTranslations('resume');
   const tResumeFormLabels = useTranslations('resume.form.labels');
   const tResumeFormPlaceholders = useTranslations('resume.form.placeholders');
   const tResumeFormSelectItem = useTranslations('resume.form.selectItem');
@@ -154,7 +158,7 @@ export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
                         placeholder={tResumeFormPlaceholders('education')}
                       />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent onCloseAutoFocus={(e) => e.preventDefault()}>
                       <SelectItem value={'-1'}>
                         {tResumeFormSelectItem('hide')}
                       </SelectItem>
@@ -192,7 +196,7 @@ export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
                         placeholder={tResumeFormPlaceholders('jobExperience')}
                       />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent onCloseAutoFocus={(e) => e.preventDefault()}>
                       <SelectItem value={'-1'}>
                         {tResumeFormSelectItem('hide')}
                       </SelectItem>
@@ -259,7 +263,7 @@ export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
               </FormItem>
             )}
           />
-          <div className='col-span-2 sm:col-span-1'>
+          <div className='col-span-2 aspect-video sm:col-span-1'>
             {ReactPlayer.canPlay(url) ? (
               <ReactPlayer
                 ref={playerRef}
@@ -268,6 +272,7 @@ export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
                 url={url}
                 controls={true}
                 onReady={handlePlayerReady}
+                fallback={<Skeleton className='aspect-video' />}
               />
             ) : (
               <Skeleton className='aspect-video' />
@@ -281,7 +286,13 @@ export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
 
   return (
     <ResponsiveDialog
-      title={`${dialogState.mode === 'Add' ? 'Create' : 'Edit'} Resume`}
+      title={tResume('dialogTitle', {
+        mode:
+          dialogState.mode === 'Add'
+            ? tComponentsResponsiveDialog('buttons.create')
+            : tComponentsResponsiveDialog('buttons.edit'),
+        title: tResume('title'),
+      })}
       content={formContent}
       submitButton={{
         props: {

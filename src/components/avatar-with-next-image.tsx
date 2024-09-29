@@ -1,7 +1,7 @@
 import React from 'react';
 import { Suspense } from 'react';
 import Image from 'next/image';
-import { Avatar } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 type Props = {
   avatarUrl: string | null | undefined;
@@ -19,13 +19,17 @@ export const AvatarWithNextImage = ({
   return (
     <Avatar {...avatarProps}>
       <Suspense fallback={avatarFallback}>
-        <Image
-          className='h-full w-full object-contain'
-          src={avatarUrl || ''}
-          fill
-          alt='profile image'
-          {...imageProps}
-        />
+        {avatarUrl ? (
+          <Image
+            className='h-full w-full object-contain'
+            src={avatarUrl}
+            fill
+            alt='profile image'
+            {...imageProps}
+          />
+        ) : (
+          <AvatarFallback>{avatarFallback}</AvatarFallback>
+        )}
       </Suspense>
     </Avatar>
   );
