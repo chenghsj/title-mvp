@@ -19,7 +19,6 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
 import { useDeviceDetect } from '@/hooks/use-device-detect';
 import { cn } from '@/lib/utils';
-import { errorMessages } from '@/use-cases/errors';
 import { sendEmailOTPAction, signInAction, signUpAction } from './actions';
 import {
   SignInFormSchema,
@@ -34,15 +33,22 @@ type Props = {
   isSignUp: boolean;
 };
 
-function LoginForm({ isMail, isSignUp }: Props) {
+const useGetTranslations = () => {
   const tLoginForm = useTranslations('login.form');
+  const tErrorMessages = useTranslations('errorMessages');
   const tComponentsToast = useTranslations('components.toast');
+
+  return { tLoginForm, tErrorMessages, tComponentsToast };
+};
+
+function LoginForm({ isMail, isSignUp }: Props) {
   const isSignUpRef = useRef(isSignUp);
   const { toast } = useToast();
   const { isMobile } = useDeviceDetect();
+  const { tLoginForm, tErrorMessages, tComponentsToast } = useGetTranslations();
+  const { role } = useGetRole();
   const { setIsOpen: setDialogOpen, setEmail: setDialogEmail } =
     useEmailOTPDialog();
-  const { role } = useGetRole();
 
   const form = useForm<SignUpFormSchemaType | SignInFormSchemaType>({
     resolver: zodResolver(isSignUp ? SignUpFormSchema : SignInFormSchema),
@@ -59,17 +65,17 @@ function LoginForm({ isMail, isSignUp }: Props) {
     {
       onError({ err }) {
         toast({
-          title: tComponentsToast('error'),
+          title: 'Error',
           description: err.message,
           variant: 'destructive',
         });
       },
-      onSuccess() {
-        if (isSignUpRef.current) {
+      onSuccess({ data }) {
+        if (data?.isSignUp) {
           setDialogOpen(true);
           toast({
-            title: tComponentsToast('success.loginForm.title'),
-            description: tComponentsToast('success.loginForm.description'),
+            title: data.message.title,
+            description: data.message.description,
           });
         }
       },
@@ -83,7 +89,7 @@ function LoginForm({ isMail, isSignUp }: Props) {
   } = useServerAction(sendEmailOTPAction, {
     onError({ err }) {
       toast({
-        title: tComponentsToast('error'),
+        title: 'Error',
         description: err.message,
         variant: 'destructive',
       });
@@ -91,25 +97,22 @@ function LoginForm({ isMail, isSignUp }: Props) {
     onSuccess({ data }) {
       setDialogOpen(true);
       toast({
-        title: tComponentsToast('success.loginForm.title'),
-        description: tComponentsToast('success.loginForm.description'),
+        title: data.message.title,
+        description: data.message.description,
       });
     },
   });
 
   const onSubmit = (values: SignUpFormSchemaType | SignInFormSchemaType) => {
     setDialogEmail(form.getValues('email'));
-    if (isSignUp) {
-      execute({ ...values, role });
-    } else {
-      execute(values);
-    }
+    execute({ ...values, role });
   };
 
   const handleSendOTP = async () => {
     excuteSendEmailOTP({
       email: form.getValues('email'),
       password: form.getValues('password'),
+      role,
     });
   };
 
@@ -198,7 +201,7 @@ function LoginForm({ isMail, isSignUp }: Props) {
         </Button>
       </form>
       {!isSignUp &&
-        error?.message === errorMessages.verifyEmail.notVerified && (
+        error?.message === tErrorMessages('verifyEmail.notVerified') && (
           <Button
             variant={'outline'}
             className={cn('!mt-8 w-full', isMobile && 'h-9')}

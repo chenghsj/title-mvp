@@ -30,6 +30,7 @@ type Props = {
 };
 
 export const UploadImageDialog = ({ formType, type }: Props) => {
+  const tErrorMessages = useTranslations('errorMessages');
   const tProfileImage = useTranslations(`profile.image`);
   const { toast } = useToast();
   const dialogState = useDialogState();

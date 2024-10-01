@@ -75,7 +75,7 @@ export const Profile = ({ dashboardDetails }: Props) => {
             <ProfileSectionCard
               title={tProfile('jobExperiences.title')}
               items={jobExperiences}
-              formType='Job'
+              formType='JobExperience'
               renderItem={(job) => <JobSection jobExperience={job} />}
             />
           </div>

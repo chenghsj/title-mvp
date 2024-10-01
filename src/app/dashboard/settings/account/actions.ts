@@ -8,7 +8,7 @@ import { deleteUserUseCase } from '@/use-cases/users';
 export const deleteAccountAction = authenticatedAction
   .createServerAction()
   .input(z.void())
-  .handler(async ({ input, ctx: { user } }) => {
-    await deleteUserUseCase(user, user.id);
+  .handler(async ({ ctx: { user } }) => {
+    await deleteUserUseCase(user.id);
     redirect('/');
   });

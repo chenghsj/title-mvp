@@ -44,6 +44,7 @@ export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
   const tComponentsResponsiveDialog = useTranslations(
     'components.responsiveDialog'
   );
+  const tErrorMessages = useTranslations('errorMessages');
   const tResume = useTranslations('resume');
   const tResumeFormLabels = useTranslations('resume.form.labels');
   const tResumeFormPlaceholders = useTranslations('resume.form.placeholders');
@@ -92,7 +93,7 @@ export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
       onError: ({ err }) => {
         console.log(err.message);
         toast({
-          title: 'Something went wrong',
+          title: 'Error',
           description: err.message,
           variant: 'destructive',
         });
@@ -188,7 +189,7 @@ export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
                 <FormControl>
                   <Select
                     disabled={isPending}
-                    onValueChange={handleSelectChange('Job')}
+                    onValueChange={handleSelectChange('JobExperience')}
                     defaultValue={field.value?.toString()}
                   >
                     <SelectTrigger className='w-full'>

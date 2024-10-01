@@ -35,20 +35,34 @@ type Props = {
   education?: Education;
 };
 
-export const EducationDialog = ({ education }: Props) => {
+const useGetTranslations = () => {
+  const tErrorMessages = useTranslations('errorMessages');
   const tComponentsResponsiveDialog = useTranslations(
     'components.responsiveDialog'
   );
   const tProfileEducations = useTranslations('profile.educations');
-  const tProfileEducationsFormLabels = useTranslations(
-    'profile.educations.form.labels'
-  );
-  const tProfileEducationsFormPlaceholders = useTranslations(
-    'profile.educations.form.placeholders'
-  );
+  const tProfileEducationsForm = useTranslations('profile.educations.form');
   const tProfileEducationsDegrees = useTranslations(
     'profile.educations.degrees'
   );
+
+  return {
+    tErrorMessages,
+    tComponentsResponsiveDialog,
+    tProfileEducations,
+    tProfileEducationsForm,
+    tProfileEducationsDegrees,
+  };
+};
+
+export const EducationDialog = ({ education }: Props) => {
+  const {
+    tErrorMessages,
+    tComponentsResponsiveDialog,
+    tProfileEducations,
+    tProfileEducationsForm,
+    tProfileEducationsDegrees,
+  } = useGetTranslations();
 
   const { toast } = useToast();
   const dialogState = useDialogState();
@@ -91,7 +105,7 @@ export const EducationDialog = ({ education }: Props) => {
       onError: ({ err }) => {
         console.log(err.message);
         toast({
-          title: 'Something went wrong',
+          title: 'Error',
           description: err.message,
           variant: 'destructive',
         });
@@ -100,7 +114,6 @@ export const EducationDialog = ({ education }: Props) => {
   );
 
   const onSubmit = (values: EducationFormSchemaType) => {
-    console.log(values);
     if (dialogState.mode === 'Edit') {
       execute({ ...values, educationId: profileDialog.educationId! });
     } else {
@@ -117,7 +130,7 @@ export const EducationDialog = ({ education }: Props) => {
             name='degree'
             render={({ field }) => (
               <FormItem className='col-span-2 sm:col-span-1'>
-                <FormLabel>{tProfileEducationsFormLabels('degree')}</FormLabel>
+                <FormLabel>{tProfileEducationsForm('labels.degree')}</FormLabel>
                 <FormControl>
                   <Select
                     disabled={isPending}
@@ -126,8 +139,8 @@ export const EducationDialog = ({ education }: Props) => {
                   >
                     <SelectTrigger className='w-full'>
                       <SelectValue
-                        placeholder={tProfileEducationsFormPlaceholders(
-                          'degree'
+                        placeholder={tProfileEducationsForm(
+                          'placeholders.degree'
                         )}
                       />
                     </SelectTrigger>
@@ -154,7 +167,7 @@ export const EducationDialog = ({ education }: Props) => {
             name='institution'
             render={({ field }) => (
               <FormItem className='col-span-2 sm:col-span-1'>
-                <FormLabel>{tProfileEducationsFormLabels('school')}</FormLabel>
+                <FormLabel>{tProfileEducationsForm('labels.school')}</FormLabel>
                 <FormControl>
                   <Input disabled={isPending} {...field} />
                 </FormControl>
@@ -168,7 +181,7 @@ export const EducationDialog = ({ education }: Props) => {
             render={({ field }) => (
               <FormItem className='col-span-2 sm:col-span-1'>
                 <FormLabel>
-                  {tProfileEducationsFormLabels('fieldOfStudy')}
+                  {tProfileEducationsForm('labels.fieldOfStudy')}
                 </FormLabel>
                 <FormControl>
                   <Input disabled={isPending} {...field} />
@@ -179,7 +192,7 @@ export const EducationDialog = ({ education }: Props) => {
           />
           <FormDatePicker
             form={form}
-            label={tProfileEducationsFormLabels('startFrom')}
+            label={tProfileEducationsForm('labels.startFrom')}
             name='startDate'
             formItemProps={{
               className: 'col-span-2 sm:col-span-1',
@@ -190,7 +203,7 @@ export const EducationDialog = ({ education }: Props) => {
           />
           <FormDatePicker
             form={form}
-            label={tProfileEducationsFormLabels('endAt')}
+            label={tProfileEducationsForm('labels.endAt')}
             name='endDate'
             formItemProps={{
               className: 'col-span-2 sm:col-span-1',
@@ -207,7 +220,7 @@ export const EducationDialog = ({ education }: Props) => {
             render={({ field }) => (
               <FormItem className='col-span-2 flex h-full flex-col'>
                 <FormLabel>
-                  {tProfileEducationsFormLabels('description')}
+                  {tProfileEducationsForm('labels.description')}
                 </FormLabel>
                 <FormControl>
                   <Textarea

@@ -3,7 +3,6 @@ import { OAuth2RequestError } from 'arctic';
 import { Role } from '@/app/_root/types';
 import { afterLoginUrl } from '@/config/site';
 import { googleProvider } from '@/lib/auth';
-import { redirectToErrorPage } from '@/lib/errors';
 import { setSession } from '@/lib/session';
 import { getAccountByGoogleIdUseCase } from '@/use-cases/accounts';
 import { RoleError } from '@/use-cases/errors';
@@ -19,7 +18,9 @@ export async function GET(request: Request): Promise<Response> {
   const role = cookies().get('user_role')!.value as Role;
 
   if (error) {
-    return redirectToErrorPage(401, error);
+    return new Response(null, {
+      status: 401,
+    });
   }
 
   if (
@@ -53,7 +54,7 @@ export async function GET(request: Request): Promise<Response> {
 
     if (existingAccount) {
       if (role !== existingAccount.role) {
-        throw new RoleError(existingAccount.role);
+        throw await RoleError.create(existingAccount.role);
       }
       await setSession(existingAccount.userId);
       return new Response(null, {
@@ -76,13 +77,14 @@ export async function GET(request: Request): Promise<Response> {
     // the specific error message depends on the provider
     if (e instanceof OAuth2RequestError) {
       // invalid code
-      return redirectToErrorPage(400, e.message);
-    }
-    if (e instanceof RoleError) {
-      return redirectToErrorPage(401, e.message);
+      return new Response(null, {
+        status: 400,
+      });
     }
 
-    return redirectToErrorPage(500, 'Internal server error.');
+    return new Response(null, {
+      status: 500,
+    });
   }
 }
 

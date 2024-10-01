@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import { Role } from '@/app/_root/types';
 import { GoogleUser } from '@/app/api/login/google/callback/route';
 import {
@@ -9,7 +10,11 @@ import {
   MAX_UPLOAD_IMAGE_SIZE,
   MAX_UPLOAD_IMAGE_SIZE_IN_MB,
 } from '@/config/app';
-import { createAccount, createAccountViaGoogle } from '@/data-access/accounts';
+import {
+  createAccount,
+  createAccountViaGoogle,
+  getAccountByUserId,
+} from '@/data-access/accounts';
 import {
   createEducation,
   deleteEducation,
@@ -54,20 +59,13 @@ import {
   EmailVerificationError,
   NotFoundError,
   PublicError,
-  errorMessages,
+  RoleError,
 } from './errors';
-import { UserId, UserSession } from './types';
+import { UserId } from './types';
 
-export async function deleteUserUseCase(
-  authenticatedUser: UserSession,
-  userToDeleteId: UserId
-): Promise<void> {
-  if (authenticatedUser.id !== userToDeleteId) {
-    throw new PublicError('You can only delete your own account');
-  }
-
-  await deleteProfileImagesUseCase(userToDeleteId);
-  await deleteUser(userToDeleteId);
+export async function deleteUserUseCase(userId: UserId): Promise<void> {
+  await deleteProfileImagesUseCase(userId);
+  await deleteUser(userId);
 }
 
 export async function createGoogleUserUseCase(
@@ -92,9 +90,10 @@ export async function registerUserUseCase(
   password: string,
   role?: Role
 ) {
+  const tErrorMessages = await getTranslations('errorMessages');
   const existingUser = await getUserByEmail(email);
   if (existingUser && existingUser.emailVerified) {
-    throw new PublicError('An user with that email already exists.');
+    throw new PublicError(tErrorMessages('public.userAlreadyExists'));
   }
 
   let user = existingUser;
@@ -116,21 +115,33 @@ export async function registerUserUseCase(
   return { id: user?.id };
 }
 
-export async function signInUseCase(email: string, password: string) {
+export async function signInUseCase(
+  email: string,
+  password: string,
+  role: Role
+) {
+  const tErrorMessages = await getTranslations('errorMessages');
   const user = await getUserByEmail(email);
 
   if (!user) {
-    throw new PublicError('User not found');
+    throw new PublicError(tErrorMessages('userNotFound'));
   }
 
   const isPasswordCorrect = await verifyPassword(email, password);
 
   if (!isPasswordCorrect) {
-    throw new PublicError('Invalid password');
+    throw new PublicError(tErrorMessages('invalidPassword'));
   }
 
   if (!user.emailVerified) {
-    throw new EmailVerificationError(errorMessages.verifyEmail.notVerified);
+    throw new EmailVerificationError(tErrorMessages('verifyEmail.notVerified'));
+  }
+
+  if (user) {
+    const account = await getAccountByUserId(user.id);
+    if (account?.role !== role) {
+      throw await RoleError.create(account?.role!);
+    }
   }
 
   return user;

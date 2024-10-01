@@ -1,14 +1,34 @@
 {
+  "errorMessages": {
+    "backToSignInPage": "Back to sign in page",
+    "somethingWentWrong": "Something went wrong",
+    "userNotFound": "User not found.",
+    "invalidPassword": "Invalid password.",
+    "verifyEmail": {
+      "notVerified": "Email not verified.",
+      "expired": "OTP expired.",
+      "invalid": "Invalid OTP.",
+      "failedToValidate": "Failed to validate OTP!"
+    },
+    "public": {
+      "userAlreadyExists": "An user with that email already exists.",
+      "AuthenticationError": "You must be logged in to view this content",
+      "NotFoundError": "Resource not found",
+      "RoleError": "The mail address is already registered with {role} account. \nIf you want to change your role with current mail, please delete the existing account first.",
+      "SendEmailError": "Failed to send email",
+      "EmailVerificationError": "Failed to verify email",
+      "LoginError": "Invalid email or password"
+    }
+  },
   "not-found": {
     "title": "404 Not Found",
     "description": "The page you are looking for does not exist.",
     "buttons": {
-      "back-to-home": "Back to Home"
+      "backToHome": "Back to Home"
     }
   },
   "components": {
     "toast": {
-      "error": "Something went wrong",
       "success": {
         "inputOTPDialog": {
           "title": "Email verified",
@@ -18,9 +38,9 @@
           "title": "Email sent successfully!",
           "description": "Please check your email for the OTP"
         },
-        "comfirmDeleteDialog": {
+        "confirmDeleteDialog": {
           "title": "Success",
-          "description": "{title} deleted"
+          "description": "{type} deleted"
         }
       }
     },
@@ -75,6 +95,11 @@
         "submit": "Submit",
         "sendOTP": "Send OTP"
       }
+    },
+    "success": {
+      "verifyEmail": {
+        "verified": "OTP validated successfully!"
+      }
     }
   },
   "navbar": {
@@ -116,7 +141,7 @@
         "education": "Education",
         "degree": "degree",
         "jobExperience": "Job Experience",
-        "expreience": "experience",
+        "experience": "experience",
         "avatar": "Profile",
         "cover": "Cover",
         "image": "Image"

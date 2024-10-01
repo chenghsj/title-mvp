@@ -41,23 +41,36 @@ type Props = {
   jobExperience?: JobExperience;
 };
 
-export const JobDialog = ({ jobExperience }: Props) => {
+const useGetTranslations = () => {
   const tResponsiveDialog = useTranslations('components.responsiveDialog');
   const tProfileJobExperiences = useTranslations('profile.jobExperiences');
-  const tProfileExperienceFormLabels = useTranslations(
-    'profile.jobExperiences.form.labels'
-  );
-  const tProfileJobExperiencesFormPlaceholders = useTranslations(
-    'profile.jobExperiences.form.placeholders'
+  const tProfileJobExperiencesForm = useTranslations(
+    'profile.jobExperiences.form'
   );
   const tProfileJobExperiencesEmploymentTypes = useTranslations(
     'profile.jobExperiences.employmentTypes'
   );
 
+  return {
+    tResponsiveDialog,
+    tProfileJobExperiences,
+    tProfileJobExperiencesForm,
+    tProfileJobExperiencesEmploymentTypes,
+  };
+};
+
+export const JobDialog = ({ jobExperience }: Props) => {
+  const {
+    tResponsiveDialog,
+    tProfileJobExperiences,
+    tProfileJobExperiencesForm,
+    tProfileJobExperiencesEmploymentTypes,
+  } = useGetTranslations();
+
   const { toast } = useToast();
   const dialogState = useDialogState();
   const profileDialog = useProfileDialog();
-  const { shouldReturn } = useReturnByFormType('Job');
+  const { shouldReturn } = useReturnByFormType('JobExperience');
 
   const form = useForm<JobExperienceFormSchemaType>({
     resolver: zodResolver(JobExperienceFormSchema),
@@ -124,7 +137,9 @@ export const JobDialog = ({ jobExperience }: Props) => {
             name='title'
             render={({ field }) => (
               <FormItem className='col-span-2 sm:col-span-1'>
-                <FormLabel>{tProfileExperienceFormLabels('title')}</FormLabel>
+                <FormLabel>
+                  {tProfileJobExperiencesForm('labels.title')}
+                </FormLabel>
                 <FormControl>
                   <Input disabled={isPending} {...field} />
                 </FormControl>
@@ -138,7 +153,9 @@ export const JobDialog = ({ jobExperience }: Props) => {
             name='company'
             render={({ field }) => (
               <FormItem className='col-span-2 sm:col-span-1'>
-                <FormLabel>{tProfileExperienceFormLabels('company')}</FormLabel>
+                <FormLabel>
+                  {tProfileJobExperiencesForm('labels.company')}
+                </FormLabel>
                 <FormControl>
                   <Input disabled={isPending} {...field} />
                 </FormControl>
@@ -152,7 +169,7 @@ export const JobDialog = ({ jobExperience }: Props) => {
             render={({ field }) => (
               <FormItem className='col-span-2 sm:col-span-1'>
                 <FormLabel>
-                  {tProfileExperienceFormLabels('employmentType')}
+                  {tProfileJobExperiencesForm('labels.employmentType')}
                 </FormLabel>
                 <FormControl>
                   <Select
@@ -162,8 +179,8 @@ export const JobDialog = ({ jobExperience }: Props) => {
                   >
                     <SelectTrigger className='w-full'>
                       <SelectValue
-                        placeholder={tProfileJobExperiencesFormPlaceholders(
-                          'employmentType'
+                        placeholder={tProfileJobExperiencesForm(
+                          'placeholders.employmentType'
                         )}
                       />
                     </SelectTrigger>
@@ -186,7 +203,7 @@ export const JobDialog = ({ jobExperience }: Props) => {
           />
           <FormDatePicker
             form={form}
-            label={tProfileExperienceFormLabels('startFrom')}
+            label={tProfileJobExperiencesForm('labels.startFrom')}
             name='startDate'
             formItemProps={{
               className: 'col-span-2 sm:col-span-1',
@@ -197,7 +214,7 @@ export const JobDialog = ({ jobExperience }: Props) => {
           />
           <FormDatePicker
             form={form}
-            label={tProfileExperienceFormLabels('endAt')}
+            label={tProfileJobExperiencesForm('labels.endAt')}
             name='endDate'
             formItemProps={{
               className: 'col-span-2 sm:col-span-1',
@@ -215,7 +232,7 @@ export const JobDialog = ({ jobExperience }: Props) => {
             render={({ field }) => (
               <FormItem className='col-span-2 flex h-full flex-col'>
                 <FormLabel>
-                  {tProfileExperienceFormLabels('description')}
+                  {tProfileJobExperiencesForm('labels.description')}
                 </FormLabel>
                 <FormControl>
                   <Textarea

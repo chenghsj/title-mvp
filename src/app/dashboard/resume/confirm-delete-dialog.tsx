@@ -11,6 +11,7 @@ import { useResumeDialog } from './hooks';
 type Props = {};
 
 export const ConfirmDeleteDialog = ({}: Props) => {
+  const tErrorMessages = useTranslations('errorMessages');
   const tComponentsResponsiveDialog = useTranslations(
     'components.responsiveDialog'
   );

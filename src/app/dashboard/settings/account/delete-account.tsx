@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslations } from 'next-intl';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useServerAction } from 'zsa-react';
@@ -38,6 +39,7 @@ type Props = {};
 
 export const DeleteAccount = (props: Props) => {
   const [isOpen, setIsOpen] = useState(false);
+  const tErrorMessages = useTranslations('errorMessages');
   const { toast } = useToast();
   const form = useForm<z.infer<typeof deleteSchema>>({
     resolver: zodResolver(deleteSchema),

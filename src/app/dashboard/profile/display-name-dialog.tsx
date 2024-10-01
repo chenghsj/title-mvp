@@ -23,12 +23,29 @@ type Props = {
   displayName: string;
 };
 
-export const DisplayNameDialog = ({ displayName }: Props) => {
+const useGetTranslations = () => {
+  const tErrorMessages = useTranslations('errorMessages');
   const tResponsiveDialog = useTranslations('components.responsiveDialog');
   const tProfileDisplayName = useTranslations(`profile.displayName`);
   const tProfileDisplayNameFormLabels = useTranslations(
     'profile.displayName.form.labels'
   );
+
+  return {
+    tErrorMessages,
+    tResponsiveDialog,
+    tProfileDisplayName,
+    tProfileDisplayNameFormLabels,
+  };
+};
+
+export const DisplayNameDialog = ({ displayName }: Props) => {
+  const {
+    tErrorMessages,
+    tResponsiveDialog,
+    tProfileDisplayName,
+    tProfileDisplayNameFormLabels,
+  } = useGetTranslations();
 
   const { toast } = useToast();
   const dialogState = useDialogState();
@@ -45,6 +62,11 @@ export const DisplayNameDialog = ({ displayName }: Props) => {
   const { execute, isPending } = useServerAction(updateDisplayNameAction, {
     onError: ({ err }) => {
       console.error(err);
+      toast({
+        title: 'Error',
+        description: err.message,
+        variant: 'destructive',
+      });
     },
     onSuccess: () => {
       dialogState.setIsOpen(false);
@@ -98,7 +120,7 @@ export const DisplayNameDialog = ({ displayName }: Props) => {
       })}
       content={formContent}
       dialogContentProps={{
-        className: 'max-w-[500px]',
+        className: 'max-w-[500px] w-[90%] rounded-lg',
       }}
       submitButton={{
         title:

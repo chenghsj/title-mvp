@@ -9,11 +9,18 @@ type Props = {
   education: Education;
 };
 
-export const EducationSection = ({ education }: Props) => {
+const useGetTranslations = () => {
   const tProfileEducationsDegrees = useTranslations(
     'profile.educations.degrees'
   );
   const tProfileEducationsDate = useTranslations('profile.educations.date');
+
+  return { tProfileEducationsDegrees, tProfileEducationsDate };
+};
+
+export const EducationSection = ({ education }: Props) => {
+  const { tProfileEducationsDegrees, tProfileEducationsDate } =
+    useGetTranslations();
 
   return (
     <div className='relative flex w-full flex-col gap-2'>

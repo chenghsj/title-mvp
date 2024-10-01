@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { capitalize } from 'lodash';
 import { z } from 'zod';
 import { rateLimitByKey } from '@/lib/limiter';
 import { authenticatedAction } from '@/lib/safe-action';
@@ -20,7 +21,9 @@ import {
   EducationFormSchema,
   JobExperienceFormSchema,
 } from './form-schema';
+import { FormType } from './hooks';
 import { profileImageType } from './types';
+import { getSuccessMessageByType } from './utils';
 
 /**
  * Education actions
@@ -47,6 +50,9 @@ export const deleteEducationAction = authenticatedAction
   .handler(async ({ input, ctx }) => {
     await deleteEducationUseCase(ctx.user.id, input.educationId);
     revalidatePath('/dashboard/profile');
+
+    const successMessage = await getSuccessMessageByType('Education');
+    return { message: successMessage };
   });
 
 /**
@@ -78,6 +84,9 @@ export const deleteJobExperienceAction = authenticatedAction
   .handler(async ({ input, ctx }) => {
     await deleteJobExperienceUseCase(ctx.user.id, input.jobExperienceId);
     revalidatePath('/dashboard/profile');
+
+    const successMessage = await getSuccessMessageByType('JobExperience');
+    return { message: successMessage };
   });
 
 export const updateDisplayNameAction = authenticatedAction
@@ -113,4 +122,9 @@ export const deleteProfileImageAction = authenticatedAction
   .handler(async ({ input, ctx }) => {
     await deleteProfileImageUseCase(ctx.user.id, input.type);
     revalidatePath(`/dashboard/profile`);
+
+    const successMessage = await getSuccessMessageByType(
+      capitalize(input.type) as FormType
+    );
+    return { message: successMessage };
   });

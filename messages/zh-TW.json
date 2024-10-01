@@ -1,26 +1,46 @@
 {
+  "errorMessages": {
+    "backToSignInPage": "返回登入頁",
+    "somethingWentWrong": "出了點問題",
+    "userNotFound": "找不到用戶",
+    "invalidPassword": "密碼錯誤",
+    "verifyEmail": {
+      "notVerified": "電子郵件未驗證",
+      "expired": "OTP 已過期",
+      "invalid": "無效的 OTP",
+      "failedToValidate": "驗證 OTP 失敗"
+    },
+    "public": {
+      "userAlreadyExists": "此電子郵件已經註冊過",
+      "AuthenticationError": "您必須登錄才能查看此內容",
+      "NotFoundError": "找不到資源",
+      "RoleError": "電子郵件已註冊為 {role} 帳戶。\n若您想使用當前郵件登入此身份，請先刪除現有帳戶。",
+      "SendEmailError": "發送電子郵件失敗",
+      "EmailVerificationError": "驗證電子郵件失敗",
+      "LoginError": "電子郵件或密碼錯誤"
+    }
+  },
   "not-found": {
     "title": "404 Not Found",
     "description": "您要查找的頁面不存在。",
     "buttons": {
-      "back-to-home": "返回首頁"
+      "backToHome": "返回首頁"
     }
   },
   "components": {
     "toast": {
-      "error": "出了點問題",
       "success": {
         "inputOTPDialog": {
           "title": "電子郵件驗證成功",
-          "description": "將重新導向至控制台"
+          "description": "重新導向至控制台"
         },
         "loginForm": {
           "title": "電子郵件發送成功！",
           "description": "請查看您的電子郵件以獲取 OTP"
         },
-        "comfirmDeleteDialog": {
+        "confirmDeleteDialog": {
           "title": "成功",
-          "description": "{title}已刪除"
+          "description": "{type}已刪除"
         }
       }
     },
@@ -116,7 +136,7 @@
         "education": "學歷",
         "degree": "學位",
         "jobExperience": "工作經驗",
-        "expreience": "經驗",
+        "experience": "經驗",
         "avatar": "頭像",
         "cover": "封面",
         "image": "圖片"

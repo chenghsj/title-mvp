@@ -17,7 +17,7 @@ export const NotFoundPage = (props: Props) => {
         <div className='text-center'>{tNotFound('description')}</div>
       </div>
       <Button variant='outline' asChild>
-        <Link href='/'>{tNotFound('buttons.back-to-home')}</Link>
+        <Link href='/'>{tNotFound('buttons.backToHome')}</Link>
       </Button>
     </>
   );

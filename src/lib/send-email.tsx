@@ -1,5 +1,6 @@
 'use server';
 
+import { getTranslations } from 'next-intl/server';
 import { render } from '@react-email/render';
 import nodemailer from 'nodemailer';
 import { PublicError } from '@/use-cases/errors';
@@ -9,6 +10,7 @@ export async function sendEmail(
   subject: string,
   body: JSX.Element
 ) {
+  const tErrorMessages = await getTranslations('errorMessages');
   const transport = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -20,7 +22,7 @@ export async function sendEmail(
     await transport.verify();
   } catch (error) {
     console.error(error);
-    throw new PublicError('Faild to verify email');
+    throw new PublicError(tErrorMessages('public.EmailVerificationError'));
   }
 
   try {
@@ -32,6 +34,6 @@ export async function sendEmail(
     });
   } catch (error) {
     console.error(error);
-    throw new PublicError('Failed to send email');
+    throw new PublicError(tErrorMessages('public.SendEmailError'));
   }
 }

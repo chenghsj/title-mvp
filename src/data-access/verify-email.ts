@@ -1,10 +1,11 @@
 'use server';
 
+import { getTranslations } from 'next-intl/server';
 import { eq } from 'drizzle-orm';
 import { OTP_TTL } from '@/config/app';
 import { db } from '@/db/drizzle';
 import { emailVerificationOTPs } from '@/db/schema';
-import { PublicError, errorMessages } from '@/use-cases/errors';
+import { PublicError } from '@/use-cases/errors';
 
 export async function insertEmailOTP(
   userId: string,
@@ -27,6 +28,10 @@ export async function insertEmailOTP(
 }
 
 export const verifyEmailOTP = async (email: string, OTP: string) => {
+  const tLoginSuccessVerifyEmail = await getTranslations(
+    'login.success.verifyEmail'
+  );
+  const tErrorMessages = await getTranslations('errorMessages');
   try {
     const existingUser = await db.query.emailVerificationOTPs.findFirst({
       where: eq(emailVerificationOTPs.email, email),
@@ -34,32 +39,32 @@ export const verifyEmailOTP = async (email: string, OTP: string) => {
     if (!existingUser) {
       return {
         success: false,
-        message: errorMessages.verifyEmail.notFound,
+        message: tErrorMessages('userNotFound'),
       };
     }
 
     if (existingUser?.OTP !== OTP) {
       return {
         success: false,
-        message: errorMessages.verifyEmail.invalid,
+        message: tErrorMessages('verifyEmail.invalid'),
       };
     }
 
     if (existingUser?.expiresAt < new Date()) {
       return {
         success: false,
-        message: errorMessages.verifyEmail.expired,
+        message: tErrorMessages('verifyEmail.expired'),
       };
     }
 
     return {
       userId: existingUser.userId,
       success: true,
-      message: 'OTP validated successfully!',
+      message: tLoginSuccessVerifyEmail('verified'),
     };
   } catch (error) {
     console.error(error);
-    throw new PublicError('Failed to validate OTP!');
+    throw new PublicError(tErrorMessages('verifyEmail.failedToValidate'));
   }
 };
 

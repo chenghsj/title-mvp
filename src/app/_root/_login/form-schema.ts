@@ -4,6 +4,7 @@ import { RoleTypeEnum } from '../types';
 export const SignInFormSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
+  role: z.enum(RoleTypeEnum),
 });
 export type SignInFormSchemaType = z.infer<typeof SignInFormSchema>;
 

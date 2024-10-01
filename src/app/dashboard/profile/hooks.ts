@@ -7,7 +7,7 @@ import { ModeType, useDialogState } from '@/hooks/store';
 
 const ProfileType = {
   Education: 'Education',
-  Job: 'Job',
+  JobExperience: 'Job Experience',
   Cover: 'Cover',
   Avatar: 'Avatar',
   DisplayName: 'DisplayName',
@@ -83,7 +83,7 @@ export const useCreateHandleMenuButtonClick = () => {
       if (mode === 'Edit' || mode === 'Delete') {
         if (formType === 'Education') {
           profileDialog.setEducationId(id! as number);
-        } else if (formType === 'Job') {
+        } else if (formType === 'JobExperience') {
           profileDialog.setJobId(id! as number);
         } else if (formType === 'Cover') {
           profileDialog.setCoverId(id! as string);

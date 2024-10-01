@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server';
 import { startCase } from 'lodash';
 import { Role } from '@/app/_root/types';
 
@@ -22,12 +23,21 @@ export class NotFoundError extends PublicError {
 }
 
 export class RoleError extends PublicError {
-  constructor(role: Role) {
+  constructor(role: Role, message?: string) {
     super(
-      `The mail address is already registered with ${startCase(role)} account.\n` +
-        `If you want to change your role with current mail, please delete the existing account first.`
+      message ??
+        `The mail address is already registered with ${startCase(role)} account.\n` +
+          `If you want to change your role with current mail, please delete the existing account first.`
     );
     this.name = 'RoleError';
+  }
+  static async create(role: Role) {
+    const tPublic = await getTranslations('errorMessages.public');
+    const tLogin = await getTranslations('login');
+    return new RoleError(
+      role,
+      tPublic.rich('RoleError', { role: tLogin(role) }) as string
+    );
   }
 }
 

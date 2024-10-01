@@ -15,7 +15,6 @@ import { setUserLocale } from '@/lib/locale';
 
 export default function LocaleSwitcher() {
   const tNavbarLanguage = useTranslations('navbar.language');
-
   const [isPending, startTransition] = useTransition();
 
   const onChange = (value: string) => (e: MouseEvent<HTMLDivElement>) => {
