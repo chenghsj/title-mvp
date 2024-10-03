@@ -3,6 +3,7 @@ import { OAuth2RequestError } from 'arctic';
 import { Role } from '@/app/_root/types';
 import { afterLoginUrl } from '@/config/site';
 import { googleProvider } from '@/lib/auth';
+import { redirectToOAuthErrorPage } from '@/lib/errors';
 import { setSession } from '@/lib/session';
 import { getAccountByGoogleIdUseCase } from '@/use-cases/accounts';
 import { RoleError } from '@/use-cases/errors';
@@ -16,11 +17,10 @@ export async function GET(request: Request): Promise<Response> {
   const storedState = cookies().get('google_oauth_state')?.value ?? null;
   const codeVerifier = cookies().get('google_code_verifier')?.value ?? null;
   const role = cookies().get('user_role')!.value as Role;
+  let existingAccountRole = '' as Role;
 
   if (error) {
-    return new Response(null, {
-      status: 401,
-    });
+    return redirectToOAuthErrorPage(401, error);
   }
 
   if (
@@ -30,9 +30,7 @@ export async function GET(request: Request): Promise<Response> {
     state !== storedState ||
     !codeVerifier
   ) {
-    return new Response(null, {
-      status: 400,
-    });
+    return redirectToOAuthErrorPage(400, 'Invalid state or code');
   }
 
   try {
@@ -54,7 +52,8 @@ export async function GET(request: Request): Promise<Response> {
 
     if (existingAccount) {
       if (role !== existingAccount.role) {
-        throw await RoleError.create(existingAccount.role);
+        existingAccountRole = existingAccount.role;
+        throw new RoleError(existingAccount.role);
       }
       await setSession(existingAccount.userId);
       return new Response(null, {
@@ -77,14 +76,14 @@ export async function GET(request: Request): Promise<Response> {
     // the specific error message depends on the provider
     if (e instanceof OAuth2RequestError) {
       // invalid code
-      return new Response(null, {
-        status: 400,
-      });
+      return redirectToOAuthErrorPage(400, e.message);
     }
 
-    return new Response(null, {
-      status: 500,
-    });
+    if (e instanceof RoleError) {
+      return redirectToOAuthErrorPage(400, 'RoleError', existingAccountRole);
+    }
+
+    return redirectToOAuthErrorPage(500, 'Internal server error');
   }
 }
 

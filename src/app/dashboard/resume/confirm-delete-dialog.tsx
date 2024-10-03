@@ -30,7 +30,7 @@ export const ConfirmDeleteDialog = ({}: Props) => {
     },
     onError: ({ err }) => {
       toast({
-        title: 'Error',
+        title: err.code,
         description: err.message,
         variant: 'destructive',
       });

@@ -1,3 +1,6 @@
+'use client';
+
+import React from 'react';
 import { FaCamera } from 'react-icons/fa';
 import { IoPersonSharp } from 'react-icons/io5';
 import { useTranslations } from 'next-intl';
@@ -16,9 +19,14 @@ import { useCreateHandleMenuButtonClick } from './hooks';
 type Props = {
   profile: Profile;
   avatarUrl: string | null;
+  canEdit?: boolean;
 };
 
-export const AvatarWithMenu = ({ profile, avatarUrl }: Props) => {
+export const AvatarWithMenu = ({
+  profile,
+  avatarUrl,
+  canEdit = true,
+}: Props) => {
   const { handleMenuButtonClick } = useCreateHandleMenuButtonClick();
   const tProfileImageButtons = useTranslations('profile.image.buttons');
 
@@ -64,7 +72,7 @@ export const AvatarWithMenu = ({ profile, avatarUrl }: Props) => {
     </DropdownMenuContent>
   );
 
-  return (
+  return canEdit ? (
     <ResponsiveDropdownMenu
       trigger={trigger}
       editButton={{
@@ -80,5 +88,7 @@ export const AvatarWithMenu = ({ profile, avatarUrl }: Props) => {
       handleDeleteClick={handleMenuButtonClick('Delete', 'Avatar')}
       renderDropdownMenuContent={dropdownMenuContent}
     />
+  ) : (
+    <>{trigger}</>
   );
 };

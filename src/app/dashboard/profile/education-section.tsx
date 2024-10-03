@@ -1,7 +1,10 @@
+'use client';
+
 import React from 'react';
 import { useTranslations } from 'next-intl';
 import { camelCase } from 'lodash';
 import { GraduationCap } from 'lucide-react';
+import { BreakLineDiv } from '@/components/break-line-div';
 import { Separator } from '@/components/ui/separator';
 import { Education } from '@/db/schema';
 
@@ -10,16 +13,14 @@ type Props = {
 };
 
 const useGetTranslations = () => {
-  const tProfileEducationsDegrees = useTranslations(
-    'profile.educations.degrees'
-  );
-  const tProfileEducationsDate = useTranslations('profile.educations.date');
+  const tProfileEducationDegrees = useTranslations('profile.education.degrees');
+  const tProfileEducationDate = useTranslations('profile.education.date');
 
-  return { tProfileEducationsDegrees, tProfileEducationsDate };
+  return { tProfileEducationDegrees, tProfileEducationDate };
 };
 
 export const EducationSection = ({ education }: Props) => {
-  const { tProfileEducationsDegrees, tProfileEducationsDate } =
+  const { tProfileEducationDegrees, tProfileEducationDate } =
     useGetTranslations();
 
   return (
@@ -27,10 +28,10 @@ export const EducationSection = ({ education }: Props) => {
       <div className='text-sm font-bold'>
         <div className='flex items-center gap-2'>
           <GraduationCap size={18} />
-          {tProfileEducationsDegrees(
+          {tProfileEducationDegrees(
             camelCase(
               education.degree!
-            ) as keyof IntlMessages['profile']['educations']['degrees']
+            ) as keyof IntlMessages['profile']['education']['degrees']
           )}
         </div>
       </div>
@@ -42,17 +43,12 @@ export const EducationSection = ({ education }: Props) => {
         </div>
         <div className='text-xs italic'>
           {education.startDate} -{' '}
-          {education.endDate || tProfileEducationsDate('present')}
+          {education.endDate || tProfileEducationDate('present')}
         </div>
       </div>
       {education.description && (
         <div className='mt-2 w-full rounded-md p-2 text-sm outline-dashed outline-2 outline-zinc-200 dark:outline-zinc-800'>
-          {education.description.split('\n').map((line, index) => (
-            <React.Fragment key={index}>
-              {line}
-              <br />
-            </React.Fragment>
-          ))}
+          <BreakLineDiv content={education.description} />
         </div>
       )}
     </div>

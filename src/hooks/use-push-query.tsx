@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 type Query = {
@@ -13,15 +13,24 @@ export function usePushQuery(params: Query) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const pushQueryString = (params: Query) => {
-    const _params = new URLSearchParams(searchParams.toString());
-    params.forEach(({ name, value }) => {
-      _params.set(name, value);
-    });
-    router.replace(`${pathname}?${_params.toString()}`);
-  };
+  const pushQueryString = useCallback(
+    (params: Query) => {
+      const _params = new URLSearchParams(searchParams.toString());
+      params.forEach(({ name, value }) => {
+        if (value) {
+          _params.set(name, value);
+        } else {
+          _params.delete(name);
+        }
+      });
+      router.replace(`${pathname}?${_params.toString()}`);
+    },
+    [pathname, searchParams, router]
+  );
 
   useEffect(() => {
-    pushQueryString(params);
-  }, [searchParams]);
+    if (params.length > 0) {
+      pushQueryString(params);
+    }
+  }, [params, pushQueryString]);
 }

@@ -23,13 +23,9 @@ import { useEmailOTPDialog } from './hooks';
 type Props = {};
 
 const useGetTranslations = () => {
-  const tErrorMessages = useTranslations('errorMessages');
-  const tComponentsToast = useTranslations('components.toast');
   const tLoginInputOTP = useTranslations('login.inputOTP');
 
   return {
-    tErrorMessages,
-    tComponentsToast,
     tLoginInputOTP,
   };
 };
@@ -38,15 +34,14 @@ export function InputOTPDialog({}: Props) {
   const router = useRouter();
   const { toast } = useToast();
   const { isOpen, setIsOpen, email } = useEmailOTPDialog();
-  const { tErrorMessages, tComponentsToast, tLoginInputOTP } =
-    useGetTranslations();
+  const { tLoginInputOTP } = useGetTranslations();
 
   const { execute, isPending, error, reset } = useServerAction(
     verifyEmailOTPAction,
     {
       onError: ({ err }) => {
         toast({
-          title: 'Error',
+          title: err.code,
           description: err.message,
           variant: 'destructive',
         });

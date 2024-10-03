@@ -1,4 +1,22 @@
 {
+  "actions": {
+    "signUpAction": {
+      "title": "Email sent successfully!",
+      "description": "Please check your email for the OTP"
+    },
+    "sendEmailOTPAction": {
+      "title": "Email sent successfully!",
+      "description": "Please check your email for the OTP"
+    },
+    "verifyEmailOTPAction": {
+      "title": "Email verified",
+      "description": "Redirect to dashboard"
+    },
+    "confirmDeleteAction": {
+      "title": "Success",
+      "description": "{type} deleted"
+    }
+  },
   "errorMessages": {
     "backToSignInPage": "Back to sign in page",
     "somethingWentWrong": "Something went wrong",
@@ -29,7 +47,9 @@
   },
   "components": {
     "toast": {
+      "error": "Error",
       "success": {
+        "title": "Success",
         "inputOTPDialog": {
           "title": "Email verified",
           "description": "Redirect to dashboard"
@@ -41,6 +61,14 @@
         "confirmDeleteDialog": {
           "title": "Success",
           "description": "{type} deleted"
+        },
+        "profile": {
+          "title": "{type} {mode}d",
+          "description": "{type} {mode}d successfully!"
+        },
+        "resume": {
+          "title": "Resume {mode}",
+          "description": "Resume {mode} successfully!"
         }
       }
     },
@@ -147,11 +175,7 @@
         "image": "Image"
       },
       "title": "Confirm {title} Deletion",
-      "description": "Are you sure you want to delete this <strong>{prefix}</strong> {suffix}?",
-      "buttons": {
-        "confirm": "Confirm",
-        "cancel": "Cancel"
-      }
+      "description": "Are you sure you want to delete this <strong>{prefix}</strong> {suffix}?"
     },
     "image": {
       "type": {
@@ -176,7 +200,7 @@
         }
       }
     },
-    "educations": {
+    "education": {
       "title": "Education",
       "dialogTitle": "{mode} {title}",
       "date": {
@@ -202,7 +226,7 @@
         }
       }
     },
-    "jobExperiences": {
+    "jobExperience": {
       "title": "Job Experience",
       "dialogTitle": "{mode} {title}",
       "date": {

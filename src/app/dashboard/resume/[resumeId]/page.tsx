@@ -1,15 +1,13 @@
-import { IoPersonSharp } from 'react-icons/io5';
 import { getTranslations } from 'next-intl/server';
-import Image from 'next/image';
-import { AvatarWithNextImage } from '@/components/avatar-with-next-image';
-import { AvatarFallback } from '@/components/ui/avatar';
+import { BreakLineDiv } from '@/components/break-line-div';
 import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
 import { assertAuthenticated } from '@/lib/session';
-import { cn } from '@/lib/utils';
 import { getDashboardProfileUseCase } from '@/use-cases/users';
+import { AvatarWithMenu } from '../../profile/avatar-with-menu';
+import { CoverSection } from '../../profile/cover-section';
+import { DisplayNameSection } from '../../profile/display-name-section';
 import { EducationSection } from '../../profile/education-section';
-import { JobSection } from '../../profile/job-section';
+import { JobExperienceSection } from '../../profile/job-experience-section';
 import { ConfirmDeleteDialog } from '../confirm-delete-dialog';
 import { ResumeDialog } from '../resume-dialog';
 import BackButton from './back-button';
@@ -44,10 +42,8 @@ const SingleResumePage = async ({ params }: Props) => {
     (job) => job.id === resume?.jobExperienceId
   );
 
-  const tProfileEducations = await getTranslations('profile.educations');
-  const tProfileJobExperiences = await getTranslations(
-    'profile.jobExperiences'
-  );
+  const tProfileEducation = await getTranslations('profile.education');
+  const tProfileJobExperience = await getTranslations('profile.jobExperience');
 
   return (
     <div className='max-w-3xl space-y-3'>
@@ -60,45 +56,27 @@ const SingleResumePage = async ({ params }: Props) => {
       </Card>
 
       <div>
-        <div className='relative'>
-          <div className='aspect-[16/6] w-full sm:aspect-[16/5]'>
-            {coverUrl ? (
-              <Image
-                className='h-full w-full rounded-md object-contain'
-                src={coverUrl}
-                fill
-                alt='profile cover image'
-              />
-            ) : (
-              <Skeleton className='h-full w-full rounded-md' />
-            )}
+        <CoverSection coverUrl={coverUrl} canEdit={false} />
+        <div className='-mt-2 space-y-5 px-5 sm:-mt-4'>
+          <div className='flex items-center gap-4 sm:gap-6'>
+            <AvatarWithMenu
+              profile={profile}
+              avatarUrl={avatarUrl}
+              canEdit={false}
+            />
+            <DisplayNameSection
+              displayName={profile.displayName!}
+              canEdit={false}
+            />
           </div>
-        </div>
-        <div className='-mt-5 space-y-3 px-5 sm:space-y-5'>
-          <AvatarWithNextImage
-            avatarFallback={
-              <AvatarFallback className='bg-zinc-500'>
-                <IoPersonSharp className='h-full w-full translate-y-3 text-zinc-400' />
-              </AvatarFallback>
-            }
-            avatarUrl={avatarUrl || profile?.image}
-            avatarProps={{
-              className: cn('aspect-square h-20 w-20', 'sm:h-28 sm:w-28'),
-            }}
-          />
-          <div className='space-y-2'>
-            <div className='ml-2 text-base font-bold sm:text-lg'>
-              {profile?.displayName}
-            </div>
-            <div className='ml-2 text-base'>
-              <p>{resume?.bio}</p>
-            </div>
+          <div className='ml-2 text-base'>
+            {resume?.bio && <BreakLineDiv content={resume.bio} />}
           </div>
           <div className='flex flex-col gap-5'>
             {displayedEducation && (
               <Card className='flex flex-col gap-3 p-4'>
                 <div className='text-base font-bold'>
-                  {tProfileEducations('title')}
+                  {tProfileEducation('title')}
                 </div>
                 <EducationSection education={displayedEducation} />
               </Card>
@@ -106,10 +84,12 @@ const SingleResumePage = async ({ params }: Props) => {
             {displayedJobExperience && (
               <Card className='flex flex-col gap-3 p-4'>
                 <div className='text-base font-bold'>
-                  {tProfileJobExperiences('title')}
+                  {tProfileJobExperience('title')}
                 </div>
                 <div>
-                  <JobSection jobExperience={displayedJobExperience} />
+                  <JobExperienceSection
+                    jobExperience={displayedJobExperience}
+                  />
                 </div>
               </Card>
             )}

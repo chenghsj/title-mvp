@@ -48,7 +48,7 @@ export async function Navbar({ children }: Props) {
         <div
           className={cn(
             'relative ml-3 h-full',
-            isMobile ? 'w-20' : 'w-[136px]'
+            isMobile ? 'ml-2 w-16' : 'w-[136px]'
           )}
         >
           <LogoLink />
@@ -56,8 +56,8 @@ export async function Navbar({ children }: Props) {
       </div>
       <div className='flex'>
         <Navigation />
-        <div className='ml-4 flex items-center gap-2 md:gap-3'>
-          <div>
+        <div className='ml-3 flex items-center gap-2 md:gap-3'>
+          <div className='flex flex-nowrap'>
             <ThemeSwitch />
             <LocaleSwitcher />
           </div>

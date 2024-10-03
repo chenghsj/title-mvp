@@ -40,18 +40,16 @@ const useGetTranslations = () => {
   const tComponentsResponsiveDialog = useTranslations(
     'components.responsiveDialog'
   );
-  const tProfileEducations = useTranslations('profile.educations');
-  const tProfileEducationsForm = useTranslations('profile.educations.form');
-  const tProfileEducationsDegrees = useTranslations(
-    'profile.educations.degrees'
-  );
+  const tProfileEducation = useTranslations('profile.education');
+  const tProfileEducationForm = useTranslations('profile.education.form');
+  const tProfileEducationDegrees = useTranslations('profile.education.degrees');
 
   return {
     tErrorMessages,
     tComponentsResponsiveDialog,
-    tProfileEducations,
-    tProfileEducationsForm,
-    tProfileEducationsDegrees,
+    tProfileEducation,
+    tProfileEducationForm,
+    tProfileEducationDegrees,
   };
 };
 
@@ -59,9 +57,9 @@ export const EducationDialog = ({ education }: Props) => {
   const {
     tErrorMessages,
     tComponentsResponsiveDialog,
-    tProfileEducations,
-    tProfileEducationsForm,
-    tProfileEducationsDegrees,
+    tProfileEducation,
+    tProfileEducationForm,
+    tProfileEducationDegrees,
   } = useGetTranslations();
 
   const { toast } = useToast();
@@ -95,17 +93,16 @@ export const EducationDialog = ({ education }: Props) => {
   const { execute, isPending } = useServerAction(
     dialogState.mode === 'Add' ? createEducationAction : updateEducationAction,
     {
-      onSuccess: () => {
+      onSuccess: ({ data }) => {
         toast({
-          title: 'Success',
-          description: `Education ${dialogState.mode === 'Add' ? 'created' : 'updated'}`,
+          title: data.message.title,
+          description: data.message.description,
         });
         dialogState.setIsOpen(false);
       },
       onError: ({ err }) => {
-        console.log(err.message);
         toast({
-          title: 'Error',
+          title: err.code,
           description: err.message,
           variant: 'destructive',
         });
@@ -130,7 +127,7 @@ export const EducationDialog = ({ education }: Props) => {
             name='degree'
             render={({ field }) => (
               <FormItem className='col-span-2 sm:col-span-1'>
-                <FormLabel>{tProfileEducationsForm('labels.degree')}</FormLabel>
+                <FormLabel>{tProfileEducationForm('labels.degree')}</FormLabel>
                 <FormControl>
                   <Select
                     disabled={isPending}
@@ -139,7 +136,7 @@ export const EducationDialog = ({ education }: Props) => {
                   >
                     <SelectTrigger className='w-full'>
                       <SelectValue
-                        placeholder={tProfileEducationsForm(
+                        placeholder={tProfileEducationForm(
                           'placeholders.degree'
                         )}
                       />
@@ -147,10 +144,10 @@ export const EducationDialog = ({ education }: Props) => {
                     <SelectContent onCloseAutoFocus={(e) => e.preventDefault()}>
                       {degrees.map((degree) => (
                         <SelectItem key={degree} value={degree}>
-                          {tProfileEducationsDegrees(
+                          {tProfileEducationDegrees(
                             camelCase(
                               degree
-                            ) as keyof IntlMessages['profile']['educations']['degrees']
+                            ) as keyof IntlMessages['profile']['education']['degrees']
                           )}
                         </SelectItem>
                       ))}
@@ -167,7 +164,7 @@ export const EducationDialog = ({ education }: Props) => {
             name='institution'
             render={({ field }) => (
               <FormItem className='col-span-2 sm:col-span-1'>
-                <FormLabel>{tProfileEducationsForm('labels.school')}</FormLabel>
+                <FormLabel>{tProfileEducationForm('labels.school')}</FormLabel>
                 <FormControl>
                   <Input disabled={isPending} {...field} />
                 </FormControl>
@@ -181,7 +178,7 @@ export const EducationDialog = ({ education }: Props) => {
             render={({ field }) => (
               <FormItem className='col-span-2 sm:col-span-1'>
                 <FormLabel>
-                  {tProfileEducationsForm('labels.fieldOfStudy')}
+                  {tProfileEducationForm('labels.fieldOfStudy')}
                 </FormLabel>
                 <FormControl>
                   <Input disabled={isPending} {...field} />
@@ -192,7 +189,7 @@ export const EducationDialog = ({ education }: Props) => {
           />
           <FormDatePicker
             form={form}
-            label={tProfileEducationsForm('labels.startFrom')}
+            label={tProfileEducationForm('labels.startFrom')}
             name='startDate'
             formItemProps={{
               className: 'col-span-2 sm:col-span-1',
@@ -203,7 +200,7 @@ export const EducationDialog = ({ education }: Props) => {
           />
           <FormDatePicker
             form={form}
-            label={tProfileEducationsForm('labels.endAt')}
+            label={tProfileEducationForm('labels.endAt')}
             name='endDate'
             formItemProps={{
               className: 'col-span-2 sm:col-span-1',
@@ -220,7 +217,7 @@ export const EducationDialog = ({ education }: Props) => {
             render={({ field }) => (
               <FormItem className='col-span-2 flex h-full flex-col'>
                 <FormLabel>
-                  {tProfileEducationsForm('labels.description')}
+                  {tProfileEducationForm('labels.description')}
                 </FormLabel>
                 <FormControl>
                   <Textarea
@@ -249,12 +246,12 @@ export const EducationDialog = ({ education }: Props) => {
 
   return (
     <ResponsiveDialog
-      title={tProfileEducations('dialogTitle', {
+      title={tProfileEducation('dialogTitle', {
         mode:
           dialogState.mode === 'Add'
             ? tComponentsResponsiveDialog('buttons.add')
             : tComponentsResponsiveDialog('buttons.edit'),
-        title: tProfileEducations('title'),
+        title: tProfileEducation('title'),
       })}
       content={formContent}
       submitButton={{

@@ -65,7 +65,7 @@ function LoginForm({ isMail, isSignUp }: Props) {
     {
       onError({ err }) {
         toast({
-          title: 'Error',
+          title: err.code,
           description: err.message,
           variant: 'destructive',
         });
@@ -89,7 +89,7 @@ function LoginForm({ isMail, isSignUp }: Props) {
   } = useServerAction(sendEmailOTPAction, {
     onError({ err }) {
       toast({
-        title: 'Error',
+        title: err.code,
         description: err.message,
         variant: 'destructive',
       });

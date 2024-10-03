@@ -49,9 +49,7 @@ export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
   const tResumeFormLabels = useTranslations('resume.form.labels');
   const tResumeFormPlaceholders = useTranslations('resume.form.placeholders');
   const tResumeFormSelectItem = useTranslations('resume.form.selectItem');
-  const tProfileEducationsDegrees = useTranslations(
-    'profile.educations.degrees'
-  );
+  const tProfileEducationDegrees = useTranslations('profile.education.degrees');
 
   const { toast } = useToast();
   const { resumeId } = useResumeDialog();
@@ -83,17 +81,17 @@ export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
   const { execute, isPending } = useServerAction(
     dialogState.mode === 'Add' ? createResumeAction : updateResumeAction,
     {
-      onSuccess: () => {
+      onSuccess: ({ data }) => {
         toast({
-          title: 'Success',
-          description: `Resume ${dialogState.mode === 'Add' ? 'created' : 'updated'}`,
+          title: data.message.title,
+          description: data.message.description,
         });
         dialogState.setIsOpen(false);
       },
       onError: ({ err }) => {
         console.log(err.message);
         toast({
-          title: 'Error',
+          title: err.code,
           description: err.message,
           variant: 'destructive',
         });
@@ -117,7 +115,6 @@ export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
   };
 
   const onSubmit = (values: ResumeFormSchemaType) => {
-    console.log(values);
     if (dialogState.mode === 'Edit') {
       execute({ ...values, resumeId: resumeId! });
     } else {
@@ -165,10 +162,10 @@ export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
                       </SelectItem>
                       {educations?.map((edu) => (
                         <SelectItem key={edu.id} value={edu.id.toString()}>
-                          {tProfileEducationsDegrees(
+                          {tProfileEducationDegrees(
                             camelCase(
                               edu.degree!
-                            ) as keyof IntlMessages['profile']['educations']['degrees']
+                            ) as keyof IntlMessages['profile']['education']['degrees']
                           )}{' '}
                           | {edu.institution}
                         </SelectItem>

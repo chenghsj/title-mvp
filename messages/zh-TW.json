@@ -1,4 +1,22 @@
 {
+  "actions": {
+    "signUpAction": {
+      "title": "電子郵件發送成功！",
+      "description": "請查看您的電子郵件以獲取 OTP"
+    },
+    "sendEmailOTPAction": {
+      "title": "電子郵件發送成功！",
+      "description": "請查看您的電子郵件以獲取 OTP"
+    },
+    "verifyEmailOTPAction": {
+      "title": "電子郵件驗證成功",
+      "description": "重新導向至控制台"
+    },
+    "confirmDeleteAction": {
+      "title": "成功",
+      "description": "{type}已刪除"
+    }
+  },
   "errorMessages": {
     "backToSignInPage": "返回登入頁",
     "somethingWentWrong": "出了點問題",
@@ -14,7 +32,7 @@
       "userAlreadyExists": "此電子郵件已經註冊過",
       "AuthenticationError": "您必須登錄才能查看此內容",
       "NotFoundError": "找不到資源",
-      "RoleError": "電子郵件已註冊為 {role} 帳戶。\n若您想使用當前郵件登入此身份，請先刪除現有帳戶。",
+      "RoleError": "電子郵件已註冊為「{role}」帳戶。\n若您想使用當前郵件登入此身份，請先刪除現有帳戶。",
       "SendEmailError": "發送電子郵件失敗",
       "EmailVerificationError": "驗證電子郵件失敗",
       "LoginError": "電子郵件或密碼錯誤"
@@ -29,7 +47,9 @@
   },
   "components": {
     "toast": {
+      "error": "錯誤",
       "success": {
+        "title": "成功",
         "inputOTPDialog": {
           "title": "電子郵件驗證成功",
           "description": "重新導向至控制台"
@@ -40,7 +60,15 @@
         },
         "confirmDeleteDialog": {
           "title": "成功",
-          "description": "{type}已刪除"
+          "description": "已刪除此{type}"
+        },
+        "profile": {
+          "title": "{mode}{type}",
+          "description": "已成功{mode}{type}"
+        },
+        "resume": {
+          "title": "{mode}履歷",
+          "description": "已成功{mode}履歷"
         }
       }
     },
@@ -167,7 +195,7 @@
         }
       }
     },
-    "educations": {
+    "education": {
       "title": "學歷",
       "dialogTitle": "{mode} {title}",
       "date": {
@@ -193,7 +221,7 @@
         }
       }
     },
-    "jobExperiences": {
+    "jobExperience": {
       "title": "工作經驗",
       "dialogTitle": "{mode} {title}",
       "date": {

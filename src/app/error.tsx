@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { SectionExcludeNav } from '@/components/section-exclude-nav';
@@ -10,6 +9,7 @@ type Props = { error: Error & { digest?: string } };
 
 function ErrorPage({ error }: Props) {
   const tErrorMessages = useTranslations('errorMessages');
+
   return (
     <SectionExcludeNav className='flex flex-col items-center justify-center gap-y-4 whitespace-pre text-center'>
       <div className='max-w-md text-wrap'>{error.message}</div>

@@ -24,7 +24,6 @@ type Props = {
 };
 
 const useGetTranslations = () => {
-  const tErrorMessages = useTranslations('errorMessages');
   const tResponsiveDialog = useTranslations('components.responsiveDialog');
   const tProfileDisplayName = useTranslations(`profile.displayName`);
   const tProfileDisplayNameFormLabels = useTranslations(
@@ -32,7 +31,6 @@ const useGetTranslations = () => {
   );
 
   return {
-    tErrorMessages,
     tResponsiveDialog,
     tProfileDisplayName,
     tProfileDisplayNameFormLabels,
@@ -41,7 +39,6 @@ const useGetTranslations = () => {
 
 export const DisplayNameDialog = ({ displayName }: Props) => {
   const {
-    tErrorMessages,
     tResponsiveDialog,
     tProfileDisplayName,
     tProfileDisplayNameFormLabels,
@@ -57,22 +54,24 @@ export const DisplayNameDialog = ({ displayName }: Props) => {
     defaultValues: {
       displayName,
     },
+    values: {
+      displayName,
+    },
   });
 
   const { execute, isPending } = useServerAction(updateDisplayNameAction, {
     onError: ({ err }) => {
-      console.error(err);
       toast({
-        title: 'Error',
+        title: err.code,
         description: err.message,
         variant: 'destructive',
       });
     },
-    onSuccess: () => {
+    onSuccess: ({ data }) => {
       dialogState.setIsOpen(false);
       toast({
-        title: 'Name updated',
-        description: 'Your name has been updated successfully',
+        title: data.message.title,
+        description: data.message.description,
       });
     },
   });

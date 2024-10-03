@@ -1,3 +1,5 @@
+'use client';
+
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { Ellipsis, Trash, Upload } from 'lucide-react';
@@ -12,9 +14,10 @@ import { useCreateHandleMenuButtonClick } from './hooks';
 
 type Props = {
   coverUrl: string | null;
+  canEdit?: boolean;
 };
 
-export const CoverSection = ({ coverUrl }: Props) => {
+export const CoverSection = ({ coverUrl, canEdit = true }: Props) => {
   const { handleMenuButtonClick } = useCreateHandleMenuButtonClick();
   const tProfileImageButtons = useTranslations('profile.image.buttons');
 
@@ -48,29 +51,31 @@ export const CoverSection = ({ coverUrl }: Props) => {
           <Skeleton className='h-full w-full rounded-md' />
         )}
       </div>
-      <ResponsiveDropdownMenu
-        trigger={
-          <Button
-            variant='ghost'
-            size='icon'
-            className='absolute right-5 top-5 ml-2 h-7 w-7'
-          >
-            <Ellipsis size={20} />
-          </Button>
-        }
-        editButton={{
-          text: tProfileImageButtons('upload'),
-        }}
-        deleteButton={{
-          text: tProfileImageButtons('remove'),
-          buttonProps: {
-            disabled: !coverUrl,
-          },
-        }}
-        handleEditClick={handleEditClick}
-        handleDeleteClick={handleDeleteClick}
-        renderDropdownMenuContent={dropdownMenuContent}
-      />
+      {canEdit && (
+        <ResponsiveDropdownMenu
+          trigger={
+            <Button
+              variant='ghost'
+              size='icon'
+              className='absolute right-5 top-5 ml-2 h-7 w-7'
+            >
+              <Ellipsis size={20} />
+            </Button>
+          }
+          editButton={{
+            text: tProfileImageButtons('upload'),
+          }}
+          deleteButton={{
+            text: tProfileImageButtons('remove'),
+            buttonProps: {
+              disabled: !coverUrl,
+            },
+          }}
+          handleEditClick={handleEditClick}
+          handleDeleteClick={handleDeleteClick}
+          renderDropdownMenuContent={dropdownMenuContent}
+        />
+      )}
     </div>
   );
 };

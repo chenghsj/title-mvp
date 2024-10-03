@@ -60,7 +60,7 @@ export const DeleteAccount = (props: Props) => {
       },
       onError: ({ err }) => {
         toast({
-          title: 'Error',
+          title: err.code,
           description: err.message || 'Failed to delete account.',
           variant: 'destructive',
         });

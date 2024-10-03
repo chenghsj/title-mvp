@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { Ellipsis, Plus } from 'lucide-react';
 import { ResponsiveDropdownMenu } from '@/components/responsive-dropdown-menu';

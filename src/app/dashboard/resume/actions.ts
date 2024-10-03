@@ -10,16 +10,19 @@ import {
   updateResumeUseCase,
 } from '@/use-cases/resumes';
 import { ResumeFormSchema } from './form-schema';
+import { getTranslationsByType } from './utils';
 
 export const createResumeAction = authenticatedAction
   .createServerAction()
   .input(ResumeFormSchema)
   .handler(async ({ input, ctx }) => {
+    const successMessage = await getTranslationsByType('create');
     await createResumeUseCase({
       userId: ctx.user.id,
       ...input,
     });
     revalidatePath('/dashboard/resume');
+    return { message: successMessage };
   });
 
 export const deleteResumeAction = authenticatedAction
@@ -35,9 +38,11 @@ export const updateResumeAction = authenticatedAction
   .createServerAction()
   .input(ResumeFormSchema)
   .handler(async ({ input, ctx }) => {
+    const successMessage = await getTranslationsByType('update');
     await updateResumeUseCase({
       userId: ctx.user.id,
       ...input,
     });
     revalidatePath('/dashboard/resume');
+    return { message: successMessage };
   });

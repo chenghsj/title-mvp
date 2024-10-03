@@ -13,7 +13,7 @@ import { EducationDialog } from './education-dialog';
 import { EducationSection } from './education-section';
 import { useProfileDialog } from './hooks';
 import { JobDialog } from './job-dialog';
-import { JobSection } from './job-section';
+import { JobExperienceSection } from './job-experience-section';
 import { ProfileSectionCard } from './profile-section-card';
 import { UploadImageDialog } from './upload-image-dialog';
 import { createSortedEducations } from './utils';
@@ -67,16 +67,16 @@ export const Profile = ({ dashboardDetails }: Props) => {
           </div>
           <div className='flex flex-col gap-5'>
             <ProfileSectionCard
-              title={tProfile('educations.title')}
+              title={tProfile('education.title')}
               items={sortedEducations}
               formType='Education'
               renderItem={(edu) => <EducationSection education={edu} />}
             />
             <ProfileSectionCard
-              title={tProfile('jobExperiences.title')}
+              title={tProfile('jobExperience.title')}
               items={jobExperiences}
               formType='JobExperience'
-              renderItem={(job) => <JobSection jobExperience={job} />}
+              renderItem={(job) => <JobExperienceSection jobExperience={job} />}
             />
           </div>
         </div>

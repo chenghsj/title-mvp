@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import React from 'react';
 import { useTranslations } from 'next-intl';
 import { CirclePlus, Plus, Video } from 'lucide-react';
 import { useIsClient } from 'usehooks-ts';

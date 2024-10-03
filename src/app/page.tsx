@@ -12,12 +12,10 @@ export default async function Home() {
   }
 
   return (
-    <>
-      <SectionExcludeNav className='grid gap-10 md:grid-cols-3 lg:grid-cols-2 xl:gap-20'>
-        <MainHomePage />
-        <DualDirectionCarousel />
-      </SectionExcludeNav>
+    <SectionExcludeNav className='grid gap-10 md:grid-cols-3 lg:grid-cols-2 xl:gap-20'>
+      <MainHomePage />
+      <DualDirectionCarousel />
       {/* <RestHomePage /> */}
-    </>
+    </SectionExcludeNav>
   );
 }

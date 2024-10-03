@@ -9,15 +9,19 @@ export class PublicError extends Error {
 }
 
 export class AuthenticationError extends PublicError {
-  constructor() {
-    super('You must be logged in to view this content');
+  constructor(message?: string) {
+    super(message ?? 'You must be logged in to view this content');
     this.name = 'AuthenticationError';
+  }
+  static async create() {
+    const tPublic = await getTranslations('errorMessages.public');
+    return new AuthenticationError(tPublic('AuthenticationError'));
   }
 }
 
 export class NotFoundError extends PublicError {
-  constructor() {
-    super('Resource not found');
+  constructor(message?: string) {
+    super(message ?? 'Resource not found');
     this.name = 'NotFoundError';
   }
 }
@@ -42,23 +46,27 @@ export class RoleError extends PublicError {
 }
 
 export class SendEmailError extends PublicError {
-  constructor() {
-    super('Failed to send email');
+  constructor(message?: string) {
+    super(message ?? 'Failed to send email');
     this.name = 'SendEmailError';
   }
 }
 
 export class EmailVerificationError extends PublicError {
-  constructor(message: string) {
-    super(message || 'Failed to verify email');
+  constructor(message?: string) {
+    super(message ?? 'Failed to verify email');
     this.name = 'EmailVerificationError';
   }
 }
 
 export class LoginError extends PublicError {
-  constructor() {
+  constructor(message?: string) {
     super('Invalid email or password');
     this.name = 'LoginError';
+  }
+  static async create() {
+    const tPublic = await getTranslations('errorMessages.public');
+    return new LoginError(tPublic('LoginError'));
   }
 }
 

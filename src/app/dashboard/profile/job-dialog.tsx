@@ -43,28 +43,28 @@ type Props = {
 
 const useGetTranslations = () => {
   const tResponsiveDialog = useTranslations('components.responsiveDialog');
-  const tProfileJobExperiences = useTranslations('profile.jobExperiences');
-  const tProfileJobExperiencesForm = useTranslations(
-    'profile.jobExperiences.form'
+  const tProfileJobExperience = useTranslations('profile.jobExperience');
+  const tProfileJobExperienceForm = useTranslations(
+    'profile.jobExperience.form'
   );
-  const tProfileJobExperiencesEmploymentTypes = useTranslations(
-    'profile.jobExperiences.employmentTypes'
+  const tProfileJobExperienceEmploymentTypes = useTranslations(
+    'profile.jobExperience.employmentTypes'
   );
 
   return {
     tResponsiveDialog,
-    tProfileJobExperiences,
-    tProfileJobExperiencesForm,
-    tProfileJobExperiencesEmploymentTypes,
+    tProfileJobExperience,
+    tProfileJobExperienceForm,
+    tProfileJobExperienceEmploymentTypes,
   };
 };
 
 export const JobDialog = ({ jobExperience }: Props) => {
   const {
     tResponsiveDialog,
-    tProfileJobExperiences,
-    tProfileJobExperiencesForm,
-    tProfileJobExperiencesEmploymentTypes,
+    tProfileJobExperience,
+    tProfileJobExperienceForm,
+    tProfileJobExperienceEmploymentTypes,
   } = useGetTranslations();
 
   const { toast } = useToast();
@@ -102,17 +102,17 @@ export const JobDialog = ({ jobExperience }: Props) => {
       ? createJobExperienceAction
       : updateJobExperienceAction,
     {
-      onSuccess: () => {
+      onSuccess: ({ data }) => {
         toast({
-          title: 'Success',
-          description: `Job Experience ${dialogState.mode === 'Add' ? 'created' : 'updated'}`,
+          title: data.message.title,
+          description: data.message.description,
         });
         dialogState.setIsOpen(false);
       },
       onError: ({ err }) => {
         console.log(err.message);
         toast({
-          title: 'Something went wrong',
+          title: err.code,
           description: err.message,
           variant: 'destructive',
         });
@@ -138,7 +138,7 @@ export const JobDialog = ({ jobExperience }: Props) => {
             render={({ field }) => (
               <FormItem className='col-span-2 sm:col-span-1'>
                 <FormLabel>
-                  {tProfileJobExperiencesForm('labels.title')}
+                  {tProfileJobExperienceForm('labels.title')}
                 </FormLabel>
                 <FormControl>
                   <Input disabled={isPending} {...field} />
@@ -154,7 +154,7 @@ export const JobDialog = ({ jobExperience }: Props) => {
             render={({ field }) => (
               <FormItem className='col-span-2 sm:col-span-1'>
                 <FormLabel>
-                  {tProfileJobExperiencesForm('labels.company')}
+                  {tProfileJobExperienceForm('labels.company')}
                 </FormLabel>
                 <FormControl>
                   <Input disabled={isPending} {...field} />
@@ -169,7 +169,7 @@ export const JobDialog = ({ jobExperience }: Props) => {
             render={({ field }) => (
               <FormItem className='col-span-2 sm:col-span-1'>
                 <FormLabel>
-                  {tProfileJobExperiencesForm('labels.employmentType')}
+                  {tProfileJobExperienceForm('labels.employmentType')}
                 </FormLabel>
                 <FormControl>
                   <Select
@@ -179,7 +179,7 @@ export const JobDialog = ({ jobExperience }: Props) => {
                   >
                     <SelectTrigger className='w-full'>
                       <SelectValue
-                        placeholder={tProfileJobExperiencesForm(
+                        placeholder={tProfileJobExperienceForm(
                           'placeholders.employmentType'
                         )}
                       />
@@ -187,10 +187,10 @@ export const JobDialog = ({ jobExperience }: Props) => {
                     <SelectContent onCloseAutoFocus={(e) => e.preventDefault()}>
                       {employmentTypes.map((type, index) => (
                         <SelectItem key={index} value={type}>
-                          {tProfileJobExperiencesEmploymentTypes(
+                          {tProfileJobExperienceEmploymentTypes(
                             camelCase(
                               type
-                            ) as keyof IntlMessages['profile']['jobExperiences']['employmentTypes']
+                            ) as keyof IntlMessages['profile']['jobExperience']['employmentTypes']
                           )}
                         </SelectItem>
                       ))}
@@ -203,7 +203,7 @@ export const JobDialog = ({ jobExperience }: Props) => {
           />
           <FormDatePicker
             form={form}
-            label={tProfileJobExperiencesForm('labels.startFrom')}
+            label={tProfileJobExperienceForm('labels.startFrom')}
             name='startDate'
             formItemProps={{
               className: 'col-span-2 sm:col-span-1',
@@ -214,7 +214,7 @@ export const JobDialog = ({ jobExperience }: Props) => {
           />
           <FormDatePicker
             form={form}
-            label={tProfileJobExperiencesForm('labels.endAt')}
+            label={tProfileJobExperienceForm('labels.endAt')}
             name='endDate'
             formItemProps={{
               className: 'col-span-2 sm:col-span-1',
@@ -232,7 +232,7 @@ export const JobDialog = ({ jobExperience }: Props) => {
             render={({ field }) => (
               <FormItem className='col-span-2 flex h-full flex-col'>
                 <FormLabel>
-                  {tProfileJobExperiencesForm('labels.description')}
+                  {tProfileJobExperienceForm('labels.description')}
                 </FormLabel>
                 <FormControl>
                   <Textarea
@@ -261,12 +261,12 @@ export const JobDialog = ({ jobExperience }: Props) => {
 
   return (
     <ResponsiveDialog
-      title={tProfileJobExperiences('dialogTitle', {
+      title={tProfileJobExperience('dialogTitle', {
         mode:
           dialogState.mode === 'Add'
             ? tResponsiveDialog('buttons.add')
             : tResponsiveDialog('buttons.edit'),
-        title: tProfileJobExperiences('title'),
+        title: tProfileJobExperience('title'),
       })}
       content={formContent}
       submitButton={{

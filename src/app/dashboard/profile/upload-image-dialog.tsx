@@ -1,4 +1,5 @@
 import { ReactNode, useEffect } from 'react';
+import React from 'react';
 import { DropzoneOptions } from 'react-dropzone';
 import { useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
@@ -50,18 +51,18 @@ export const UploadImageDialog = ({ formType, type }: Props) => {
     {
       onError: ({ err }) => {
         toast({
-          title: 'Error',
+          title: err.code,
           description:
             err.message ||
             `Failed to update ${type === 'avatar' ? 'profile' : 'cover'} image.`,
           variant: 'destructive',
         });
       },
-      onSuccess: () => {
+      onSuccess: ({ data }) => {
         dialogState.setIsOpen(false);
         toast({
-          title: `${type === 'avatar' ? 'Profile' : 'Cover'} image updated`,
-          description: `You've successfully updated your ${type === 'avatar' ? 'profile' : 'cover'} image.`,
+          title: data.message.title,
+          description: data.message.description,
         });
       },
     }

@@ -15,7 +15,6 @@ import { FormType, useProfileDialog } from './hooks';
 type Props = {};
 
 const useGetTranslations = () => {
-  const tErrorMessages = useTranslations('errorMessages');
   const tComponentsResponsiveDialog = useTranslations(
     'components.responsiveDialog'
   );
@@ -25,16 +24,13 @@ const useGetTranslations = () => {
   const tProfileConfirmDeleteDialogType = useTranslations(
     'profile.confirmDeleteDialog.type'
   );
-  const tProfileEducationsDegrees = useTranslations(
-    'profile.educations.degrees'
-  );
+  const tProfileEducationDegrees = useTranslations('profile.education.degrees');
 
   return {
-    tErrorMessages,
     tComponentsResponsiveDialog,
     tProfileConfirmDeleteDialog,
     tProfileConfirmDeleteDialogType,
-    tProfileEducationsDegrees,
+    tProfileEducationDegrees,
   };
 };
 
@@ -45,11 +41,10 @@ export const ConfirmDeleteDialog = ({}: Props) => {
   const profileDialogTypeRef = useRef<FormType | null>(null);
 
   const {
-    tErrorMessages,
     tComponentsResponsiveDialog,
     tProfileConfirmDeleteDialog,
     tProfileConfirmDeleteDialogType,
-    tProfileEducationsDegrees,
+    tProfileEducationDegrees,
   } = useGetTranslations();
 
   useEffect(() => {
@@ -74,8 +69,9 @@ export const ConfirmDeleteDialog = ({}: Props) => {
       });
     },
     onError: ({ err }) => {
+      console.log(err);
       toast({
-        title: 'Error',
+        title: err.code,
         description: err.message,
         variant: 'destructive',
       });
@@ -114,10 +110,10 @@ export const ConfirmDeleteDialog = ({}: Props) => {
         const degree = profileDialog.educations?.find(
           (edu) => edu.id === profileDialog.educationId
         )?.degree;
-        return tProfileEducationsDegrees(
+        return tProfileEducationDegrees(
           camelCase(
             degree!
-          ) as keyof IntlMessages['profile']['educations']['degrees']
+          ) as keyof IntlMessages['profile']['education']['degrees']
         );
       }
       case 'JobExperience': {
