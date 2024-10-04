@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2Icon, Send } from 'lucide-react';
 import { useServerAction } from 'zsa-react';
+import { useLoadingMask } from '@/components/loading-mask';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -36,19 +37,19 @@ type Props = {
 const useGetTranslations = () => {
   const tLoginForm = useTranslations('login.form');
   const tErrorMessages = useTranslations('errorMessages');
-  const tComponentsToast = useTranslations('components.toast');
 
-  return { tLoginForm, tErrorMessages, tComponentsToast };
+  return { tLoginForm, tErrorMessages };
 };
 
 function LoginForm({ isMail, isSignUp }: Props) {
   const isSignUpRef = useRef(isSignUp);
   const { toast } = useToast();
   const { isMobile } = useDeviceDetect();
-  const { tLoginForm, tErrorMessages, tComponentsToast } = useGetTranslations();
+  const { tLoginForm, tErrorMessages } = useGetTranslations();
   const { role } = useGetRole();
   const { setIsOpen: setDialogOpen, setEmail: setDialogEmail } =
     useEmailOTPDialog();
+  const { setLoading } = useLoadingMask();
 
   const form = useForm<SignUpFormSchemaType | SignInFormSchemaType>({
     resolver: zodResolver(isSignUp ? SignUpFormSchema : SignInFormSchema),
@@ -129,6 +130,10 @@ function LoginForm({ isMail, isSignUp }: Props) {
   useEffect(() => {
     isSignUpRef.current = isSignUp;
   }, [isSignUp]);
+
+  useEffect(() => {
+    setLoading(isPending || sendEmailOTPIsPending);
+  }, [isPending, sendEmailOTPIsPending]);
 
   return (
     <Form {...form}>

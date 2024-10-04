@@ -99,49 +99,55 @@ export function getDashboardMenuList(pathname: string): Group[] {
       menus: [
         {
           key: 'profile',
-          href: '/dashboard/profile',
+          href: '/candidate/dashboard/profile',
           label: 'Profile',
-          active: pathname.includes('/dashboard/profile'),
+          active: pathname.includes('/candidate/dashboard/profile'),
           icon: LuUser,
           submenus: [],
         },
         {
           key: 'resume',
-          href: '/dashboard/resume',
+          href: '/candidate/dashboard/resume',
           label: 'Resume',
-          active: pathname.includes('/dashboard/resume'),
+          active: pathname.includes('/candidate/dashboard/resume'),
           icon: LuFileText,
           submenus: [],
         },
         {
           key: 'settings',
-          href: '/dashboard/settings/account',
+          href: '/candidate/dashboard/settings/account',
           label: 'Settings',
-          active: pathname.includes('/dashboard/settings/account'),
+          active: pathname.includes('/candidate/dashboard/settings/account'),
           icon: LuSettings,
           submenus: [
             {
               key: 'account',
-              href: '/dashboard/settings/account',
+              href: '/candidate/dashboard/settings/account',
               label: 'Account',
-              active: pathname.includes('/dashboard/settings/account'),
+              active: pathname.includes(
+                '/candidate/dashboard/settings/account'
+              ),
             },
             // {
-            //   href: '/dashboard/settings/billing',
+            //   href: '/candidate/dashboard/settings/billing',
             //   label: 'Billing',
-            //   active: pathname.includes('/dashboard/settings/billing'),
+            //   active: pathname.includes('/candidate/dashboard/settings/billing'),
             // },
             {
               key: 'notifications',
-              href: '/dashboard/settings/notifications',
+              href: '/candidate/dashboard/settings/notifications',
               label: 'Notifications',
-              active: pathname.includes('/dashboard/settings/notifications'),
+              active: pathname.includes(
+                '/candidate/dashboard/settings/notifications'
+              ),
             },
             {
               key: 'security',
-              href: '/dashboard/settings/security',
+              href: '/candidate/dashboard/settings/security',
               label: 'Security',
-              active: pathname.includes('/dashboard/settings/security'),
+              active: pathname.includes(
+                '/candidate/dashboard/settings/security'
+              ),
             },
           ],
         },

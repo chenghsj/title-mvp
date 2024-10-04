@@ -20,26 +20,29 @@ export async function GET(request: NextRequest): Promise<Response> {
   // url.searchParams.set('prompt', 'consent');
 
   cookies().set('google_oauth_state', state, {
-    secure: true,
-    path: '/',
-    httpOnly: true,
-    maxAge: 60 * 10,
-  });
-
-  cookies().set('google_code_verifier', codeVerifier, {
-    secure: true,
-    path: '/',
-    httpOnly: true,
-    maxAge: 60 * 10,
-  });
-
-  cookies().set('user_role', role, {
-    path: '/',
     secure: process.env.NODE_ENV === 'production',
+    path: '/',
     httpOnly: true,
     maxAge: 60 * 10,
     sameSite: 'lax',
   });
 
+  cookies().set('google_code_verifier', codeVerifier, {
+    secure: process.env.NODE_ENV === 'production',
+    path: '/',
+    httpOnly: true,
+    maxAge: 60 * 10,
+    sameSite: 'lax',
+  });
+
+  cookies().set('user_role', role, {
+    secure: process.env.NODE_ENV === 'production',
+    path: '/',
+    httpOnly: true,
+    maxAge: 60 * 10,
+    sameSite: 'lax',
+  });
+
+  console.log(url, state, codeVerifier, role);
   return Response.redirect(url);
 }

@@ -40,7 +40,8 @@ export async function Navbar({ children }: Props) {
         'sticky top-0 z-50 flex w-full items-center justify-between border-[0.5px] border-r-0 border-b-zinc-300 bg-white text-base opacity-100 dark:border-b-zinc-600 dark:bg-zinc-950',
         'px-3 py-0 md:px-10 md:py-4 xl:px-16',
         isMobile ? 'pr-5' : 'pr-8',
-        isMobile ? 'h-[var(--nav-h-sm)]' : 'h-[var(--nav-h-md)]'
+        isMobile ? 'h-[var(--nav-h-sm)]' : 'h-[var(--nav-h-md)]',
+        'z-50'
       )}
     >
       <div className='flex h-full items-center'>

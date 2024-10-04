@@ -1,7 +1,6 @@
 'use client';
 
-import { MouseEventHandler, RefObject, useEffect, useState } from 'react';
-import { useOverflowDetector } from 'react-detectable-overflow';
+import { MouseEventHandler, useEffect, useState } from 'react';
 import { FaGoogle, FaRegEnvelope } from 'react-icons/fa';
 import { LuArrowLeft } from 'react-icons/lu';
 import { useTranslations } from 'next-intl';
@@ -19,13 +18,13 @@ import { RoleSwitch } from './role-switch';
 type Props = {};
 
 export function LoginPage({}: Props) {
+  const router = useRouter();
   const tLogin = useTranslations('login');
   const [isMail, setIsMail] = useState(false);
-  const router = useRouter();
-  const { ref: isOverflowRef, overflow } = useOverflowDetector({});
+  // This code adjusts alignment for mobile orientation but causes a scroll issue specific to iOS Safari
+  // const { ref: isOverflowRef, overflow } = useOverflowDetector({});
   const { isMobile } = useDeviceDetect();
   const { role } = useGetRole();
-
   const pathname = usePathname();
   const isSignUp = pathname === '/sign-up';
 
@@ -34,6 +33,7 @@ export function LoginPage({}: Props) {
   };
 
   const handleOAuthClick: MouseEventHandler<HTMLButtonElement> = async (e) => {
+    router.refresh();
     router.push(`/api/login/${e.currentTarget.name}?role=${role}`);
   };
 
@@ -43,10 +43,10 @@ export function LoginPage({}: Props) {
 
   return (
     <div
-      ref={isOverflowRef as RefObject<HTMLDivElement>}
+      // ref={isOverflowRef as RefObject<HTMLDivElement>}
       className={cn(
-        'flex h-full w-full justify-center font-roboto',
-        overflow ? 'items-start' : 'items-center'
+        'flex h-full w-full items-center justify-center font-roboto'
+        // overflow ? 'items-start' : 'items-center'
       )}
     >
       <AnimatedHeight className='w-4/5 min-w-80 ease-out md:w-full'>

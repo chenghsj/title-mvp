@@ -4,8 +4,8 @@ import { GoogleUser } from '@/app/api/login/google/callback/route';
 import {
   EducationFormSchemaType,
   JobExperienceFormSchemaType,
-} from '@/app/dashboard/profile/form-schema';
-import { ProfileImage } from '@/app/dashboard/profile/types';
+} from '@/app/candidate/dashboard/profile/form-schema';
+import { ProfileImage } from '@/app/candidate/dashboard/profile/types';
 import {
   MAX_UPLOAD_IMAGE_SIZE,
   MAX_UPLOAD_IMAGE_SIZE_IN_MB,

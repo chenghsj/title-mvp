@@ -35,7 +35,7 @@ export const ResumeCard = React.memo(({ resume }: Props) => {
 
   return (
     <Card className='h-fit cursor-pointer overflow-auto'>
-      <Link href={`/dashboard/resume/${resume.id}`}>
+      <Link href={`/candidate/dashboard/resume/${resume.id}`}>
         <CardContent className='pointer-events-none aspect-video p-0'>
           {isPlayerReady ? (
             <ReactPlayer

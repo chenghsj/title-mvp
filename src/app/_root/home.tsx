@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { usePathname } from 'next/navigation';
 import { SectionExcludeNav } from '@/components/section-exclude-nav';
 import { loginPath } from '@/config/site';
@@ -17,7 +18,7 @@ export function MainHomePage({}: Props) {
   return (
     <div
       className={cn(
-        'col-span-2 lg:col-span-1',
+        'col-span-2 px-4 md:px-0 lg:col-span-1',
         isMatchLogin && 'my-5 overflow-y-auto'
       )}
     >

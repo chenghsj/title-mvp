@@ -32,7 +32,7 @@ export const createEducationAction = authenticatedAction
   .handler(async ({ input, ctx }) => {
     const successMessage = await getTranslationsByType('education', 'create');
     await createEducationUseCase(ctx.user.id, input);
-    revalidatePath('/dashboard/profile');
+    revalidatePath('/candidate/dashboard/profile');
     return { message: successMessage };
   });
 
@@ -42,7 +42,7 @@ export const updateEducationAction = authenticatedAction
   .handler(async ({ input, ctx }) => {
     const successMessage = await getTranslationsByType('education', 'update');
     await updateEducationUseCase(ctx.user.id, input.educationId!, input);
-    revalidatePath('/dashboard/profile');
+    revalidatePath('/candidate/dashboard/profile');
     return { message: successMessage };
   });
 
@@ -51,7 +51,7 @@ export const deleteEducationAction = authenticatedAction
   .input(z.object({ educationId: z.number() }))
   .handler(async ({ input, ctx, responseMeta }) => {
     await deleteEducationUseCase(ctx.user.id, input.educationId);
-    revalidatePath('/dashboard/profile');
+    revalidatePath('/candidate/dashboard/profile');
 
     const successMessage = await getDeletedMessageByType('education');
     return { message: successMessage };
@@ -69,7 +69,7 @@ export const createJobExperienceAction = authenticatedAction
       'create'
     );
     await createJobExperienceUseCase(ctx.user.id, input);
-    revalidatePath('/dashboard/profile');
+    revalidatePath('/candidate/dashboard/profile');
     return {
       message: successMessage,
     };
@@ -88,7 +88,7 @@ export const updateJobExperienceAction = authenticatedAction
       input.jobExperienceId!,
       input
     );
-    revalidatePath('/dashboard/profile');
+    revalidatePath('/candidate/dashboard/profile');
     return {
       message: successMessage,
     };
@@ -99,7 +99,7 @@ export const deleteJobExperienceAction = authenticatedAction
   .input(z.object({ jobExperienceId: z.number() }))
   .handler(async ({ input, ctx }) => {
     await deleteJobExperienceUseCase(ctx.user.id, input.jobExperienceId);
-    revalidatePath('/dashboard/profile');
+    revalidatePath('/candidate/dashboard/profile');
 
     const successMessage = await getDeletedMessageByType('jobExperience');
     return { message: successMessage };
@@ -111,7 +111,7 @@ export const updateDisplayNameAction = authenticatedAction
   .handler(async ({ input, ctx }) => {
     const successMessage = await getTranslationsByType('displayName', 'update');
     await updateDisplayNameUseCase(ctx.user.id, input.displayName);
-    revalidatePath('/dashboard/profile');
+    revalidatePath('/candidate/dashboard/profile');
     return {
       message: successMessage,
     };
@@ -134,7 +134,7 @@ export const updateProfileImageAction = authenticatedAction
     const successMessage = await getTranslationsByType('image', 'update');
     const file = input.fileWrapper.get('file') as File;
     await updateProfileImageUseCase(file, ctx.user.id, input.type);
-    revalidatePath(`/dashboard/profile`);
+    revalidatePath(`/candidate/dashboard/profile`);
     return {
       message: successMessage,
     };
@@ -145,7 +145,7 @@ export const deleteProfileImageAction = authenticatedAction
   .input(z.object({ type: z.enum(profileImageType) }))
   .handler(async ({ input, ctx }) => {
     await deleteProfileImageUseCase(ctx.user.id, input.type);
-    revalidatePath(`/dashboard/profile`);
+    revalidatePath(`/candidate/dashboard/profile`);
 
     const successMessage = await getDeletedMessageByType('image');
     return { message: successMessage };

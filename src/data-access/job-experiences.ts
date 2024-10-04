@@ -1,5 +1,5 @@
 import { and, desc, eq } from 'drizzle-orm';
-import { EmploymentType } from '@/app/dashboard/profile/types';
+import { EmploymentType } from '@/app/candidate/dashboard/profile/types';
 import { db } from '@/db/drizzle';
 import { JobExperience, jobExperiences } from '@/db/schema';
 import { UserId } from '@/use-cases/types';

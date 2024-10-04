@@ -77,7 +77,7 @@ export default async function RootLayout({
         >
           <ProgressBar />
           <Navbar />
-          <main className='mx-auto flex h-fit max-w-7xl flex-col items-center justify-between px-10 xl:px-16'>
+          <main className='mx-auto flex h-fit max-w-7xl flex-col items-center justify-between px-3 md:px-10 xl:px-16'>
             {children}
           </main>
           <Footer />

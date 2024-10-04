@@ -1,5 +1,5 @@
 import { and, desc, eq } from 'drizzle-orm';
-import { DegreeType } from '@/app/dashboard/profile/types';
+import { DegreeType } from '@/app/candidate/dashboard/profile/types';
 import { db } from '@/db/drizzle';
 import { Education, educations } from '@/db/schema';
 import { UserId } from '@/use-cases/types';

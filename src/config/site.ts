@@ -10,4 +10,5 @@ export const siteConfig = {
   },
 };
 
-export const afterLoginUrl = '/dashboard';
+export const afterCandidateLoginUrl = '/candidate/dashboard';
+export const afterCompanyLoginUrl = '/company/dashboard';

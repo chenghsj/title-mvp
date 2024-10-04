@@ -4,6 +4,7 @@ import * as React from 'react';
 import { AbstractIntlMessages, NextIntlClientProvider } from 'next-intl';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { type ThemeProviderProps } from 'next-themes/dist/types';
+import { LoadingMaskProvider } from '@/components/loading-mask';
 import { TanstackQueryProvider } from '@/components/providers/tanstack-query-provider';
 import { SessionProvider } from '@/hooks/use-session';
 import { validateRequest } from '@/lib/auth';
@@ -33,7 +34,9 @@ export const Providers = ({
           locale={locale}
           timeZone={timeZone}
         >
-          <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
+          <NextThemesProvider {...themeProps}>
+            <LoadingMaskProvider>{children}</LoadingMaskProvider>
+          </NextThemesProvider>
         </NextIntlClientProvider>
       </SessionProvider>
     </TanstackQueryProvider>

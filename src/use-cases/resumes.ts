@@ -1,4 +1,4 @@
-import { ResumeFormSchemaType } from '@/app/dashboard/resume/form-schema';
+import { ResumeFormSchemaType } from '@/app/candidate/dashboard/resume/form-schema';
 import {
   createResume,
   deleteResume,

@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { OAuth2RequestError } from 'arctic';
 import { Role } from '@/app/_root/types';
-import { afterLoginUrl } from '@/config/site';
+import { afterCandidateLoginUrl, afterCompanyLoginUrl } from '@/config/site';
 import { googleProvider } from '@/lib/auth';
 import { redirectToOAuthErrorPage } from '@/lib/errors';
 import { setSession } from '@/lib/session';
@@ -59,7 +59,10 @@ export async function GET(request: Request): Promise<Response> {
       return new Response(null, {
         status: 302,
         headers: {
-          Location: afterLoginUrl,
+          Location:
+            existingAccount.role === 'candidate'
+              ? afterCandidateLoginUrl
+              : afterCompanyLoginUrl,
         },
       });
     }
@@ -69,7 +72,8 @@ export async function GET(request: Request): Promise<Response> {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: afterLoginUrl,
+        Location:
+          role === 'candidate' ? afterCandidateLoginUrl : afterCompanyLoginUrl,
       },
     });
   } catch (e) {

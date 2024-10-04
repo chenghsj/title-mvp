@@ -15,7 +15,7 @@ import {
   InputOTPSlot,
 } from '@/components/ui/input-otp';
 import { useToast } from '@/components/ui/use-toast';
-import { afterLoginUrl } from '@/config/site';
+import { afterCandidateLoginUrl } from '@/config/site';
 import { cn } from '@/lib/utils';
 import { verifyEmailOTPAction } from './actions';
 import { useEmailOTPDialog } from './hooks';
@@ -52,7 +52,7 @@ export function InputOTPDialog({}: Props) {
           title: data.message.title,
           description: data.message.description,
         });
-        router.push(afterLoginUrl);
+        router.push(afterCandidateLoginUrl);
       },
     }
   );

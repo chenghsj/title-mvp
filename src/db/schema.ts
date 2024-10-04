@@ -9,14 +9,20 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core';
 import { RoleTypeEnum } from '@/app/_root/types';
-import { degrees, employmentTypes } from '@/app/dashboard/profile/types';
+import {
+  degrees,
+  employmentTypes,
+} from '@/app/candidate/dashboard/profile/types';
 
 export const accountTypeEnum = ['email', 'google', 'github'] as const;
 
 export const users = pgTable('user', {
   id: uuid('id').notNull().primaryKey().defaultRandom(),
   email: text('email').unique(),
-  emailVerified: timestamp('email_verified', { withTimezone: true }),
+  emailVerified: timestamp('email_verified', {
+    withTimezone: true,
+    mode: 'date',
+  }),
 });
 
 export const accounts = pgTable('account', {
@@ -62,10 +68,10 @@ export const educations = pgTable('education', {
   grade: text('grade'),
   activities: text('activities'),
   description: text('description'),
-  createdAt: timestamp('created_at', { withTimezone: true })
+  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' })
     .notNull()
     .defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true })
+  updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' })
     .notNull()
     .defaultNow(),
 });
@@ -81,10 +87,10 @@ export const jobExperiences = pgTable('job_experience', {
   employmentType: text('employment_type', { enum: employmentTypes }),
   startDate: date('start_date').notNull(),
   endDate: date('end_date'),
-  createdAt: timestamp('created_at', { withTimezone: true })
+  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' })
     .notNull()
     .defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true })
+  updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' })
     .notNull()
     .defaultNow(),
 });
@@ -98,7 +104,7 @@ export const videos = pgTable('video', {
     .notNull()
     .references(() => resumes.id, { onDelete: 'cascade' }),
   url: text('url').notNull(),
-  uploadedAt: timestamp('uploaded_at', { withTimezone: true })
+  uploadedAt: timestamp('uploaded_at', { withTimezone: true, mode: 'date' })
     .notNull()
     .defaultNow(),
 });
@@ -114,10 +120,10 @@ export const resumes = pgTable('resume', {
     .array()
     .notNull()
     .default(sql`'{}'::text[]`),
-  createdAt: timestamp('created_at', { withTimezone: true })
+  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' })
     .notNull()
     .defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true })
+  updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' })
     .notNull()
     .defaultNow(),
   educationId: integer('education_id'),
@@ -142,7 +148,10 @@ export const emailVerificationOTPs = pgTable('email_verification_otp', {
     .references(() => users.id, { onDelete: 'cascade' }),
   OTP: text('code').notNull(),
   email: text('email').notNull(),
-  expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+  expiresAt: timestamp('expires_at', {
+    withTimezone: true,
+    mode: 'date',
+  }).notNull(),
 });
 
 export const resetTokens = pgTable('reset_token', {
@@ -151,7 +160,10 @@ export const resetTokens = pgTable('reset_token', {
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
   token: text('token').notNull(),
-  expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+  expiresAt: timestamp('expires_at', {
+    withTimezone: true,
+    mode: 'date',
+  }).notNull(),
 });
 
 /**

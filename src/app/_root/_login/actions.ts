@@ -3,7 +3,7 @@
 import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import { afterLoginUrl } from '@/config/site';
+import { afterCandidateLoginUrl, afterCompanyLoginUrl } from '@/config/site';
 import { getUserByEmail } from '@/data-access/users';
 import { rateLimitByIp, rateLimitByKey } from '@/lib/limiter';
 import { unauthenticatedAction } from '@/lib/safe-action';
@@ -43,7 +43,9 @@ export const signInAction = unauthenticatedAction
     await rateLimitByKey({ key: input.email, limit: 3, window: 10_000 });
     const user = await signInUseCase(input.email, input.password, input.role);
     await setSession(user.id);
-    redirect(afterLoginUrl);
+    redirect(
+      input.role === 'candidate' ? afterCandidateLoginUrl : afterCompanyLoginUrl
+    );
   });
 
 export const verifyEmailOTPAction = unauthenticatedAction

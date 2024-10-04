@@ -21,7 +21,7 @@ export const createResumeAction = authenticatedAction
       userId: ctx.user.id,
       ...input,
     });
-    revalidatePath('/dashboard/resume');
+    revalidatePath('/candidate/dashboard/resume');
     return { message: successMessage };
   });
 
@@ -30,8 +30,8 @@ export const deleteResumeAction = authenticatedAction
   .input(z.object({ resumeId: z.number() }))
   .handler(async ({ input, ctx }) => {
     await deleteResumeUseCase(ctx.user.id, input.resumeId);
-    revalidatePath('/dashboard/resume');
-    redirect('/dashboard/resume');
+    revalidatePath('/candidate/dashboard/resume');
+    redirect('/candidate/dashboard/resume');
   });
 
 export const updateResumeAction = authenticatedAction
@@ -43,6 +43,6 @@ export const updateResumeAction = authenticatedAction
       userId: ctx.user.id,
       ...input,
     });
-    revalidatePath('/dashboard/resume');
+    revalidatePath('/candidate/dashboard/resume');
     return { message: successMessage };
   });

@@ -1,8 +1,10 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
+import React from 'react';
 import { redirect } from 'next/navigation';
 import { SectionExcludeNav } from '@/components/section-exclude-nav';
-import { deviceDetect } from '@/lib/device-check';
-import { getCurrentUser } from '@/lib/session';
+import { afterCompanyLoginUrl } from '@/config/site';
+import { getAccountByUserId } from '@/data-access/accounts';
+import { assertAuthenticated } from '@/lib/session';
 import { cn } from '@/lib/utils';
 import Sidebar from './sidebar';
 
@@ -10,11 +12,14 @@ type Props = {
   children: ReactNode;
 };
 
-async function DashboardLayout({ children }: Props) {
-  const user = await getCurrentUser();
-  const { isMobile } = deviceDetect();
-
+async function CandidateDashboardLayout({ children }: Props) {
+  const user = await assertAuthenticated();
   if (!user) redirect('/sign-in');
+
+  const account = await getAccountByUserId(user.id);
+  if (account?.role === 'company') {
+    redirect(afterCompanyLoginUrl);
+  }
 
   return (
     <>
@@ -35,4 +40,4 @@ async function DashboardLayout({ children }: Props) {
   );
 }
 
-export default DashboardLayout;
+export default CandidateDashboardLayout;
