@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {
   Body,
   Container,
@@ -7,21 +6,18 @@ import {
   Html,
   Img,
   Link,
-  Section,
   Tailwind,
   Text,
 } from '@react-email/components';
 import { logoImageUrl } from '@/config/app';
 
-interface VerifyIdentityEmailProps {
-  validationCode?: string;
+interface ResetPasswordEmailProps {
+  token?: string;
 }
 
-// const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
+export const BASE_URL = process.env.HOST_NAME;
 
-export const VerifyIdentityEmail = ({
-  validationCode,
-}: VerifyIdentityEmailProps) => {
+export const ResetPasswordEmail = ({ token }: ResetPasswordEmailProps) => {
   return (
     <Html>
       <Head>
@@ -39,16 +35,20 @@ export const VerifyIdentityEmail = ({
               className='mx-auto my-0'
             />
             <Text className='m-2 mt-4 h-4 text-center font-[HelveticaNeue,Helvetica,Arial,sans-serif] text-xs font-bold uppercase leading-4 tracking-normal text-[#0a85ea]'>
-              Verify Your Identity
+              Reset your password
             </Text>
             <Heading className='my-0 inline-block w-full text-center font-[HelveticaNeue,Helvetica,Arial,sans-serif] text-lg leading-6 text-black'>
-              Enter the following code to login.
+              Click the following link to reset your password
             </Heading>
-            <Section className='mx-auto my-4 w-[280px] rounded bg-[rgba(0,0,0,.05)] align-middle'>
-              <Text className='mx-auto my-0 inline-block w-full py-2 text-center text-3xl font-bold leading-10 tracking-wider text-black'>
-                {validationCode}
-              </Text>
-            </Section>
+            <Text className={paragraph}>
+              <Link
+                href={`${BASE_URL}/reset-password?token=${token}`}
+                target='_blank'
+                className='text-[#2754C5] underline'
+              >
+                Reset Password
+              </Link>
+            </Text>
             <Text className={paragraph}>Not expecting this email?</Text>
             <Text className={paragraph}>
               Contact{' '}

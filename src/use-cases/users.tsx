@@ -9,11 +9,13 @@ import { ProfileImage } from '@/app/candidate/dashboard/profile/types';
 import {
   MAX_UPLOAD_IMAGE_SIZE,
   MAX_UPLOAD_IMAGE_SIZE_IN_MB,
+  applicationName,
 } from '@/config/app';
 import {
   createAccount,
   createAccountViaGoogle,
   getAccountByUserId,
+  updatePassword,
 } from '@/data-access/accounts';
 import {
   createEducation,
@@ -32,7 +34,13 @@ import {
   getProfile,
   updateProfile,
 } from '@/data-access/profiles';
+import {
+  createPasswordResetToken,
+  deletePasswordResetToken,
+  getPasswordResetToken,
+} from '@/data-access/reset-tokens';
 import { getResume } from '@/data-access/resumes';
+import { deleteSessionForUser } from '@/data-access/sessions';
 import {
   createUser,
   deleteUser,
@@ -41,17 +49,20 @@ import {
   updateUser,
   verifyPassword,
 } from '@/data-access/users';
+import { createTransaction } from '@/data-access/utils';
 import {
   deleteVerifyEmailOTP,
   verifyEmailOTP,
 } from '@/data-access/verify-email';
 import { getVideo } from '@/data-access/videos';
+import { ResetPasswordEmail } from '@/emails/reset-password';
 import {
   deleteDirectoryFromBucket,
   deleteFileFromBucket,
   getFileUrl,
   uploadFileToBucket,
 } from '@/lib/files';
+import { sendEmail } from '@/lib/send-email';
 import { assertAuthenticated } from '@/lib/session';
 import { createUUID } from '@/lib/uuid';
 import { sendEmailOTPUseCase } from './email-otp';
@@ -145,6 +156,39 @@ export async function signInUseCase(
   }
 
   return user;
+}
+
+export async function resetPasswordUseCase(email: string) {
+  const user = await getUserByEmail(email);
+
+  if (!user) {
+    const tErrorMessages = await getTranslations('errorMessages');
+    throw new PublicError(tErrorMessages('userNotFound'));
+  }
+
+  const token = await createPasswordResetToken(user.id);
+
+  await sendEmail(
+    email,
+    `Your password reset link for ${applicationName}`,
+    <ResetPasswordEmail token={token} />
+  );
+}
+
+export async function changePasswordUseCase(token: string, password: string) {
+  const tokenEntry = await getPasswordResetToken(token);
+
+  if (!tokenEntry) {
+    throw new PublicError('Invalid token');
+  }
+
+  const userId = tokenEntry.userId;
+
+  await createTransaction(async (trx) => {
+    await deletePasswordResetToken(token, trx);
+    await updatePassword(userId, password, trx);
+    await deleteSessionForUser(userId, trx);
+  });
 }
 
 export async function getUserUseCase() {

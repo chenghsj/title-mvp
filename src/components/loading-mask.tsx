@@ -1,6 +1,13 @@
 'use client';
 
-import React, { ReactNode, createContext, useContext, useState } from 'react';
+import React, {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+import { usePathname } from 'next/navigation';
 import LoadingPage from '@/app/loading';
 import { SectionExcludeNav } from './section-exclude-nav';
 
@@ -27,6 +34,11 @@ type LoadingMaskProviderProps = {
 
 export const LoadingMaskProvider = ({ children }: LoadingMaskProviderProps) => {
   const [isLoading, setLoading] = useState(false);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setLoading(false);
+  }, [pathname]);
 
   return (
     <LoadingMaskContext.Provider value={{ isLoading, setLoading }}>

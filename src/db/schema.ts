@@ -158,7 +158,8 @@ export const resetTokens = pgTable('reset_token', {
   id: uuid('id').notNull().primaryKey().defaultRandom(),
   userId: uuid('user_id')
     .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
+    .references(() => users.id, { onDelete: 'cascade' })
+    .unique(),
   token: text('token').notNull(),
   expiresAt: timestamp('expires_at', {
     withTimezone: true,

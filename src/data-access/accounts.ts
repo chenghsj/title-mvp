@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { UserId } from 'lucia';
 import { Role } from '@/app/_root/types';
 import { db } from '@/db/drizzle';
@@ -72,4 +72,20 @@ export async function getAccountByGoogleId(googleId: string) {
   return await db.query.accounts.findFirst({
     where: eq(accounts.googleId, googleId),
   });
+}
+
+export async function updatePassword(
+  userId: UserId,
+  password: string,
+  trx = db
+) {
+  const salt = crypto.randomBytes(128).toString('base64');
+  const hash = await hashPassword(password, salt);
+  await trx
+    .update(accounts)
+    .set({
+      password: hash,
+      salt,
+    })
+    .where(and(eq(accounts.userId, userId), eq(accounts.accountType, 'email')));
 }

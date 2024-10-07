@@ -1,22 +1,4 @@
 {
-  "actions": {
-    "signUpAction": {
-      "title": "電子郵件發送成功！",
-      "description": "請查看您的電子郵件以獲取 OTP"
-    },
-    "sendEmailOTPAction": {
-      "title": "電子郵件發送成功！",
-      "description": "請查看您的電子郵件以獲取 OTP"
-    },
-    "verifyEmailOTPAction": {
-      "title": "電子郵件驗證成功",
-      "description": "重新導向至控制台"
-    },
-    "confirmDeleteAction": {
-      "title": "成功",
-      "description": "{type}已刪除"
-    }
-  },
   "errorMessages": {
     "backToSignInPage": "返回登入頁",
     "somethingWentWrong": "出了點問題",
@@ -35,7 +17,8 @@
       "RoleError": "電子郵件已註冊為「{role}」帳戶。\n若您想使用當前郵件登入此身份，請先刪除現有帳戶。",
       "SendEmailError": "發送電子郵件失敗",
       "EmailVerificationError": "驗證電子郵件失敗",
-      "LoginError": "電子郵件或密碼錯誤"
+      "LoginError": "電子郵件或密碼錯誤",
+      "RateLimitError": "請求次數過多，請稍後重試"
     }
   },
   "not-found": {
@@ -120,8 +103,35 @@
         "confirmPassword": "確認密碼"
       },
       "buttons": {
-        "submit": "提交",
+        "submit": "送出",
         "sendOTP": "發送 OTP"
+      },
+      "placeholders": {
+        "email": "輸入您的電子郵件",
+        "password": "輸入您的密碼",
+        "confirmPassword": "再次輸入您的密碼"
+      }
+    },
+    "success": {
+      "verifyEmail": {
+        "verified": "OTP 驗證成功"
+      }
+    },
+    "resetPassword": {
+      "title": "重設密碼",
+      "description": "輸入您的新密碼",
+      "success": {
+        "title": "密碼已更新",
+        "description": "您的密碼已成功更新。",
+        "button": "使用新密碼登入"
+      }
+    },
+    "forgotPassword": {
+      "title": "忘記密碼",
+      "description": "請輸入您的電子郵件地址。我們將向您發送一個重設密碼的連結。",
+      "alert": {
+        "title": "連結已發送",
+        "description": "我們已經發送了一封電子郵件，其中包含重設密碼的連結。"
       }
     }
   },

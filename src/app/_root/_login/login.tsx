@@ -2,9 +2,9 @@
 
 import { MouseEventHandler, useEffect, useState } from 'react';
 import { FaGoogle, FaRegEnvelope } from 'react-icons/fa';
-import { LuArrowLeft } from 'react-icons/lu';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
+import { ChevronLeft } from 'lucide-react';
 import { AnimatedHeight } from '@/components/animated-height';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
@@ -49,8 +49,8 @@ export function LoginPage({}: Props) {
         // overflow ? 'items-start' : 'items-center'
       )}
     >
-      <AnimatedHeight className='w-4/5 min-w-80 ease-out md:w-full'>
-        <Card className={cn('p-5 sm:p-9')}>
+      <AnimatedHeight className='w-4/5 min-w-80 max-w-md ease-out md:w-full'>
+        <Card className={cn('p-5 sm:p-7')}>
           <CardContent className='flex flex-col items-start gap-5 p-3 sm:gap-7 sm:p-6'>
             <CardTitle className='grid gap-2'>
               <p className='text-2xl font-medium sm:text-3xl'>
@@ -68,7 +68,7 @@ export function LoginPage({}: Props) {
                     onClick={handleBackArrowClick}
                     className={cn(isMobile && 'h-9')}
                   >
-                    <LuArrowLeft strokeWidth={2.5} size={20} />
+                    <ChevronLeft size={18} />
                   </Button>
                 )}
                 <Button

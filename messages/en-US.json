@@ -1,22 +1,4 @@
 {
-  "actions": {
-    "signUpAction": {
-      "title": "Email sent successfully!",
-      "description": "Please check your email for the OTP"
-    },
-    "sendEmailOTPAction": {
-      "title": "Email sent successfully!",
-      "description": "Please check your email for the OTP"
-    },
-    "verifyEmailOTPAction": {
-      "title": "Email verified",
-      "description": "Redirect to dashboard"
-    },
-    "confirmDeleteAction": {
-      "title": "Success",
-      "description": "{type} deleted"
-    }
-  },
   "errorMessages": {
     "backToSignInPage": "Back to sign in page",
     "somethingWentWrong": "Something went wrong",
@@ -35,7 +17,8 @@
       "RoleError": "The mail address is already registered with {role} account. \nIf you want to change your role with current mail, please delete the existing account first.",
       "SendEmailError": "Failed to send email",
       "EmailVerificationError": "Failed to verify email",
-      "LoginError": "Invalid email or password"
+      "LoginError": "Invalid email or password",
+      "RateLimitError": "Too many requests. Please try again later."
     }
   },
   "not-found": {
@@ -122,11 +105,33 @@
       "buttons": {
         "submit": "Submit",
         "sendOTP": "Send OTP"
+      },
+      "placeholders": {
+        "email": "Enter your email",
+        "password": "Enter your password",
+        "confirmPassword": "Confirm your password"
       }
     },
     "success": {
       "verifyEmail": {
         "verified": "OTP validated successfully!"
+      }
+    },
+    "resetPassword": {
+      "title": "Reset Password",
+      "description": "Enter your new password.",
+      "success": {
+        "title": "Password updated",
+        "description": "Your password has been successfully updated.",
+        "button": "Login with New Password"
+      }
+    },
+    "forgotPassword": {
+      "title": "Forgot Password",
+      "description": "Please enter your email address. We will send you a link to reset your password.",
+      "alert": {
+        "title": "Reset link sent",
+        "description": "We have sent you an email with a link to reset your password."
       }
     }
   },

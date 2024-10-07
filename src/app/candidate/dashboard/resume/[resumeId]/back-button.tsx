@@ -4,8 +4,11 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
-type Props = {};
+type Props = {
+  href?: string;
+} & React.ComponentProps<typeof Button>;
 
 const BackButton = (props: Props) => {
   const router = useRouter();
@@ -14,12 +17,16 @@ const BackButton = (props: Props) => {
     <Button
       size={'icon'}
       onClick={() => {
+        if (props.href) {
+          router.push(props.href);
+          return;
+        }
         router.back();
       }}
       variant={'ghost'}
-      className='h-7 w-7'
+      className={cn(props.className)}
     >
-      <ChevronLeft size={16} />
+      <ChevronLeft size={18} />
     </Button>
   );
 };

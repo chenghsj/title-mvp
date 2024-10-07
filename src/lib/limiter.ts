@@ -9,6 +9,7 @@
  * To keep this starter kit as slim as possible, I decided to NOT require you to also
  * setup a redis instance just to launch your saas product.
  */
+import { getTranslations } from 'next-intl/server';
 import { getIp } from '@/lib/get-ip';
 import { RateLimitError } from './errors';
 
@@ -43,10 +44,11 @@ export async function rateLimitByIp({
   limit?: number;
   window?: number;
 }) {
+  const tErrorMessages = await getTranslations('errorMessages');
   const ip = getIp();
 
   if (!ip) {
-    throw new RateLimitError();
+    throw new RateLimitError(tErrorMessages('public.RateLimitError'));
   }
 
   await rateLimitByKey({
@@ -65,6 +67,7 @@ export async function rateLimitByKey({
   limit?: number;
   window?: number;
 }) {
+  const tErrorMessages = await getTranslations('errorMessages');
   const tracker = trackers[key] || { count: 0, expiresAt: 0 };
 
   if (!trackers[key]) {
@@ -79,6 +82,6 @@ export async function rateLimitByKey({
   tracker.count++;
 
   if (tracker.count > limit) {
-    throw new RateLimitError();
+    throw new RateLimitError(tErrorMessages('public.RateLimitError'));
   }
 }

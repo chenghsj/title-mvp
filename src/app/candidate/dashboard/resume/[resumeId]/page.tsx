@@ -49,7 +49,7 @@ const SingleResumePage = async ({ params }: Props) => {
     <div className='max-w-3xl space-y-3'>
       <Card className='sticky -top-5 z-20'>
         <CardContent className='flex w-full items-center justify-between p-2'>
-          <BackButton />
+          <BackButton className='h-7 w-7' />
           <div className='font-bold'>{resume?.title}</div>
           <SingleResumeMenu resume={resume!} />
         </CardContent>

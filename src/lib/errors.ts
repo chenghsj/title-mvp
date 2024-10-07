@@ -1,8 +1,8 @@
 import { Role } from '@/app/_root/types';
 
 export class RateLimitError extends Error {
-  constructor() {
-    super('Rate limit exceeded');
+  constructor(message?: string) {
+    super(message ?? 'Rate limit exceeded');
     this.name = 'RateLimitError';
   }
 }
