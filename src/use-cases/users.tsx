@@ -261,6 +261,7 @@ export async function createEducationUseCase(
     ...input,
     userId,
     description: input.description ?? null,
+    fieldOfStudy: input.fieldOfStudy ?? null,
     startDate: input.startDate.toLocaleDateString(),
     endDate: input.endDate?.toLocaleDateString() ?? null,
   });

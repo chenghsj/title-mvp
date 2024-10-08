@@ -3,6 +3,8 @@
 import { useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useDialogState } from '@/hooks/store';
+import { useDeviceDetect } from '@/hooks/use-device-detect';
+import { cn } from '@/lib/utils';
 import { DashboardDetails } from '../type';
 import { AvatarWithMenu } from './avatar-with-menu';
 import { ConfirmDeleteDialog } from './confirm-delete-dialog';
@@ -25,13 +27,11 @@ type Props = {
 export const Profile = ({ dashboardDetails }: Props) => {
   const { profile, educations, jobExperiences, avatarUrl, coverUrl } =
     dashboardDetails;
-
   const dialogState = useDialogState();
   const profileDialog = useProfileDialog();
-
   const sortedEducations = createSortedEducations(educations);
-
   const tProfile = useTranslations('profile');
+  const { isMobile } = useDeviceDetect();
 
   useEffect(() => {
     profileDialog.setEducations(educations);
@@ -60,10 +60,24 @@ export const Profile = ({ dashboardDetails }: Props) => {
       <DisplayNameDialog displayName={profile.displayName!} />
       <div>
         <CoverSection coverUrl={coverUrl} />
-        <div className='-mt-2 space-y-5 px-5 sm:-mt-4'>
-          <div className='flex items-center gap-4 sm:gap-6'>
-            <AvatarWithMenu profile={profile} avatarUrl={avatarUrl} />
-            <DisplayNameSection displayName={profile.displayName!} />
+        <div className='space-y-5 px-5'>
+          <div className='relative flex items-center gap-4 sm:gap-6'>
+            <div
+              className={cn(
+                'absolute top-0',
+                isMobile ? '-translate-y-[80%]' : '-translate-y-[15%]'
+              )}
+            >
+              <AvatarWithMenu profile={profile} avatarUrl={avatarUrl} />
+            </div>
+            <div
+              className={cn(
+                'w-full',
+                isMobile ? 'h-16 pl-5 pt-9' : 'h-32 pl-36 pt-9'
+              )}
+            >
+              <DisplayNameSection displayName={profile.displayName!} />
+            </div>
           </div>
           <div className='flex flex-col gap-5'>
             <ProfileSectionCard

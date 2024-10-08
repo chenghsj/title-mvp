@@ -10,7 +10,7 @@ export async function createEducation({
 }: {
   userId: UserId;
   degree: DegreeType;
-  fieldOfStudy: string;
+  fieldOfStudy: string | null;
   institution: string;
   description: string | null;
   startDate: string;

@@ -1,9 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { camelCase } from 'lodash';
 import { useServerAction } from 'zsa-react';
+import { FormCombobox } from '@/components/form-combobox';
 import { FormDatePicker } from '@/components/form-date-picker';
 import { ResponsiveDialog } from '@/components/responsive-dialog';
 import {
@@ -15,13 +16,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+
+
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { JobExperience } from '@/db/schema';
@@ -71,6 +67,19 @@ export const JobDialog = ({ jobExperience }: Props) => {
   const dialogState = useDialogState();
   const profileDialog = useProfileDialog();
   const { shouldReturn } = useReturnByFormType('JobExperience');
+
+  const formattedEmploymentTypes = useMemo(
+    () =>
+      employmentTypes.map((employmentType) => ({
+        value: employmentType,
+        label: tProfileJobExperienceEmploymentTypes(
+          camelCase(
+            employmentType
+          ) as keyof IntlMessages['profile']['jobExperience']['employmentTypes']
+        ),
+      })),
+    []
+  );
 
   const form = useForm<JobExperienceFormSchemaType>({
     resolver: zodResolver(JobExperienceFormSchema),
@@ -163,43 +172,18 @@ export const JobDialog = ({ jobExperience }: Props) => {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
+          <FormCombobox
+            form={form}
             name='employmentType'
-            render={({ field }) => (
-              <FormItem className='col-span-2 sm:col-span-1'>
-                <FormLabel>
-                  {tProfileJobExperienceForm('labels.employmentType')}
-                </FormLabel>
-                <FormControl>
-                  <Select
-                    disabled={isPending}
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <SelectTrigger className='w-full'>
-                      <SelectValue
-                        placeholder={tProfileJobExperienceForm(
-                          'placeholders.employmentType'
-                        )}
-                      />
-                    </SelectTrigger>
-                    <SelectContent onCloseAutoFocus={(e) => e.preventDefault()}>
-                      {employmentTypes.map((type, index) => (
-                        <SelectItem key={index} value={type}>
-                          {tProfileJobExperienceEmploymentTypes(
-                            camelCase(
-                              type
-                            ) as keyof IntlMessages['profile']['jobExperience']['employmentTypes']
-                          )}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+            label={tProfileJobExperienceForm('labels.employmentType')}
+            data={formattedEmploymentTypes}
+            placeholder={tProfileJobExperienceForm(
+              'placeholders.employmentType'
             )}
+            formItemProps={{
+              className: 'col-span-2 sm:col-span-1',
+            }}
+            hideSearch
           />
           <FormDatePicker
             form={form}
@@ -231,7 +215,7 @@ export const JobDialog = ({ jobExperience }: Props) => {
             name='description'
             render={({ field }) => (
               <FormItem className='col-span-2 flex h-full flex-col'>
-                <FormLabel>
+                <FormLabel className='leading-5'>
                   {tProfileJobExperienceForm('labels.description')}
                 </FormLabel>
                 <FormControl>

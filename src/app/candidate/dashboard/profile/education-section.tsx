@@ -38,7 +38,9 @@ export const EducationSection = ({ education }: Props) => {
       <div className='flex flex-col gap-1'>
         <div className='flex items-center text-sm'>
           {education.institution}
-          <Separator orientation='vertical' className='mx-2 h-3' />
+          {education.fieldOfStudy && (
+            <Separator orientation='vertical' className='mx-2 h-3' />
+          )}
           {education.fieldOfStudy}
         </div>
         <div className='text-xs italic'>

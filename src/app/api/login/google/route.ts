@@ -43,6 +43,5 @@ export async function GET(request: NextRequest): Promise<Response> {
     sameSite: 'lax',
   });
 
-  console.log(url, state, codeVerifier, role);
   return Response.redirect(url);
 }

@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, ComponentProps, useEffect, useState } from 'react';
 import {
   FieldValues,
   Path,
@@ -8,6 +8,14 @@ import {
 import { useMask } from '@react-input/mask';
 import { format, getYear, isValid, parse } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
+import { useDeviceDetect } from '@/hooks/use-device-detect';
 import { cn } from '@/lib/utils';
 import { Button, ButtonProps } from './ui/button';
 import { Calendar, CalendarProps } from './ui/calendar';
@@ -25,7 +33,7 @@ type Props<T extends FieldValues> = {
   form: UseFormReturn<T>;
   name: Path<T>;
   label: string;
-  formItemProps?: React.HTMLAttributes<HTMLDivElement>;
+  formItemProps?: ComponentProps<typeof FormItem>;
   calendarProps?: CalendarProps;
   buttonProps?: ButtonProps;
 };
@@ -44,6 +52,7 @@ export const FormDatePicker = <T extends FieldValues>({
     name,
     control: form.control,
   });
+  const { isMobile } = useDeviceDetect();
 
   const inputRef = useMask({
     mask: 'yyyy/MM/dd',
@@ -80,6 +89,43 @@ export const FormDatePicker = <T extends FieldValues>({
     form.clearErrors(name);
   };
 
+  const trigger = (
+    <FormControl>
+      <Button
+        size={'icon'}
+        variant={'ghost'}
+        className={cn(
+          !field.value && 'text-muted-foreground',
+          'absolute right-2',
+          'top-1/2 h-8 w-8 -translate-y-1/2 transform'
+        )}
+        {...buttonProps}
+      >
+        <CalendarIcon size={18} className='text-zinc-500' />
+      </Button>
+    </FormControl>
+  );
+
+  const content = (
+    <Calendar
+      mode='default'
+      captionLayout='dropdown-buttons'
+      selected={field.value}
+      onDayClick={(date: Date | undefined) => {
+        if (!isValid(date) || !date) return;
+        setStringDate(format(new Date(date), 'yyyy/MM/dd'));
+        field.onChange(date);
+        form.clearErrors(name);
+        setIsOpen(false);
+      }}
+      disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
+      fromYear={1960}
+      toYear={getYear(new Date())}
+      className={cn(isMobile && 'px-8 py-5')}
+      {...calendarProps}
+    />
+  );
+
   useEffect(() => {
     if (field.value) {
       setStringDate(format(field.value, 'yyyy/MM/dd'));
@@ -100,6 +146,7 @@ export const FormDatePicker = <T extends FieldValues>({
               onClick={(e) => {
                 e.preventDefault();
               }}
+              className='leading-5'
             >
               {label}
             </FormLabel>
@@ -112,50 +159,33 @@ export const FormDatePicker = <T extends FieldValues>({
                 onBlur={handleBlur}
                 onChange={handleChange}
               />
-              <Popover open={isOpen} onOpenChange={setIsOpen}>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      size={'icon'}
-                      variant={'ghost'}
-                      className={cn(
-                        !field.value && 'text-muted-foreground',
-                        'absolute right-1',
-                        'top-1/2 h-8 w-8 -translate-y-1/2 transform'
-                      )}
-                      {...buttonProps}
-                    >
-                      <CalendarIcon size={18} className='text-zinc-500' />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent
-                  className='w-auto p-0'
-                  align='start'
-                  onOpenAutoFocus={(e) => {
-                    e.preventDefault();
-                  }}
-                >
-                  <Calendar
-                    mode='default'
-                    captionLayout='dropdown-buttons'
-                    selected={field.value}
-                    onDayClick={(date: Date | undefined) => {
-                      if (!isValid(date) || !date) return;
-                      setStringDate(format(new Date(date), 'yyyy/MM/dd'));
-                      field.onChange(date);
-                      form.clearErrors(name);
-                      setIsOpen(false);
+              {isMobile ? (
+                <Drawer open={isOpen} onOpenChange={setIsOpen}>
+                  <DrawerTrigger asChild>{trigger}</DrawerTrigger>
+                  <DrawerContent
+                    onOpenAutoFocus={(e) => e.preventDefault()}
+                    className='h-[400px]'
+                  >
+                    <DrawerHeader className='hidden'>
+                      <DrawerTitle></DrawerTitle>
+                    </DrawerHeader>
+                    {content}
+                  </DrawerContent>
+                </Drawer>
+              ) : (
+                <Popover open={isOpen} onOpenChange={setIsOpen}>
+                  <PopoverTrigger asChild>{trigger}</PopoverTrigger>
+                  <PopoverContent
+                    className='w-auto p-0'
+                    align='start'
+                    onOpenAutoFocus={(e) => {
+                      e.preventDefault();
                     }}
-                    disabled={(date) =>
-                      date > new Date() || date < new Date('1900-01-01')
-                    }
-                    fromYear={1960}
-                    toYear={getYear(new Date())}
-                    {...calendarProps}
-                  />
-                </PopoverContent>
-              </Popover>
+                  >
+                    {content}
+                  </PopoverContent>
+                </Popover>
+              )}
             </div>
             <FormMessage />
           </FormItem>

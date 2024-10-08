@@ -11,7 +11,7 @@ export const EducationFormSchema = z
       message: 'Required',
     }),
     institution: z.string().min(1, 'Required'),
-    fieldOfStudy: z.string().min(1, 'Required'),
+    fieldOfStudy: z.string().nullish().optional(),
     startDate: z.date({ invalid_type_error: 'Invalid date' }),
     endDate: z.date().nullish().optional(),
     description: z.string().max(500).optional(),
@@ -27,6 +27,18 @@ export const EducationFormSchema = z
     {
       message: 'End date must be later than start date',
       path: ['endDate'],
+    }
+  )
+  .refine(
+    (data) => {
+      if (data.degree !== 'High School') {
+        return data.fieldOfStudy !== null && data.fieldOfStudy !== '';
+      }
+      return true;
+    },
+    {
+      message: 'Required',
+      path: ['fieldOfStudy'],
     }
   );
 

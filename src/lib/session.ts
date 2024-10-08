@@ -1,4 +1,5 @@
 import { cache } from 'react';
+import { getTranslations } from 'next-intl/server';
 import { cookies } from 'next/headers';
 import { UserId } from 'lucia';
 import 'server-only';
@@ -15,9 +16,10 @@ export const getCurrentUser = cache(async () => {
 });
 
 export const assertAuthenticated = async () => {
+  const tErrorMessages = await getTranslations('errorMessages');
   const user = await getCurrentUser();
   if (!user) {
-    throw new AuthenticationError();
+    throw new AuthenticationError(tErrorMessages('public.AuthenticationError'));
   }
   return user;
 };

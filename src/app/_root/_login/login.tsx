@@ -3,13 +3,17 @@
 import { MouseEventHandler, useEffect, useState } from 'react';
 import { FaGoogle, FaRegEnvelope } from 'react-icons/fa';
 import { useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
+import { useServerAction } from 'zsa-react';
 import { AnimatedHeight } from '@/components/animated-height';
+import { useLoadingMask } from '@/components/loading-mask';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
+import { useToast } from '@/components/ui/use-toast';
 import { useDeviceDetect } from '@/hooks/use-device-detect';
 import { cn } from '@/lib/utils';
+import { googleOAuthAction } from './actions';
 import { useGetRole } from './hooks';
 import { InputOTPDialog } from './input-otp-dialog';
 import LoginForm from './login-form';
@@ -18,7 +22,6 @@ import { RoleSwitch } from './role-switch';
 type Props = {};
 
 export function LoginPage({}: Props) {
-  const router = useRouter();
   const tLogin = useTranslations('login');
   const [isMail, setIsMail] = useState(false);
   // This code adjusts alignment for mobile orientation but causes a scroll issue specific to iOS Safari
@@ -27,14 +30,34 @@ export function LoginPage({}: Props) {
   const { role } = useGetRole();
   const pathname = usePathname();
   const isSignUp = pathname === '/sign-up';
+  const { toast } = useToast();
+  const { setLoading } = useLoadingMask();
+
+  const { execute } = useServerAction(googleOAuthAction, {
+    onSuccess: ({ data }) => {
+      window.location.href = data.url;
+    },
+    onError: ({ err }) => {
+      console.error(err);
+      setLoading(false);
+      toast({
+        title: err.code,
+        description: err.message,
+      });
+    },
+  });
 
   const handleBackArrowClick = () => {
     setIsMail(false);
   };
 
   const handleOAuthClick: MouseEventHandler<HTMLButtonElement> = async (e) => {
-    router.refresh();
-    router.push(`/api/login/${e.currentTarget.name}?role=${role}`);
+    // router.refresh();
+    // router.push(`/api/login/${e.currentTarget.name}?role=${role}`);
+
+    // using server action to show the loading mask
+    execute({ role });
+    setLoading(true);
   };
 
   useEffect(() => {

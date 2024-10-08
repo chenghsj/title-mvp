@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { FaCamera } from 'react-icons/fa';
 import { IoPersonSharp } from 'react-icons/io5';
 import { useTranslations } from 'next-intl';
@@ -36,8 +35,8 @@ export const AvatarWithMenu = ({
         avatarUrl={avatarUrl || profile?.image}
         avatarProps={{
           className: cn(
-            'ring-3 box-content aspect-square h-20 w-20 cursor-pointer border-4 border-white bg-zinc-500 dark:border-zinc-900',
-            'sm:h-28 sm:w-28'
+            'ring-3 box-content cursor-pointer border-4 border-white bg-zinc-500 dark:border-zinc-900',
+            'h-28 w-28'
           ),
         }}
         avatarFallback={
