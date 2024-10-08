@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, ComponentProps, useEffect, useState } from 'react';
 import {
   FieldValues,
   Path,
@@ -25,7 +25,7 @@ type Props<T extends FieldValues> = {
   form: UseFormReturn<T>;
   name: Path<T>;
   label: string;
-  formItemProps?: React.HTMLAttributes<HTMLDivElement>;
+  formItemProps?: ComponentProps<typeof FormItem>;
   calendarProps?: CalendarProps;
   buttonProps?: ButtonProps;
 };
@@ -100,6 +100,7 @@ export const FormDatePicker = <T extends FieldValues>({
               onClick={(e) => {
                 e.preventDefault();
               }}
+              className='leading-5'
             >
               {label}
             </FormLabel>

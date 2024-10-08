@@ -227,7 +227,9 @@
           "description": "描述"
         },
         "placeholders": {
-          "degree": "選擇學位"
+          "degree": "選擇學位",
+          "school": "選擇學校",
+          "fieldOfStudy": "選擇科系"
         }
       }
     },

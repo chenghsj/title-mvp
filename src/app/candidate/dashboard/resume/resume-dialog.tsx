@@ -249,7 +249,9 @@ export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
             name='bio'
             render={({ field }) => (
               <FormItem className='col-span-2 flex h-full flex-col sm:col-span-1'>
-                <FormLabel>{tResumeFormLabels('description')}</FormLabel>
+                <FormLabel className='leading-5'>
+                  {tResumeFormLabels('description')}
+                </FormLabel>
                 <FormControl>
                   <Textarea
                     disabled={isPending}

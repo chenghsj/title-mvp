@@ -227,7 +227,9 @@
           "description": "Description"
         },
         "placeholders": {
-          "degree": "Select a degree"
+          "degree": "Select a degree",
+          "school": "Select a school",
+          "fieldOfStudy": "Select a department"
         }
       }
     },

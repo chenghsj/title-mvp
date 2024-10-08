@@ -1,8 +1,9 @@
 'use client';
 
-import { MouseEvent, useTransition } from 'react';
+import { MouseEvent, useEffect, useTransition } from 'react';
 import { useTranslations } from 'next-intl';
 import { Globe } from 'lucide-react';
+import { useLoadingMask } from '@/components/loading-mask';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -16,6 +17,7 @@ import { setUserLocale } from '@/lib/locale';
 export default function LocaleSwitcher() {
   const tNavbarLanguage = useTranslations('navbar.language');
   const [isPending, startTransition] = useTransition();
+  const { setLoading } = useLoadingMask();
 
   const onChange = (value: string) => (e: MouseEvent<HTMLDivElement>) => {
     const locale = value as Locale;
@@ -23,6 +25,10 @@ export default function LocaleSwitcher() {
       setUserLocale(locale);
     });
   };
+
+  useEffect(() => {
+    setLoading(isPending);
+  }, [isPending]);
 
   return (
     <DropdownMenu modal={false}>

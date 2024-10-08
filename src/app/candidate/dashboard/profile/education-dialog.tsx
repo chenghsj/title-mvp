@@ -1,9 +1,10 @@
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { camelCase } from 'lodash';
 import { useServerAction } from 'zsa-react';
+import { FormCombobox } from '@/components/form-combobox';
 import { FormDatePicker } from '@/components/form-date-picker';
 import { ResponsiveDialog } from '@/components/responsive-dialog';
 import {
@@ -14,7 +15,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -28,6 +28,7 @@ import { Education } from '@/db/schema';
 import { useDialogState } from '@/hooks/store';
 import { createEducationAction, updateEducationAction } from './actions';
 import { EducationFormSchema, EducationFormSchemaType } from './form-schema';
+import colleages from './formatted_school_department_names.json';
 import { useProfileDialog, useReturnByFormType } from './hooks';
 import { DegreeType, degrees } from './types';
 
@@ -36,7 +37,6 @@ type Props = {
 };
 
 const useGetTranslations = () => {
-  const tErrorMessages = useTranslations('errorMessages');
   const tComponentsResponsiveDialog = useTranslations(
     'components.responsiveDialog'
   );
@@ -45,7 +45,6 @@ const useGetTranslations = () => {
   const tProfileEducationDegrees = useTranslations('profile.education.degrees');
 
   return {
-    tErrorMessages,
     tComponentsResponsiveDialog,
     tProfileEducation,
     tProfileEducationForm,
@@ -55,7 +54,6 @@ const useGetTranslations = () => {
 
 export const EducationDialog = ({ education }: Props) => {
   const {
-    tErrorMessages,
     tComponentsResponsiveDialog,
     tProfileEducation,
     tProfileEducationForm,
@@ -118,6 +116,24 @@ export const EducationDialog = ({ education }: Props) => {
     }
   };
 
+  const institution = form.watch('institution');
+
+  const formattedColleages = useMemo(
+    () => Object.keys(colleages).map((key) => ({ value: key, label: key })),
+    []
+  );
+  const formattedDepartments = useMemo(() => {
+    if (institution) {
+      return colleages[institution as keyof typeof colleages]?.map(
+        (department) => ({
+          value: department,
+          label: department,
+        })
+      );
+    }
+    return [];
+  }, [institution]);
+
   const formContent = (footer: ReactNode) => (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-3'>
@@ -159,33 +175,25 @@ export const EducationDialog = ({ education }: Props) => {
             )}
           />
           <div className='col-span-1 hidden sm:block' />
-          <FormField
-            control={form.control}
+          <FormCombobox
+            form={form}
             name='institution'
-            render={({ field }) => (
-              <FormItem className='col-span-2 sm:col-span-1'>
-                <FormLabel>{tProfileEducationForm('labels.school')}</FormLabel>
-                <FormControl>
-                  <Input disabled={isPending} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label={tProfileEducationForm('labels.school')}
+            placeholder={tProfileEducationForm('placeholders.school')}
+            data={formattedColleages}
+            formItemProps={{
+              className: 'col-span-2 sm:col-span-1',
+            }}
           />
-          <FormField
-            control={form.control}
+          <FormCombobox
+            form={form}
             name='fieldOfStudy'
-            render={({ field }) => (
-              <FormItem className='col-span-2 sm:col-span-1'>
-                <FormLabel>
-                  {tProfileEducationForm('labels.fieldOfStudy')}
-                </FormLabel>
-                <FormControl>
-                  <Input disabled={isPending} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label={tProfileEducationForm('labels.fieldOfStudy')}
+            placeholder={tProfileEducationForm('placeholders.fieldOfStudy')}
+            data={formattedDepartments}
+            formItemProps={{
+              className: 'col-span-2 sm:col-span-1',
+            }}
           />
           <FormDatePicker
             form={form}
@@ -216,7 +224,7 @@ export const EducationDialog = ({ education }: Props) => {
             name='description'
             render={({ field }) => (
               <FormItem className='col-span-2 flex h-full flex-col'>
-                <FormLabel>
+                <FormLabel className='leading-5'>
                   {tProfileEducationForm('labels.description')}
                 </FormLabel>
                 <FormControl>
@@ -241,6 +249,12 @@ export const EducationDialog = ({ education }: Props) => {
       form.reset();
     }
   }, [dialogState.isOpen]);
+
+  useEffect(() => {
+    if (institution !== education?.institution) {
+      form.setValue('fieldOfStudy', '');
+    }
+  }, [institution]);
 
   if (shouldReturn) return null;
 

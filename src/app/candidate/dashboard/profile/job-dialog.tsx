@@ -231,7 +231,7 @@ export const JobDialog = ({ jobExperience }: Props) => {
             name='description'
             render={({ field }) => (
               <FormItem className='col-span-2 flex h-full flex-col'>
-                <FormLabel>
+                <FormLabel className='leading-5'>
                   {tProfileJobExperienceForm('labels.description')}
                 </FormLabel>
                 <FormControl>
