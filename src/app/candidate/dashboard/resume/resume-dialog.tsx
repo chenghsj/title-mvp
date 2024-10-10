@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { camelCase } from 'lodash';
 import { useServerAction } from 'zsa-react';
+import { FormFieldWithCombobox } from '@/components/form-field-with-combobox';
 import { ResponsiveDialog } from '@/components/responsive-dialog';
 import {
   Form,
@@ -17,17 +18,10 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
-import { Education, JobExperience, Resume, Video } from '@/db/schema';
+import { Education, JobExperience, Resume, Video } from '@/db/schema/candidate';
 import { useDialogState } from '@/hooks/store';
 import { FormType } from '../profile/hooks';
 import { createResumeAction, updateResumeAction } from './actions';
@@ -40,16 +34,35 @@ type Props = {
   jobExperiences: JobExperience[];
 };
 
-export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
+const useGetTranslations = () => {
   const tComponentsResponsiveDialog = useTranslations(
     'components.responsiveDialog'
   );
-  const tErrorMessages = useTranslations('errorMessages');
   const tResume = useTranslations('resume');
   const tResumeFormLabels = useTranslations('resume.form.labels');
   const tResumeFormPlaceholders = useTranslations('resume.form.placeholders');
   const tResumeFormSelectItem = useTranslations('resume.form.selectItem');
   const tProfileEducationDegrees = useTranslations('profile.education.degrees');
+
+  return {
+    tComponentsResponsiveDialog,
+    tResume,
+    tResumeFormLabels,
+    tResumeFormPlaceholders,
+    tResumeFormSelectItem,
+    tProfileEducationDegrees,
+  };
+};
+
+export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
+  const {
+    tComponentsResponsiveDialog,
+    tResume,
+    tResumeFormLabels,
+    tResumeFormPlaceholders,
+    tResumeFormSelectItem,
+    tProfileEducationDegrees,
+  } = useGetTranslations();
 
   const { toast } = useToast();
   const { resumeId } = useResumeDialog();
@@ -108,6 +121,38 @@ export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
     control: form.control,
   });
 
+  const formattedEducations = [
+    { label: tResumeFormSelectItem('hide'), value: '-1' },
+  ].concat(
+    educations.map((edu) => ({
+      value: edu.id.toString(),
+      label: `${tProfileEducationDegrees(
+        camelCase(
+          edu.degree!
+        ) as keyof IntlMessages['profile']['education']['degrees']
+      )} | ${edu.institution}`,
+    }))
+  );
+
+  const formattedJobExperiences = [
+    { label: tResumeFormSelectItem('hide'), value: '-1' },
+  ].concat(
+    jobExperiences.map((job) => ({
+      value: job.id.toString(),
+      label: `${job.title} | ${job.company}`,
+    }))
+  );
+
+  const displayEducation =
+    formattedEducations.find(
+      (edu) => edu.value === educationField.value?.toString()
+    )?.label || tResumeFormSelectItem('hide');
+
+  const displayJobExperience =
+    formattedJobExperiences.find(
+      (job) => job.value === jobExperiencField.value?.toString()
+    )?.label || tResumeFormSelectItem('hide');
+
   const handleSelectChange = (type: FormType) => (value: string) => {
     (type === 'Education' ? educationField : jobExperiencField).onChange(
       +value < 0 ? null : +value
@@ -139,76 +184,43 @@ export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-3'>
         <div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
-          <FormField
-            control={form.control}
+          <FormFieldWithCombobox
+            form={form}
             name='educationId'
-            render={({ field }) => (
-              <FormItem className='col-span-2 sm:col-span-1'>
-                <FormLabel>{tResumeFormLabels('education')}</FormLabel>
-                <FormControl>
-                  <Select
-                    disabled={isPending}
-                    onValueChange={handleSelectChange('Education')}
-                    defaultValue={field.value?.toString()}
-                  >
-                    <SelectTrigger className='w-full'>
-                      <SelectValue
-                        placeholder={tResumeFormPlaceholders('education')}
-                      />
-                    </SelectTrigger>
-                    <SelectContent onCloseAutoFocus={(e) => e.preventDefault()}>
-                      <SelectItem value={'-1'}>
-                        {tResumeFormSelectItem('hide')}
-                      </SelectItem>
-                      {educations?.map((edu) => (
-                        <SelectItem key={edu.id} value={edu.id.toString()}>
-                          {tProfileEducationDegrees(
-                            camelCase(
-                              edu.degree!
-                            ) as keyof IntlMessages['profile']['education']['degrees']
-                          )}{' '}
-                          | {edu.institution}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label={tResumeFormLabels('education')}
+            placeholder={tResumeFormPlaceholders('education')}
+            data={formattedEducations}
+            hideSearch
+            commandItemProps={{
+              onSelect: (label) =>
+                handleSelectChange('Education')(
+                  formattedEducations.find((edu) => edu.label === label)
+                    ?.value || '-1'
+                ),
+            }}
+            displayValue={displayEducation}
+            formItemProps={{
+              className: 'col-span-2 sm:col-span-1',
+            }}
           />
-          <FormField
-            control={form.control}
+          <FormFieldWithCombobox
+            form={form}
             name='jobExperienceId'
-            render={({ field }) => (
-              <FormItem className='col-span-2 sm:col-span-1'>
-                <FormLabel>{tResumeFormLabels('jobExperience')}</FormLabel>
-                <FormControl>
-                  <Select
-                    disabled={isPending}
-                    onValueChange={handleSelectChange('JobExperience')}
-                    defaultValue={field.value?.toString()}
-                  >
-                    <SelectTrigger className='w-full'>
-                      <SelectValue
-                        placeholder={tResumeFormPlaceholders('jobExperience')}
-                      />
-                    </SelectTrigger>
-                    <SelectContent onCloseAutoFocus={(e) => e.preventDefault()}>
-                      <SelectItem value={'-1'}>
-                        {tResumeFormSelectItem('hide')}
-                      </SelectItem>
-                      {jobExperiences?.map((job) => (
-                        <SelectItem key={job.id} value={job.id.toString()}>
-                          {job.title} | {job.company}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label={tResumeFormLabels('jobExperience')}
+            placeholder={tResumeFormPlaceholders('jobExperience')}
+            data={formattedJobExperiences}
+            hideSearch
+            commandItemProps={{
+              onSelect: (label) =>
+                handleSelectChange('JobExperience')(
+                  formattedJobExperiences.find((job) => job.label === label)
+                    ?.value || '-1'
+                ),
+            }}
+            displayValue={displayJobExperience}
+            formItemProps={{
+              className: 'col-span-2 sm:col-span-1',
+            }}
           />
           <FormField
             control={form.control}
@@ -249,7 +261,7 @@ export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
             name='bio'
             render={({ field }) => (
               <FormItem className='col-span-2 flex h-full flex-col sm:col-span-1'>
-                <FormLabel className='leading-5'>
+                <FormLabel className='leading-6'>
                   {tResumeFormLabels('description')}
                 </FormLabel>
                 <FormControl>

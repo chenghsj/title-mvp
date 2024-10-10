@@ -50,9 +50,11 @@ type Props<T extends FieldValues> = {
   formItemProps?: ComponentProps<typeof FormItem>;
   data: { value: string; label: string }[];
   hideSearch?: boolean;
+  commandItemProps?: ComponentProps<typeof CommandItem>;
+  displayValue?: string;
 };
 
-export const FormCombobox = <T extends FieldValues>({
+export const FormFieldWithCombobox = <T extends FieldValues>({
   form,
   label,
   name,
@@ -61,6 +63,8 @@ export const FormCombobox = <T extends FieldValues>({
   placeholder,
   data,
   hideSearch = false,
+  commandItemProps,
+  displayValue,
 }: Props<T>) => {
   const { field } = useController({
     name,
@@ -87,10 +91,13 @@ export const FormCombobox = <T extends FieldValues>({
           'border border-zinc-200 dark:border-zinc-800'
         )}
       >
-        {field.value
-          ? data?.find((item) => item.value === field.value)?.label ||
-            field.value
-          : placeholder}
+        <div className='w-11/12 overflow-hidden text-ellipsis whitespace-nowrap text-start'>
+          {displayValue ??
+            (field.value
+              ? data.find((item) => item.value === field.value)?.label ||
+                field.value
+              : placeholder)}
+        </div>
         <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
       </Button>
     </FormControl>
@@ -104,12 +111,10 @@ export const FormCombobox = <T extends FieldValues>({
           <Input
             value={customInput || ''}
             onChange={(e) => setCustomInput(e.target.value)}
-            className='h-9'
           />
           <Button
             variant={'secondary'}
             className='ml-2'
-            size='sm'
             onClick={() => {
               if (!customInput) return;
               field.onChange(customInput);
@@ -121,25 +126,35 @@ export const FormCombobox = <T extends FieldValues>({
           </Button>
         </CommandEmpty>
         <CommandGroup>
-          {data?.map((item) => (
-            <CommandItem
-              value={item.label}
-              key={item.value}
-              onSelect={() => {
-                field.onChange(item.value);
-                setIsOpen(false);
-              }}
-              ref={item.value === field.value ? selectedItemRef : null}
-            >
-              <Check
-                className={cn(
-                  'mr-2 h-4 w-4',
-                  item.value === field.value ? 'opacity-100' : 'opacity-0'
-                )}
-              />
-              {item.label}
-            </CommandItem>
-          ))}
+          {data?.map((item) => {
+            return (
+              <CommandItem
+                value={item.label}
+                key={item.value}
+                ref={item.value === field.value ? selectedItemRef : null}
+                {...commandItemProps}
+                onSelect={(value) => {
+                  if (commandItemProps?.onSelect) {
+                    commandItemProps.onSelect(value);
+                  } else {
+                    field.onChange(item.value);
+                  }
+                  setIsOpen(false);
+                }}
+                className='h-10'
+              >
+                <Check
+                  className={cn(
+                    'mr-2 h-4 w-4',
+                    item.value?.toString() === (field.value?.toString() || '-1')
+                      ? 'opacity-100'
+                      : 'opacity-0'
+                  )}
+                />
+                {item.label}
+              </CommandItem>
+            );
+          })}
         </CommandGroup>
       </CommandList>
     </Command>
@@ -169,7 +184,7 @@ export const FormCombobox = <T extends FieldValues>({
           {...formItemProps}
           className={cn('flex flex-col justify-end', formItemProps?.className)}
         >
-          <FormLabel className='leading-5'>{label}</FormLabel>
+          <FormLabel className='leading-6'>{label}</FormLabel>
           {isMobile ? (
             <Drawer open={isOpen} onOpenChange={setIsOpen}>
               <DrawerTrigger asChild>{trigger}</DrawerTrigger>

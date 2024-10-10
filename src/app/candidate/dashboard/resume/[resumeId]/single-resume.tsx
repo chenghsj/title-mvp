@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/chart';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Video } from '@/db/schema';
+import { Video } from '@/db/schema/candidate';
 
 type Props = {
   video: Video;

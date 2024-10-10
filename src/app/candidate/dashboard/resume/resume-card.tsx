@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import { ResponsiveDropdownMenu } from '@/components/responsive-dropdown-menu';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Resume, Video } from '@/db/schema';
+import { Resume, Video } from '@/db/schema/candidate';
 import { useCreateHandleMenuButtonClick } from './hooks';
 import { getYouTubeVideoId } from './utils';
 

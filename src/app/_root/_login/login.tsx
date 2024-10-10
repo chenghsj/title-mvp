@@ -31,7 +31,7 @@ export function LoginPage({}: Props) {
   const pathname = usePathname();
   const isSignUp = pathname === '/sign-up';
   const { toast } = useToast();
-  const { setLoading } = useLoadingMask();
+  const { setIsLoading } = useLoadingMask();
 
   const { execute } = useServerAction(googleOAuthAction, {
     onSuccess: ({ data }) => {
@@ -39,7 +39,7 @@ export function LoginPage({}: Props) {
     },
     onError: ({ err }) => {
       console.error(err);
-      setLoading(false);
+      setIsLoading(false);
       toast({
         title: err.code,
         description: err.message,
@@ -57,7 +57,7 @@ export function LoginPage({}: Props) {
 
     // using server action to show the loading mask
     execute({ role });
-    setLoading(true);
+    setIsLoading(true);
   };
 
   useEffect(() => {

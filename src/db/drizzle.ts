@@ -8,7 +8,13 @@ import {
   drizzle as drizzleVercel,
 } from 'drizzle-orm/vercel-postgres';
 import postgres from 'postgres';
-import * as schema from './schema';
+import * as CandidateSchema from './schema/candidate';
+import * as UserSchema from './schema/user';
+
+const schema = {
+  ...CandidateSchema,
+  ...UserSchema,
+};
 
 let db: PostgresJsDatabase<typeof schema> | VercelPgDatabase<typeof schema>;
 let pg: ReturnType<typeof postgres>;

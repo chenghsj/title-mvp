@@ -8,7 +8,7 @@ import { useLoadingMask } from '@/components/loading-mask';
 export function useLogout() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const { setLoading } = useLoadingMask();
+  const { setIsLoading } = useLoadingMask();
 
   const handleLogout = () => {
     startTransition(async () => {
@@ -19,7 +19,7 @@ export function useLogout() {
 
   useEffect(() => {
     if (isPending) {
-      setLoading(true);
+      setIsLoading(true);
     }
   }, [isPending]);
 

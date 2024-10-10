@@ -1,7 +1,7 @@
 import { and, desc, eq } from 'drizzle-orm';
 import { EmploymentType } from '@/app/candidate/dashboard/profile/types';
 import { db } from '@/db/drizzle';
-import { JobExperience, jobExperiences } from '@/db/schema';
+import { JobExperience, jobExperiences } from '@/db/schema/candidate';
 import { UserId } from '@/use-cases/types';
 
 export async function createJobExperience({

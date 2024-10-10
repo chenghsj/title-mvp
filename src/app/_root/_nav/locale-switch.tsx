@@ -1,8 +1,8 @@
 'use client';
 
 import { MouseEvent, useEffect, useTransition } from 'react';
-import { useTranslations } from 'next-intl';
-import { Globe } from 'lucide-react';
+import { useLocale, useTranslations } from 'next-intl';
+import { Check, Globe } from 'lucide-react';
 import { useLoadingMask } from '@/components/loading-mask';
 import { Button } from '@/components/ui/button';
 import {
@@ -13,11 +13,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Locale, locales } from '@/i18n/config';
 import { setUserLocale } from '@/lib/locale';
+import { cn } from '@/lib/utils';
 
 export default function LocaleSwitcher() {
   const tNavbarLanguage = useTranslations('navbar.language');
   const [isPending, startTransition] = useTransition();
-  const { setLoading } = useLoadingMask();
+  const { setIsLoading } = useLoadingMask();
+  const nextIntlLocale = useLocale();
 
   const onChange = (value: string) => (e: MouseEvent<HTMLDivElement>) => {
     const locale = value as Locale;
@@ -27,7 +29,7 @@ export default function LocaleSwitcher() {
   };
 
   useEffect(() => {
-    setLoading(isPending);
+    setIsLoading(isPending);
   }, [isPending]);
 
   return (
@@ -41,6 +43,13 @@ export default function LocaleSwitcher() {
       <DropdownMenuContent onCloseAutoFocus={(e) => e.preventDefault()}>
         {locales.map((locale) => (
           <DropdownMenuItem key={locale} onClick={onChange(locale)}>
+            <Check
+              size={18}
+              className={cn(
+                'mr-2',
+                locale === nextIntlLocale ? 'opacity-100' : 'opacity-0'
+              )}
+            />
             {tNavbarLanguage(locale)}
           </DropdownMenuItem>
         ))}

@@ -38,7 +38,7 @@ type Props<T extends FieldValues> = {
   buttonProps?: ButtonProps;
 };
 
-export const FormDatePicker = <T extends FieldValues>({
+export const FormFieldWithDatePicker = <T extends FieldValues>({
   form,
   label,
   name,
@@ -146,7 +146,7 @@ export const FormDatePicker = <T extends FieldValues>({
               onClick={(e) => {
                 e.preventDefault();
               }}
-              className='leading-5'
+              className='leading-6'
             >
               {label}
             </FormLabel>
@@ -195,4 +195,4 @@ export const FormDatePicker = <T extends FieldValues>({
   );
 };
 
-FormDatePicker.displayName = 'FormDatePicker';
+FormFieldWithDatePicker.displayName = 'FormFieldWithDatePicker';

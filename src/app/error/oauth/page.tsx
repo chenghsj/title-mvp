@@ -18,7 +18,7 @@ const OAuthErrorPage = (props: Props) => {
     message || 'An oauth error occurred'
   );
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setIsLoading] = useState(true);
 
   const tErrorMessages = useTranslations('errorMessages.public');
   const tLogin = useTranslations('login');
@@ -31,7 +31,7 @@ const OAuthErrorPage = (props: Props) => {
         })
       );
     }
-    setLoading(false);
+    setIsLoading(false);
   }, [message, role, tErrorMessages, tLogin]);
 
   if (loading) {

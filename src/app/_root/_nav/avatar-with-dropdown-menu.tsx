@@ -22,7 +22,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Profile } from '@/db/schema';
+import { Profile } from '@/db/schema/user';
 import { useDeviceDetect } from '@/hooks/use-device-detect';
 import { useLogout } from '@/hooks/use-log-out';
 import { cn } from '@/lib/utils';

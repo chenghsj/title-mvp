@@ -4,8 +4,8 @@ import { useTranslations } from 'next-intl';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { camelCase } from 'lodash';
 import { useServerAction } from 'zsa-react';
-import { FormCombobox } from '@/components/form-combobox';
-import { FormDatePicker } from '@/components/form-date-picker';
+import { FormFieldWithCombobox } from '@/components/form-field-with-combobox';
+import { FormFieldWithDatePicker } from '@/components/form-field-with-date-picker';
 import { ResponsiveDialog } from '@/components/responsive-dialog';
 import {
   Form,
@@ -15,11 +15,9 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-
-
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
-import { Education } from '@/db/schema';
+import { Education } from '@/db/schema/candidate';
 import { useDialogState } from '@/hooks/store';
 import { createEducationAction, updateEducationAction } from './actions';
 import colleages from './data/colleage_list.json';
@@ -162,7 +160,7 @@ export const EducationDialog = ({ education }: Props) => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-3'>
         <div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
-          <FormCombobox
+          <FormFieldWithCombobox
             form={form}
             name='degree'
             label={tProfileEducationForm('labels.degree')}
@@ -174,7 +172,7 @@ export const EducationDialog = ({ education }: Props) => {
             }}
           />
           <div className='col-span-1 hidden sm:block' />
-          <FormCombobox
+          <FormFieldWithCombobox
             form={form}
             name='institution'
             label={tProfileEducationForm('labels.school')}
@@ -184,7 +182,7 @@ export const EducationDialog = ({ education }: Props) => {
               className: 'col-span-2 sm:col-span-1',
             }}
           />
-          <FormCombobox
+          <FormFieldWithCombobox
             form={form}
             name='fieldOfStudy'
             label={tProfileEducationForm('labels.fieldOfStudy')}
@@ -194,7 +192,7 @@ export const EducationDialog = ({ education }: Props) => {
               className: 'col-span-2 sm:col-span-1',
             }}
           />
-          <FormDatePicker
+          <FormFieldWithDatePicker
             form={form}
             label={tProfileEducationForm('labels.startFrom')}
             name='startDate'
@@ -205,7 +203,7 @@ export const EducationDialog = ({ education }: Props) => {
               disabled: isPending,
             }}
           />
-          <FormDatePicker
+          <FormFieldWithDatePicker
             form={form}
             label={tProfileEducationForm('labels.endAt')}
             name='endDate'
@@ -223,7 +221,7 @@ export const EducationDialog = ({ education }: Props) => {
             name='description'
             render={({ field }) => (
               <FormItem className='col-span-2 flex h-full flex-col'>
-                <FormLabel className='leading-5'>
+                <FormLabel className='leading-6'>
                   {tProfileEducationForm('labels.description')}
                 </FormLabel>
                 <FormControl>

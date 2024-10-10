@@ -4,8 +4,8 @@ import { useTranslations } from 'next-intl';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { camelCase } from 'lodash';
 import { useServerAction } from 'zsa-react';
-import { FormCombobox } from '@/components/form-combobox';
-import { FormDatePicker } from '@/components/form-date-picker';
+import { FormFieldWithCombobox } from '@/components/form-field-with-combobox';
+import { FormFieldWithDatePicker } from '@/components/form-field-with-date-picker';
 import { ResponsiveDialog } from '@/components/responsive-dialog';
 import {
   Form,
@@ -16,11 +16,9 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-
-
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
-import { JobExperience } from '@/db/schema';
+import { JobExperience } from '@/db/schema/candidate';
 import { useDialogState } from '@/hooks/store';
 import {
   createJobExperienceAction,
@@ -172,7 +170,7 @@ export const JobDialog = ({ jobExperience }: Props) => {
               </FormItem>
             )}
           />
-          <FormCombobox
+          <FormFieldWithCombobox
             form={form}
             name='employmentType'
             label={tProfileJobExperienceForm('labels.employmentType')}
@@ -185,7 +183,7 @@ export const JobDialog = ({ jobExperience }: Props) => {
             }}
             hideSearch
           />
-          <FormDatePicker
+          <FormFieldWithDatePicker
             form={form}
             label={tProfileJobExperienceForm('labels.startFrom')}
             name='startDate'
@@ -196,7 +194,7 @@ export const JobDialog = ({ jobExperience }: Props) => {
               disabled: isPending,
             }}
           />
-          <FormDatePicker
+          <FormFieldWithDatePicker
             form={form}
             label={tProfileJobExperienceForm('labels.endAt')}
             name='endDate'
@@ -215,7 +213,7 @@ export const JobDialog = ({ jobExperience }: Props) => {
             name='description'
             render={({ field }) => (
               <FormItem className='col-span-2 flex h-full flex-col'>
-                <FormLabel className='leading-5'>
+                <FormLabel className='leading-6'>
                   {tProfileJobExperienceForm('labels.description')}
                 </FormLabel>
                 <FormControl>

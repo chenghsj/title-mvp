@@ -3,11 +3,10 @@ import { BreakLineDiv } from '@/components/break-line-div';
 import { Card, CardContent } from '@/components/ui/card';
 import { assertAuthenticated } from '@/lib/session';
 import { getDashboardProfileUseCase } from '@/use-cases/users';
-import { AvatarWithMenu } from '../../profile/avatar-with-menu';
 import { CoverSection } from '../../profile/cover-section';
-import { DisplayNameSection } from '../../profile/display-name-section';
 import { EducationSection } from '../../profile/education-section';
 import { JobExperienceSection } from '../../profile/job-experience-section';
+import { ProfileHeader } from '../../profile/profile-header';
 import { ConfirmDeleteDialog } from '../confirm-delete-dialog';
 import { ResumeDialog } from '../resume-dialog';
 import BackButton from './back-button';
@@ -58,18 +57,12 @@ const SingleResumePage = async ({ params }: Props) => {
       <div>
         <CoverSection coverUrl={coverUrl} canEdit={false} />
         <div className='-mt-2 space-y-5 px-5 sm:-mt-4'>
-          <div className='flex items-center gap-4 sm:gap-6'>
-            <AvatarWithMenu
-              profile={profile}
-              avatarUrl={avatarUrl}
-              canEdit={false}
-            />
-            <DisplayNameSection
-              displayName={profile.displayName!}
-              canEdit={false}
-            />
-          </div>
-          <div className='ml-2 text-base'>
+          <ProfileHeader
+            profile={profile}
+            avatarUrl={avatarUrl}
+            canEdit={false}
+          />
+          <div className='ml-5 text-base sm:!mt-0'>
             {resume?.bio && <BreakLineDiv content={resume.bio} />}
           </div>
           <div className='flex flex-col gap-5'>

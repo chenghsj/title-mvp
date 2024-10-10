@@ -13,7 +13,7 @@ import { SectionExcludeNav } from './section-exclude-nav';
 
 type LoadingMaskContextType = {
   isLoading: boolean;
-  setLoading: (loading: boolean) => void;
+  setIsLoading: (loading: boolean) => void;
 };
 
 const LoadingMaskContext = createContext<LoadingMaskContextType | undefined>(
@@ -33,15 +33,15 @@ type LoadingMaskProviderProps = {
 };
 
 export const LoadingMaskProvider = ({ children }: LoadingMaskProviderProps) => {
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
-    setLoading(false);
+    setIsLoading(false);
   }, [pathname]);
 
   return (
-    <LoadingMaskContext.Provider value={{ isLoading, setLoading }}>
+    <LoadingMaskContext.Provider value={{ isLoading, setIsLoading }}>
       {isLoading && (
         <SectionExcludeNav className='absolute top-[var(--nav-h-sm)] z-40 bg-white opacity-70 dark:bg-black md:top-[var(--nav-h-md)]'>
           <LoadingPage />

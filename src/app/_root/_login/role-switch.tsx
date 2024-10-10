@@ -1,22 +1,27 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useTranslations } from 'next-intl';
+import { usePathname, useRouter } from 'next/navigation';
 import { parseAsStringLiteral, useQueryState } from 'nuqs';
 import { RoleTypeEnum } from '@/app/_root/types';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { usePushQuery } from '@/hooks/use-push-query';
 import { cn } from '@/lib/utils';
 
 type Props = {};
 
 export function RoleSwitch({}: Props) {
+  const pathname = usePathname();
+  const router = useRouter();
   const tLogin = useTranslations('login');
   const [role, setRole] = useQueryState(
     'role',
     parseAsStringLiteral(RoleTypeEnum).withDefault('candidate')
   );
 
-  usePushQuery([{ name: 'role', value: role }]);
+  useEffect(() => {
+    router.push(`${pathname}?role=${role}`);
+  }, [role, pathname]);
 
   return (
     <Tabs defaultValue={role} className='w-full'>

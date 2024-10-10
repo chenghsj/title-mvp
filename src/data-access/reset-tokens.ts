@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { TOKEN_LENGTH, TOKEN_TTL } from '@/config/app';
 import { db } from '@/db/drizzle';
-import { resetTokens } from '@/db/schema';
+import { resetTokens } from '@/db/schema/user';
 import { UserId } from '@/use-cases/types';
 import { generateRandomToken } from './utils';
 

@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
-import { Monitor, Moon, Sun } from 'lucide-react';
+import { Check, Monitor, Moon, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { cn } from '@/lib/utils';
 
 type ThemeList = {
   value: string;
@@ -18,7 +19,7 @@ type ThemeList = {
 
 export function ThemeSwitch() {
   const tNavbarButtons = useTranslations('navbar.theme');
-  const { setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
 
   const themeList: ThemeList[] = [
     {
@@ -50,6 +51,13 @@ export function ThemeSwitch() {
       >
         {themeList.map(({ value, icon }, index) => (
           <DropdownMenuItem key={index} onClick={() => setTheme(value)}>
+            <Check
+              size={18}
+              className={cn(
+                'mr-2',
+                value === theme ? 'opacity-100' : 'opacity-0'
+              )}
+            />
             {icon}
             {tNavbarButtons(value as keyof IntlMessages['navbar']['theme'])}
           </DropdownMenuItem>

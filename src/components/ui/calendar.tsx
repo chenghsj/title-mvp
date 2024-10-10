@@ -136,7 +136,7 @@ function Calendar({
                         key={`${option.props.value}-${id}`}
                         value={option.props.value?.toString() ?? ''}
                         onSelect={handleChange}
-                        className='flex justify-items-center'
+                        className='flex h-10 justify-items-center'
                         ref={
                           value === option.props.value ? selectedItemRef : null
                         }

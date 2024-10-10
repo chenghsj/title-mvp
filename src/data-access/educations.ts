@@ -1,7 +1,7 @@
 import { and, desc, eq } from 'drizzle-orm';
 import { DegreeType } from '@/app/candidate/dashboard/profile/types';
 import { db } from '@/db/drizzle';
-import { Education, educations } from '@/db/schema';
+import { Education, educations } from '@/db/schema/candidate';
 import { UserId } from '@/use-cases/types';
 
 export async function createEducation({
