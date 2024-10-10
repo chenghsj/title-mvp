@@ -11,7 +11,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
-import { Profile } from '@/db/schema';
+import { Profile } from '@/db/schema/user';
 import { cn } from '@/lib/utils';
 import { useCreateHandleMenuButtonClick } from './hooks';
 

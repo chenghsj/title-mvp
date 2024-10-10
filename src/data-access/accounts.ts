@@ -3,7 +3,7 @@ import { and, eq } from 'drizzle-orm';
 import { UserId } from 'lucia';
 import { Role } from '@/app/_root/types';
 import { db } from '@/db/drizzle';
-import { accounts } from '@/db/schema';
+import { accounts } from '@/db/schema/user';
 
 const ITERATIONS = 10_000;
 

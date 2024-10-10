@@ -4,7 +4,7 @@ import { getTranslations } from 'next-intl/server';
 import { eq } from 'drizzle-orm';
 import { OTP_TTL } from '@/config/app';
 import { db } from '@/db/drizzle';
-import { emailVerificationOTPs } from '@/db/schema';
+import { emailVerificationOTPs } from '@/db/schema/user';
 import { PublicError } from '@/use-cases/errors';
 
 export async function insertEmailOTP(

@@ -6,7 +6,7 @@ import { camelCase } from 'lodash';
 import { GraduationCap } from 'lucide-react';
 import { BreakLineDiv } from '@/components/break-line-div';
 import { Separator } from '@/components/ui/separator';
-import { Education } from '@/db/schema';
+import { Education } from '@/db/schema/candidate';
 
 type Props = {
   education: Education;

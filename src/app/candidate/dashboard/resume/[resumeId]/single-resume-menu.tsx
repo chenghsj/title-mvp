@@ -4,7 +4,7 @@ import React from 'react';
 import { Ellipsis } from 'lucide-react';
 import { ResponsiveDropdownMenu } from '@/components/responsive-dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { Resume } from '@/db/schema';
+import { Resume } from '@/db/schema/candidate';
 import { useCreateHandleMenuButtonClick } from '../hooks';
 
 type Props = {

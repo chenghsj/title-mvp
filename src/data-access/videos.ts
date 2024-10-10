@@ -1,6 +1,6 @@
 import { and, eq } from 'drizzle-orm';
 import { db } from '@/db/drizzle';
-import { Video, videos } from '@/db/schema';
+import { Video, videos } from '@/db/schema/candidate';
 import { UserId } from '@/use-cases/types';
 
 export async function createVideo(

@@ -4,7 +4,7 @@ import React from 'react';
 import { IoBriefcaseOutline } from 'react-icons/io5';
 import { useTranslations } from 'next-intl';
 import { Separator } from '@/components/ui/separator';
-import { JobExperience } from '@/db/schema';
+import { JobExperience } from '@/db/schema/candidate';
 
 type Props = {
   jobExperience: JobExperience;

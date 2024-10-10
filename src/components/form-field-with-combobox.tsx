@@ -52,7 +52,7 @@ type Props<T extends FieldValues> = {
   hideSearch?: boolean;
 };
 
-export const FormCombobox = <T extends FieldValues>({
+export const FormFieldWithCombobox = <T extends FieldValues>({
   form,
   label,
   name,
@@ -87,10 +87,12 @@ export const FormCombobox = <T extends FieldValues>({
           'border border-zinc-200 dark:border-zinc-800'
         )}
       >
-        {field.value
-          ? data?.find((item) => item.value === field.value)?.label ||
-            field.value
-          : placeholder}
+        <div className='w-11/12 overflow-hidden text-ellipsis whitespace-nowrap text-start'>
+          {field.value
+            ? data?.find((item) => item.value === field.value)?.label ||
+              field.value
+            : placeholder}
+        </div>
         <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
       </Button>
     </FormControl>

@@ -2,7 +2,7 @@
 
 import { MouseEvent, useEffect, useState } from 'react';
 import { create } from 'zustand';
-import { Education, JobExperience } from '@/db/schema';
+import { Education, JobExperience } from '@/db/schema/candidate';
 import { ModeType, useDialogState } from '@/hooks/store';
 
 const ProfileType = {

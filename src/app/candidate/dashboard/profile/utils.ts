@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { camelCase } from 'lodash';
-import { Education } from '@/db/schema';
+import { Education } from '@/db/schema/candidate';
 import { DegreeType, degreeOrder } from './types';
 
 export const createSortedEducations = (educations: Education[]) =>

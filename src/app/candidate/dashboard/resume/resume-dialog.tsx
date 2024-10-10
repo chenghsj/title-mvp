@@ -27,7 +27,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
-import { Education, JobExperience, Resume, Video } from '@/db/schema';
+import { Education, JobExperience, Resume, Video } from '@/db/schema/candidate';
 import { useDialogState } from '@/hooks/store';
 import { FormType } from '../profile/hooks';
 import { createResumeAction, updateResumeAction } from './actions';
