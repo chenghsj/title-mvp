@@ -8,6 +8,7 @@ import { getCurrentUser } from '@/lib/session';
 import { cn } from '@/lib/utils';
 import { getDashboardProfileUseCase } from '@/use-cases/users';
 import { Sidebar } from '../sidebar';
+import { Role } from '../types';
 import { AvatarWithDropdownMenu } from './avatar-with-dropdown-menu';
 import LocaleSwitcher from './locale-switch';
 import { LogoLink } from './logo-link';
@@ -26,12 +27,17 @@ export async function Navbar({ children }: Props) {
   const { isMobile } = deviceDetect();
   let profile = null;
   let avatarUrl = null;
+  let role: Role | null = null;
 
   if (user) {
-    const { profile: fetchedProfile, avatarUrl: fetchedAvatarUrl } =
-      await profilerLoader(user.id);
+    const {
+      profile: fetchedProfile,
+      avatarUrl: fetchedAvatarUrl,
+      account,
+    } = await profilerLoader(user.id);
     profile = fetchedProfile;
     avatarUrl = fetchedAvatarUrl;
+    role = account?.role!;
   }
 
   return (
@@ -63,7 +69,13 @@ export async function Navbar({ children }: Props) {
             <LocaleSwitcher />
           </div>
           {user ? (
-            <AvatarWithDropdownMenu profile={profile!} avatarUrl={avatarUrl} />
+            <AvatarWithDropdownMenu
+              profile={profile!}
+              avatarUrl={avatarUrl}
+              type={
+                role === 'candidate' ? 'candidateDashboard' : 'companyDashboard'
+              }
+            />
           ) : (
             <>
               <Button

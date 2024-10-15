@@ -209,10 +209,12 @@ export async function getUserProfileUseCase(userId: UserId) {
 }
 
 export async function getDashboardProfileUseCase(userId: UserId) {
+  const tErrorMessagesPublic = await getTranslations('errorMessages.public');
   const profile = await getProfile(userId);
+  const account = await getAccountByUserId(userId);
 
-  if (!profile) {
-    throw new NotFoundError();
+  if (!profile || !account) {
+    throw new PublicError(tErrorMessagesPublic('NotFoundError'));
   }
 
   const educations = await getEducation(userId);
@@ -227,6 +229,7 @@ export async function getDashboardProfileUseCase(userId: UserId) {
   const videos = await getVideo(userId);
 
   return {
+    account,
     profile,
     educations,
     jobExperiences,

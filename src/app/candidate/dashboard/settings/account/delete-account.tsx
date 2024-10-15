@@ -1,20 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useServerAction } from 'zsa-react';
 import { LoaderButton } from '@/components/loader-button';
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+import { ResponsiveDialog } from '@/components/responsive-dialog';
+import { AlertDialogFooter } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -26,6 +21,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/components/ui/use-toast';
+import { useDialogState } from '@/hooks/store';
+import { useDeviceDetect } from '@/hooks/use-device-detect';
+import { cn } from '@/lib/utils';
 import { deleteAccountAction } from './actions';
 
 const confirmDeleteString = 'Delete account';
@@ -37,8 +35,16 @@ const deleteSchema = z.object({
 type Props = {};
 
 export const DeleteAccount = (props: Props) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isMobile } = useDeviceDetect();
   const { toast } = useToast();
+  const dialogState = useDialogState();
+  const router = useRouter();
+
+  const tComponentsResponsiveDialog = useTranslations(
+    'components.responsiveDialog'
+  );
+  const tSettingsSubmenusAccount = useTranslations('settings.submenus.account');
+
   const form = useForm<z.infer<typeof deleteSchema>>({
     resolver: zodResolver(deleteSchema),
     mode: 'onChange',
@@ -50,11 +56,14 @@ export const DeleteAccount = (props: Props) => {
   const { execute: deleteAccount, isPending } = useServerAction(
     deleteAccountAction,
     {
-      onSuccess: () => {
+      onSuccess: ({ data }) => {
         toast({
-          title: 'Account Deleted',
-          description: 'Your account has been successfully deleted.',
+          title: data.message.title,
+          description: data.message.description,
         });
+        dialogState.setIsOpen(false);
+        router.push('/');
+        router.refresh();
       },
       onError: ({ err }) => {
         toast({
@@ -62,6 +71,7 @@ export const DeleteAccount = (props: Props) => {
           description: err.message || 'Failed to delete account.',
           variant: 'destructive',
         });
+        dialogState.setIsOpen(false);
       },
     }
   );
@@ -70,71 +80,80 @@ export const DeleteAccount = (props: Props) => {
     deleteAccount();
   };
 
+  const content = (footer: React.ReactNode) => (
+    <div className='space-y-2'>
+      <p className='text-sm text-red-500'>
+        {tSettingsSubmenusAccount.rich('form.placeholders.confirm', {
+          keyword: `'${confirmDeleteString}'`,
+        })}
+      </p>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-5'>
+          <FormField
+            control={form.control}
+            name='confirm'
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input {...field} placeholder={confirmDeleteString} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <AlertDialogFooter
+            className={cn('gap-y-3', isMobile && 'flex-col-reverse px-0')}
+          >
+            <Button
+              variant={'secondary'}
+              type='button'
+              onClick={(e) => dialogState.setIsOpen(false)}
+            >
+              {tComponentsResponsiveDialog('buttons.cancel')}
+            </Button>
+            <LoaderButton
+              disabled={!!form.formState.errors.confirm}
+              isLoading={isPending}
+              variant='destructive'
+            >
+              {tComponentsResponsiveDialog('buttons.delete')}
+            </LoaderButton>
+          </AlertDialogFooter>
+        </form>
+      </Form>
+    </div>
+  );
+
   useEffect(() => {
-    if (!isOpen) {
+    if (!dialogState.isOpen) {
       form.reset();
     }
-  }, [isOpen]);
+  }, [dialogState.isOpen]);
 
   return (
     <div className='space-y-3'>
-      <div className='text-2xl font-medium text-red-500'>Delete Account</div>
+      <div className='text-2xl font-medium text-red-500'>
+        {tSettingsSubmenusAccount('deleteAccount.title')}
+      </div>
       <Separator />
       <div className='text-sm'>
-        Once you delete your account, there is no going back. Please be certain.
+        {tSettingsSubmenusAccount('deleteAccount.description')}
       </div>
-      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-        <AlertDialogTrigger asChild>
-          <Button variant='destructive' size='sm'>
-            Delete your account
-          </Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              account and all of your data.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-
-          <p className='text-sm text-red-500'>
-            {`Please type 'Delete account' to confirm`}
-          </p>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-5'>
-              <FormField
-                control={form.control}
-                name='confirm'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input {...field} placeholder={confirmDeleteString} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <AlertDialogFooter>
-                <Button
-                  variant={'secondary'}
-                  type='button'
-                  onClick={(e) => setIsOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <LoaderButton
-                  disabled={!!form.formState.errors.confirm}
-                  isLoading={isPending}
-                  variant='destructive'
-                >
-                  Delete
-                </LoaderButton>
-              </AlertDialogFooter>
-            </form>
-          </Form>
-        </AlertDialogContent>
-      </AlertDialog>
+      <Button
+        variant='destructive'
+        size='sm'
+        onClick={() => dialogState.setIsOpen(true)}
+      >
+        {tSettingsSubmenusAccount('deleteAccount.trigger.title')}
+      </Button>
+      <ResponsiveDialog
+        title={tSettingsSubmenusAccount('form.title')}
+        description={tSettingsSubmenusAccount('form.description')}
+        dialogContentProps={{
+          className: 'max-w-[500px]',
+        }}
+        content={content}
+      />
     </div>
   );
 };

@@ -1,8 +1,4 @@
-import React from 'react';
-import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import Image from 'next/image';
-import Link from 'next/link';
-import { siteConfig } from '@/config/site';
 import logo from '@/public/logo/logo_1x.webp';
 
 export function Footer() {
@@ -23,14 +19,14 @@ export function Footer() {
             © 2024 Title
           </span>
         </div>
-        <div className='flex gap-x-3'>
+        {/* <div className='flex gap-x-3'>
           <Link href={siteConfig.links.discord} aria-label='Discord'>
             <FaLinkedin color='white' size={22} />
           </Link>
           <Link href={siteConfig.links.github} aria-label='Github'>
             <FaGithub color='white' size={22} />
           </Link>
-        </div>
+        </div> */}
       </div>
     </footer>
   );

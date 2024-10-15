@@ -1,4 +1,4 @@
-export type MenuType = 'nav' | 'dashboard';
+export type MenuType = 'nav' | 'candidateDashboard' | 'companyDashboard';
 
 export type MenuProps = {
   type: MenuType;

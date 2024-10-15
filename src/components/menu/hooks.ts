@@ -1,6 +1,11 @@
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
-import { getDashboardMenuList, getNavMenuList } from '@/config/menu-list';
+import { camelCase } from 'lodash';
+import {
+  getCandidateDashboardMenuList,
+  getCompanyDashboardMenuList,
+  getNavMenuList,
+} from '@/config/menu-list';
 import { useDashboardMenu, useNavMenu } from './store';
 import { MenuProps, MenuType } from './types';
 
@@ -15,20 +20,45 @@ export const useMenu = (type: MenuProps['type']) => {
   };
 };
 
+const getTranslationKey = (type: MenuType) => {
+  switch (type) {
+    case 'nav':
+      return 'navbar.navMenuList';
+    case 'candidateDashboard':
+      return 'navbar.candidateDashboardMenuList';
+    case 'companyDashboard':
+      return 'navbar.companyDashboardMenuList';
+    default:
+      throw new Error(`Invalid menu type: ${type}`);
+  }
+};
+
+const getMenuList = (type: MenuType, pathname: string) => {
+  switch (type) {
+    case 'nav':
+      return getNavMenuList(pathname);
+    case 'candidateDashboard':
+      return getCandidateDashboardMenuList(pathname);
+    case 'companyDashboard':
+      return getCompanyDashboardMenuList(pathname);
+    default:
+      return [];
+  }
+};
+
 export const useLocalMenuListByType = (type: MenuType) => {
-  const tNavbarMenuList = useTranslations(
-    type === 'nav' ? 'navbar.navMenuList' : 'navbar.dashboardMenuList'
-  );
+  const tNavbarMenuList = useTranslations(getTranslationKey(type));
   const pathname = usePathname();
-  const menuList =
-    type === 'nav' ? getNavMenuList(pathname) : getDashboardMenuList(pathname);
+  const menuList = getMenuList(type, pathname);
 
   const returnedMenuList = menuList.map((item) => ({
     ...item,
     menus: item.menus.map((menu) => ({
       ...menu,
       label: tNavbarMenuList(
-        menu.submenus.length > 0 ? `${menu.key}.title` : (menu.key as any)
+        menu.submenus.length > 0
+          ? `${menu.key}.title`
+          : (camelCase(menu.key) as any)
       ),
       submenus: menu.submenus.map((submenu) => ({
         ...submenu,

@@ -15,7 +15,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer';
-import { useDeviceDetect } from '@/hooks/use-device-detect';
 import { cn } from '@/lib/utils';
 import { Button, ButtonProps } from './ui/button';
 import { Calendar, CalendarProps } from './ui/calendar';
@@ -52,7 +51,8 @@ export const FormFieldWithDatePicker = <T extends FieldValues>({
     name,
     control: form.control,
   });
-  const { isMobile } = useDeviceDetect();
+  // const { isMobile } = useDeviceDetect();
+  const isMobile = false;
 
   const inputRef = useMask({
     mask: 'yyyy/MM/dd',

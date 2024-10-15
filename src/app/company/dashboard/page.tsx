@@ -1,9 +1,9 @@
-import React from 'react';
+import { redirect } from 'next/navigation';
 
 type Props = {};
 
 const CompanyDashboardPage = (props: Props) => {
-  return <div>CompanyDashboardPage</div>;
+  redirect('/company/dashboard/job-management');
 };
 
 export default CompanyDashboardPage;

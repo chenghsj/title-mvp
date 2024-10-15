@@ -8,8 +8,6 @@ import {
 } from 'drizzle-orm/pg-core';
 import { RoleTypeEnum } from '@/app/_root/types';
 
-
-
 export const accountTypeEnum = ['email', 'google', 'github'] as const;
 
 export const users = pgTable('user', {
@@ -90,3 +88,4 @@ export const resetTokens = pgTable('reset_token', {
 
 export type User = typeof users.$inferSelect;
 export type Profile = typeof profiles.$inferSelect;
+export type Account = typeof accounts.$inferSelect;

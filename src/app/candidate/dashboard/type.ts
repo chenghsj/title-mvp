@@ -1,7 +1,8 @@
 import { Education, JobExperience, Resume, Video } from '@/db/schema/candidate';
-import { Profile } from '@/db/schema/user';
+import { Account, Profile } from '@/db/schema/user';
 
 export type DashboardDetails = {
+  account: Account;
   profile: Profile;
   educations: Education[];
   jobExperiences: JobExperience[];

@@ -5,9 +5,11 @@ import { IoPersonSharp } from 'react-icons/io5';
 import { LuLogOut } from 'react-icons/lu';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ChevronDown } from 'lucide-react';
 import { AvatarWithNextImage } from '@/components/avatar-with-next-image';
 import { useLocalMenuListByType } from '@/components/menu/hooks';
+import { MenuType } from '@/components/menu/types';
 import { AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -30,11 +32,13 @@ import { cn } from '@/lib/utils';
 type Props = {
   profile?: Profile;
   avatarUrl: string | null;
+  type: MenuType;
 };
 
-export function AvatarWithDropdownMenu({ profile, avatarUrl }: Props) {
+export function AvatarWithDropdownMenu({ profile, avatarUrl, type }: Props) {
+  const pathname = usePathname();
   const tNavbar = useTranslations('navbar');
-  const menuList = useLocalMenuListByType('dashboard');
+  const menuList = useLocalMenuListByType(type);
   const { isMobile } = useDeviceDetect();
   const { isPending, handleLogout } = useLogout();
 

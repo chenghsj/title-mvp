@@ -11,7 +11,6 @@ import { useResumeDialog } from './hooks';
 type Props = {};
 
 export const ConfirmDeleteDialog = ({}: Props) => {
-  const tErrorMessages = useTranslations('errorMessages');
   const tComponentsResponsiveDialog = useTranslations(
     'components.responsiveDialog'
   );
@@ -29,6 +28,7 @@ export const ConfirmDeleteDialog = ({}: Props) => {
       });
     },
     onError: ({ err }) => {
+      dialogState.setIsOpen(false);
       toast({
         title: err.code,
         description: err.message,

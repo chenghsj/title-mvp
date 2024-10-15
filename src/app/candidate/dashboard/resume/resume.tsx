@@ -3,10 +3,9 @@
 import { useMemo } from 'react';
 import React from 'react';
 import { useTranslations } from 'next-intl';
-import { CirclePlus, Plus, Video } from 'lucide-react';
+import { Plus, Video } from 'lucide-react';
 import { useIsClient } from 'usehooks-ts';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { useDialogState } from '@/hooks/store';
 import { cn } from '@/lib/utils';
 import { DashboardDetails } from '../type';
@@ -61,22 +60,7 @@ export const Resume = ({ dashboardDetails }: Props) => {
     >
       {resumesWithVideos.length > 0 && (
         <div className='col-span-full flex justify-between'>
-          {/* <Select>
-          <SelectTrigger className='w-[180px]'>
-            <SelectValue placeholder='Sorted by' />
-          </SelectTrigger>
-          <SelectContent onCloseAutoFocus={(e) => e.preventDefault()}>
-            <SelectItem value='light'>Light</SelectItem>
-            <SelectItem value='dark'>Dark</SelectItem>
-            <SelectItem value='system'>System</SelectItem>
-          </SelectContent>
-        </Select> */}
-          <Button
-            className='sm:hidden'
-            variant={'outline'}
-            onClick={handleCreateClick}
-            size={'sm'}
-          >
+          <Button variant={'outline'} onClick={handleCreateClick} size={'sm'}>
             <Plus size={16} className='mr-2' />
             {tComponentsResponsiveDialog('buttons.create')}
           </Button>
@@ -88,18 +72,6 @@ export const Resume = ({ dashboardDetails }: Props) => {
           {resumesWithVideos.map((resume) => (
             <ResumeCard key={resume.id} resume={resume} />
           ))}
-          <Card
-            className='hidden cursor-pointer select-none text-zinc-400 sm:block'
-            onClick={handleCreateClick}
-          >
-            <Button variant={'ghost'} className='h-full w-full' asChild>
-              <CardContent className='flex aspect-video h-full flex-col items-center justify-center space-y-2 p-0'>
-                <CirclePlus size='50' />
-                <p>Create Resume</p>
-              </CardContent>
-            </Button>
-            <CardFooter></CardFooter>
-          </Card>
         </>
       ) : (
         <div className='flex h-full w-full flex-col items-center justify-center space-y-4'>

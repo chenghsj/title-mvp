@@ -10,7 +10,7 @@ import { ProfileHeader } from '../../profile/profile-header';
 import { ConfirmDeleteDialog } from '../confirm-delete-dialog';
 import { ResumeDialog } from '../resume-dialog';
 import BackButton from './back-button';
-import { SingleResume } from './single-resume';
+import { ResumeContent } from './resume-content';
 import { SingleResumeMenu } from './single-resume-menu';
 
 type Props = {
@@ -86,7 +86,7 @@ const SingleResumePage = async ({ params }: Props) => {
                 </div>
               </Card>
             )}
-            <SingleResume video={video!} />
+            <ResumeContent video={video!} />
           </div>
         </div>
       </div>

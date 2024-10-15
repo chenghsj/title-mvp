@@ -37,7 +37,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { useDeviceDetect } from '@/hooks/use-device-detect';
 import { cn } from '@/lib/utils';
 import { Input } from './ui/input';
 
@@ -74,7 +73,8 @@ export const FormFieldWithCombobox = <T extends FieldValues>({
     'components.responsiveDialog'
   );
   const [customInput, setCustomInput] = useState('');
-  const { isMobile } = useDeviceDetect();
+  // const { isMobile } = useDeviceDetect();
+  const isMobile = false;
   const [isOpen, setIsOpen] = useState(false);
 
   const selectedItemRef = useRef<HTMLDivElement>(null);

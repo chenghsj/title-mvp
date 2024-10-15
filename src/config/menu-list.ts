@@ -1,3 +1,4 @@
+import { IoBriefcaseOutline } from 'react-icons/io5';
 import { IconType } from 'react-icons/lib';
 import { LuFileText, LuSettings, LuUser } from 'react-icons/lu';
 
@@ -92,7 +93,7 @@ export function getNavMenuList(pathname: string): Group[] {
   ];
 }
 
-export function getDashboardMenuList(pathname: string): Group[] {
+export function getCandidateDashboardMenuList(pathname: string): Group[] {
   return [
     {
       groupLabel: '',
@@ -133,21 +134,54 @@ export function getDashboardMenuList(pathname: string): Group[] {
             //   label: 'Billing',
             //   active: pathname.includes('/candidate/dashboard/settings/billing'),
             // },
+            // {
+            //   key: 'notifications',
+            //   href: '/candidate/dashboard/settings/notifications',
+            //   label: 'Notifications',
+            //   active: pathname.includes(
+            //     '/candidate/dashboard/settings/notifications'
+            //   ),
+            // },
+            // {
+            //   key: 'security',
+            //   href: '/candidate/dashboard/settings/security',
+            //   label: 'Security',
+            //   active: pathname.includes(
+            //     '/candidate/dashboard/settings/security'
+            //   ),
+            // },
+          ],
+        },
+      ],
+    },
+  ];
+}
+
+export function getCompanyDashboardMenuList(pathname: string): Group[] {
+  return [
+    {
+      groupLabel: '',
+      menus: [
+        {
+          key: 'job-management',
+          href: '/company/dashboard/job-management',
+          label: 'Profile',
+          active: pathname.includes('/company/dashboard/job-management'),
+          icon: IoBriefcaseOutline,
+          submenus: [],
+        },
+        {
+          key: 'settings',
+          href: '/company/dashboard/settings/account',
+          label: 'Settings',
+          active: pathname.includes('/company/dashboard/settings/account'),
+          icon: LuSettings,
+          submenus: [
             {
-              key: 'notifications',
-              href: '/candidate/dashboard/settings/notifications',
-              label: 'Notifications',
-              active: pathname.includes(
-                '/candidate/dashboard/settings/notifications'
-              ),
-            },
-            {
-              key: 'security',
-              href: '/candidate/dashboard/settings/security',
-              label: 'Security',
-              active: pathname.includes(
-                '/candidate/dashboard/settings/security'
-              ),
+              key: 'account',
+              href: '/company/dashboard/settings/account',
+              label: 'Account',
+              active: pathname.includes('/company/dashboard/settings/account'),
             },
           ],
         },

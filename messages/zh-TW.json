@@ -14,7 +14,7 @@
       "userAlreadyExists": "此電子郵件已經註冊過",
       "AuthenticationError": "您必須登錄才能查看此內容",
       "NotFoundError": "找不到資源",
-      "RoleError": "電子郵件已註冊為「{role}」帳戶。\n若您想使用當前郵件登入此身份，請先刪除現有帳戶。",
+      "RoleError": "電子郵件已註冊為「{role}」帳號。\n若您想使用當前郵件登入此身份，請先刪除現有帳號。",
       "SendEmailError": "發送電子郵件失敗",
       "EmailVerificationError": "驗證電子郵件失敗",
       "LoginError": "電子郵件或密碼錯誤",
@@ -52,6 +52,10 @@
         "resume": {
           "title": "{mode}履歷",
           "description": "已成功{mode}履歷"
+        },
+        "deleteAccount": {
+          "title": "帳號已刪除",
+          "description": "您的帳號已成功刪除"
         }
       }
     },
@@ -72,7 +76,8 @@
         "create": "新增",
         "update": "更新",
         "cancel": "取消",
-        "confirm": "確認"
+        "confirm": "確認",
+        "delete": "刪除"
       }
     }
   },
@@ -151,19 +156,28 @@
       "zh-TW": "繁體中文"
     },
     "navMenuList": {
-      "about-us": "關於我們",
+      "aboutUs": "關於我們",
       "services": "服務",
       "contact": "聯絡方式"
     },
-    "dashboardMenuList": {
+    "candidateDashboardMenuList": {
       "profile": "個人檔案",
       "resume": "履歷",
       "settings": {
         "title": "設定",
         "submenus": {
-          "account": "帳戶",
+          "account": "帳號",
           "notifications": "通知",
           "security": "安全"
+        }
+      }
+    },
+    "companyDashboardMenuList": {
+      "jobManagement": "職缺管理",
+      "settings": {
+        "title": "設定",
+        "submenus": {
+          "account": "帳號"
         }
       }
     }
@@ -286,6 +300,31 @@
       },
       "selectItem": {
         "hide": "隱藏"
+      }
+    }
+  },
+  "settings": {
+    "title": "設定",
+    "submenus": {
+      "account": {
+        "title": "帳號",
+        "email": {
+          "title": "電子郵件"
+        },
+        "deleteAccount": {
+          "title": "刪除帳號",
+          "description": "刪除帳號後，將無法復原。",
+          "trigger": {
+            "title": "刪除帳號"
+          }
+        },
+        "form": {
+          "title": "您確定嗎？",
+          "description": "此操作無法撤銷。這將永久刪除您的帳號和所有數據。",
+          "placeholders": {
+            "confirm": "請輸入 {keyword} 以確認"
+          }
+        }
       }
     }
   }

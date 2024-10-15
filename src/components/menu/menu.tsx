@@ -121,7 +121,7 @@ export function Menu({ type }: MenuProps) {
               )}
             </li>
           ))}
-          {type === 'dashboard' && (
+          {(type === 'candidateDashboard' || type === 'companyDashboard') && (
             <li className='flex w-full grow items-end'>
               <TooltipProvider disableHoverableContent>
                 <Tooltip delayDuration={100}>

@@ -21,6 +21,7 @@ export function RoleSwitch({}: Props) {
 
   useEffect(() => {
     router.push(`${pathname}?role=${role}`);
+    router.refresh();
   }, [role, pathname]);
 
   return (

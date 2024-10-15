@@ -6,7 +6,7 @@ export const ResumeFormSchema = z.object({
   url: z.string().url(),
   duration: z
     .number()
-    .max(120, 'The duration must be less than 120 seconds')
+    .max(300, 'The duration must be less than 5 minutes')
     .optional(),
   tag: z.string().array().optional(),
   resumeId: z.number().optional(),

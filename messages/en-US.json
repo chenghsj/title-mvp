@@ -52,6 +52,10 @@
         "resume": {
           "title": "Resume {mode}",
           "description": "Resume {mode} successfully!"
+        },
+        "deleteAccount": {
+          "title": "Account deleted",
+          "description": "Your account has been successfully deleted."
         }
       }
     },
@@ -72,7 +76,8 @@
         "create": "Create",
         "update": "Update",
         "cancel": "Cancel",
-        "confirm": "Confirm"
+        "confirm": "Confirm",
+        "delete": "Delete"
       }
     }
   },
@@ -151,11 +156,11 @@
       "zh-TW": "繁體中文"
     },
     "navMenuList": {
-      "about-us": "About us",
+      "aboutUs": "About us",
       "services": "Services",
       "contact": "Contact"
     },
-    "dashboardMenuList": {
+    "candidateDashboardMenuList": {
       "profile": "Profile",
       "resume": "Resume",
       "settings": {
@@ -164,6 +169,15 @@
           "account": "Account",
           "notifications": "Notifications",
           "security": "Security"
+        }
+      }
+    },
+    "companyDashboardMenuList": {
+      "jobManagement": "Job Management",
+      "settings": {
+        "title": "Settings",
+        "submenus": {
+          "account": "Account"
         }
       }
     }
@@ -286,6 +300,31 @@
       },
       "selectItem": {
         "hide": "Hide"
+      }
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "submenus": {
+      "account": {
+        "title": "Account",
+        "email": {
+          "title": "Email"
+        },
+        "deleteAccount": {
+          "title": "Delete Account",
+          "description": "Once you delete your account, there is no going back. Please be certain.",
+          "trigger": {
+            "title": "Delete your account"
+          }
+        },
+        "form": {
+          "title": "Are you absolutely sure?",
+          "description": "This action cannot be undone. This will permanently delete your account and all of your data.",
+          "placeholders": {
+            "confirm": "Please type {keyword} to confirm"
+          }
+        }
       }
     }
   }
