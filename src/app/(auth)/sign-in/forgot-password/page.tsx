@@ -35,11 +35,12 @@ import {
 type Props = {};
 
 const ForgotPasswordPage = (props: Props) => {
+  const tZod = useTranslations('zod');
   const tLogin = useTranslations('login');
   const { toast } = useToast();
   const form = useForm<ForgotPasswordFormSchemaType>({
     mode: 'onChange',
-    resolver: zodResolver(forgotPasswordFormSchema),
+    resolver: zodResolver(forgotPasswordFormSchema(tZod)),
     defaultValues: {
       email: '',
     },

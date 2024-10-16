@@ -31,6 +31,7 @@ type Props = {
 };
 
 const useGetTranslations = () => {
+  const tZod = useTranslations('zod');
   const tComponentsResponsiveDialog = useTranslations(
     'components.responsiveDialog'
   );
@@ -39,6 +40,7 @@ const useGetTranslations = () => {
   const tProfileEducationDegrees = useTranslations('profile.education.degrees');
 
   return {
+    tZod,
     tComponentsResponsiveDialog,
     tProfileEducation,
     tProfileEducationForm,
@@ -48,6 +50,7 @@ const useGetTranslations = () => {
 
 export const EducationDialog = ({ education }: Props) => {
   const {
+    tZod,
     tComponentsResponsiveDialog,
     tProfileEducation,
     tProfileEducationForm,
@@ -62,7 +65,7 @@ export const EducationDialog = ({ education }: Props) => {
   const [prevDegree, setPrevDegree] = useState<DegreeType | null>(null);
 
   const form = useForm<EducationFormSchemaType>({
-    resolver: zodResolver(EducationFormSchema),
+    resolver: zodResolver(EducationFormSchema(tZod)),
     mode: 'onChange',
     defaultValues: {
       degree: '' as DegreeType,

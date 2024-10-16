@@ -1,5 +1,6 @@
 'use server';
 
+import { getTranslations } from 'next-intl/server';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
@@ -14,7 +15,7 @@ import { getTranslationsByType } from './utils';
 
 export const createResumeAction = authenticatedAction
   .createServerAction()
-  .input(ResumeFormSchema)
+  .input(async () => ResumeFormSchema(await getTranslations('zod')))
   .handler(async ({ input, ctx }) => {
     const successMessage = await getTranslationsByType('create');
     await createResumeUseCase({
@@ -36,7 +37,7 @@ export const deleteResumeAction = authenticatedAction
 
 export const updateResumeAction = authenticatedAction
   .createServerAction()
-  .input(ResumeFormSchema)
+  .input(async () => ResumeFormSchema(await getTranslations('zod')))
   .handler(async ({ input, ctx }) => {
     const successMessage = await getTranslationsByType('update');
     await updateResumeUseCase({

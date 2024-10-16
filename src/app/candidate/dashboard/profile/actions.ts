@@ -1,5 +1,6 @@
 'use server';
 
+import { getTranslations } from 'next-intl/server';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { rateLimitByKey } from '@/lib/limiter';
@@ -28,7 +29,7 @@ import { getDeletedMessageByType, getTranslationsByType } from './utils';
  */
 export const createEducationAction = authenticatedAction
   .createServerAction()
-  .input(EducationFormSchema)
+  .input(async () => EducationFormSchema(await getTranslations('zod')))
   .handler(async ({ input, ctx }) => {
     const successMessage = await getTranslationsByType('education', 'create');
     await createEducationUseCase(ctx.user.id, input);
@@ -38,7 +39,7 @@ export const createEducationAction = authenticatedAction
 
 export const updateEducationAction = authenticatedAction
   .createServerAction()
-  .input(EducationFormSchema)
+  .input(async () => EducationFormSchema(await getTranslations('zod')))
   .handler(async ({ input, ctx }) => {
     const successMessage = await getTranslationsByType('education', 'update');
     await updateEducationUseCase(ctx.user.id, input.educationId!, input);
@@ -62,7 +63,7 @@ export const deleteEducationAction = authenticatedAction
  */
 export const createJobExperienceAction = authenticatedAction
   .createServerAction()
-  .input(JobExperienceFormSchema)
+  .input(async () => JobExperienceFormSchema(await getTranslations('zod')))
   .handler(async ({ input, ctx }) => {
     const successMessage = await getTranslationsByType(
       'jobExperience',
@@ -77,7 +78,7 @@ export const createJobExperienceAction = authenticatedAction
 
 export const updateJobExperienceAction = authenticatedAction
   .createServerAction()
-  .input(JobExperienceFormSchema)
+  .input(async () => JobExperienceFormSchema(await getTranslations('zod')))
   .handler(async ({ input, ctx }) => {
     const successMessage = await getTranslationsByType(
       'jobExperience',
@@ -107,7 +108,7 @@ export const deleteJobExperienceAction = authenticatedAction
 
 export const updateDisplayNameAction = authenticatedAction
   .createServerAction()
-  .input(DisplayNameSchema)
+  .input(async () => DisplayNameSchema(await getTranslations('zod')))
   .handler(async ({ input, ctx }) => {
     const successMessage = await getTranslationsByType('displayName', 'update');
     await updateDisplayNameUseCase(ctx.user.id, input.displayName);

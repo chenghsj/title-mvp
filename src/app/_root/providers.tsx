@@ -8,6 +8,7 @@ import { LoadingMaskProvider } from '@/components/loading-mask';
 import { TanstackQueryProvider } from '@/components/providers/tanstack-query-provider';
 import { SessionProvider } from '@/hooks/use-session';
 import { validateRequest } from '@/lib/auth';
+import { ZodErrorMapLayout } from './zod-error-map-layout';
 
 type ProvidersProps = {
   children: React.ReactNode;
@@ -34,9 +35,11 @@ export const Providers = ({
           locale={locale}
           timeZone={timeZone}
         >
-          <NextThemesProvider {...themeProps}>
-            <LoadingMaskProvider>{children}</LoadingMaskProvider>
-          </NextThemesProvider>
+          <ZodErrorMapLayout>
+            <NextThemesProvider {...themeProps}>
+              <LoadingMaskProvider>{children}</LoadingMaskProvider>
+            </NextThemesProvider>
+          </ZodErrorMapLayout>
         </NextIntlClientProvider>
       </SessionProvider>
     </TanstackQueryProvider>

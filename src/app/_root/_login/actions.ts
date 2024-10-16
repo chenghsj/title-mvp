@@ -73,7 +73,7 @@ export const googleOAuthAction = unauthenticatedAction
 
 export const signUpAction = unauthenticatedAction
   .createServerAction()
-  .input(SignUpFormSchema)
+  .input(async () => SignUpFormSchema(await getTranslations('zod')))
   .handler(async ({ input }) => {
     const tComponentsToast = await getTranslations('components.toast');
     await rateLimitByIp({ key: 'register', limit: 3, window: 30000 });
@@ -93,7 +93,7 @@ export const signUpAction = unauthenticatedAction
 
 export const signInAction = unauthenticatedAction
   .createServerAction()
-  .input(SignInFormSchema)
+  .input(async () => SignInFormSchema(await getTranslations('zod')))
   .handler(async ({ input }) => {
     await rateLimitByKey({ key: input.email, limit: 3, window: 10_000 });
     const user = await signInUseCase(input.email, input.password, input.role);
@@ -127,7 +127,7 @@ export const verifyEmailOTPAction = unauthenticatedAction
 
 export const sendEmailOTPAction = unauthenticatedAction
   .createServerAction()
-  .input(SignInFormSchema)
+  .input(async () => SignInFormSchema(await getTranslations('zod')))
   .handler(async ({ input }) => {
     const tComponentsToast = await getTranslations('components.toast');
     await rateLimitByKey({ key: input.email, limit: 3, window: 10_000 });

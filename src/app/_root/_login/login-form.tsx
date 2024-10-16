@@ -44,6 +44,7 @@ const useGetTranslations = () => {
 };
 
 function LoginForm({ isMail, isSignUp }: Props) {
+  const tZod = useTranslations('zod');
   const isSignUpRef = useRef(isSignUp);
   const { toast } = useToast();
   const { isMobile } = useDeviceDetect();
@@ -54,7 +55,9 @@ function LoginForm({ isMail, isSignUp }: Props) {
     useEmailOTPDialog();
 
   const form = useForm<SignUpFormSchemaType | SignInFormSchemaType>({
-    resolver: zodResolver(isSignUp ? SignUpFormSchema : SignInFormSchema),
+    resolver: zodResolver(
+      isSignUp ? SignUpFormSchema(tZod) : SignInFormSchema(tZod)
+    ),
     mode: 'onChange',
     defaultValues: {
       email: '',

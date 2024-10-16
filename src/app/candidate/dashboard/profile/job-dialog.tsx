@@ -36,6 +36,7 @@ type Props = {
 };
 
 const useGetTranslations = () => {
+  const tZod = useTranslations('zod');
   const tResponsiveDialog = useTranslations('components.responsiveDialog');
   const tProfileJobExperience = useTranslations('profile.jobExperience');
   const tProfileJobExperienceForm = useTranslations(
@@ -46,6 +47,7 @@ const useGetTranslations = () => {
   );
 
   return {
+    tZod,
     tResponsiveDialog,
     tProfileJobExperience,
     tProfileJobExperienceForm,
@@ -55,6 +57,7 @@ const useGetTranslations = () => {
 
 export const JobDialog = ({ jobExperience }: Props) => {
   const {
+    tZod,
     tResponsiveDialog,
     tProfileJobExperience,
     tProfileJobExperienceForm,
@@ -80,7 +83,7 @@ export const JobDialog = ({ jobExperience }: Props) => {
   );
 
   const form = useForm<JobExperienceFormSchemaType>({
-    resolver: zodResolver(JobExperienceFormSchema),
+    resolver: zodResolver(JobExperienceFormSchema(tZod)),
     mode: 'onChange',
     defaultValues: {
       title: '',

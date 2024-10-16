@@ -39,10 +39,11 @@ type Props = {
 };
 
 const ResetPasswordPage = ({ searchParams }: Props) => {
+  const tZod = useTranslations('zod');
   const tLogin = useTranslations('login');
   const tErrorMessages = useTranslations('errorMessages');
   const form = useForm<ResetPasswordFormSchemaType>({
-    resolver: zodResolver(resetPasswordFormSchema),
+    resolver: zodResolver(resetPasswordFormSchema(tZod)),
     mode: 'onChange',
     defaultValues: {
       password: '',

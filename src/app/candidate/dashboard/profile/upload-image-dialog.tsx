@@ -31,14 +31,14 @@ type Props = {
 };
 
 export const UploadImageDialog = ({ formType, type }: Props) => {
-  const tErrorMessages = useTranslations('errorMessages');
+  const tZod = useTranslations('zod');
   const tProfileImage = useTranslations(`profile.image`);
   const { toast } = useToast();
   const dialogState = useDialogState();
   const { shouldReturn } = useReturnByFormType(formType);
 
   const form = useForm<UpdateProfileImageFormSchemaType>({
-    resolver: zodResolver(UpdateProfileImageFormSchema),
+    resolver: zodResolver(UpdateProfileImageFormSchema(tZod)),
     defaultValues: {
       files: null,
     },

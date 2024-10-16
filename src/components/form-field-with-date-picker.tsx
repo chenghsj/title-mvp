@@ -78,7 +78,7 @@ export const FormFieldWithDatePicker = <T extends FieldValues>({
   const handleBlur = () => {
     const parsedDate = parse(stringDate, 'yyyy/MM/dd', new Date());
     if (!isValid(parsedDate)) {
-      field.onChange(null);
+      field.onChange(stringDate);
       return;
     }
     if (parsedDate > new Date()) {
@@ -110,7 +110,7 @@ export const FormFieldWithDatePicker = <T extends FieldValues>({
     <Calendar
       mode='default'
       captionLayout='dropdown-buttons'
-      selected={field.value}
+      selected={isValid(field.value) ? field.value : undefined}
       onDayClick={(date: Date | undefined) => {
         if (!isValid(date) || !date) return;
         setStringDate(format(new Date(date), 'yyyy/MM/dd'));
@@ -128,7 +128,9 @@ export const FormFieldWithDatePicker = <T extends FieldValues>({
 
   useEffect(() => {
     if (field.value) {
-      setStringDate(format(field.value, 'yyyy/MM/dd'));
+      setStringDate(
+        isValid(field.value) ? format(field.value, 'yyyy/MM/dd') : field.value
+      );
     }
   }, [field.value]);
 
@@ -177,7 +179,7 @@ export const FormFieldWithDatePicker = <T extends FieldValues>({
                   <PopoverTrigger asChild>{trigger}</PopoverTrigger>
                   <PopoverContent
                     className='w-auto p-0'
-                    align='start'
+                    align='end'
                     onOpenAutoFocus={(e) => {
                       e.preventDefault();
                     }}

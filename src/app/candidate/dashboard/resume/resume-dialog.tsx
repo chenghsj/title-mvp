@@ -35,6 +35,7 @@ type Props = {
 };
 
 const useGetTranslations = () => {
+  const tZod = useTranslations('zod');
   const tComponentsResponsiveDialog = useTranslations(
     'components.responsiveDialog'
   );
@@ -45,6 +46,7 @@ const useGetTranslations = () => {
   const tProfileEducationDegrees = useTranslations('profile.education.degrees');
 
   return {
+    tZod,
     tComponentsResponsiveDialog,
     tResume,
     tResumeFormLabels,
@@ -56,6 +58,7 @@ const useGetTranslations = () => {
 
 export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
   const {
+    tZod,
     tComponentsResponsiveDialog,
     tResume,
     tResumeFormLabels,
@@ -70,7 +73,7 @@ export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
   const playerRef = useRef<ReactPlayer>(null);
 
   const form = useForm<ResumeFormSchemaType>({
-    resolver: zodResolver(ResumeFormSchema),
+    resolver: zodResolver(ResumeFormSchema(tZod)),
     mode: 'onChange',
     defaultValues: {
       title: '',
@@ -130,7 +133,7 @@ export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
         camelCase(
           edu.degree!
         ) as keyof IntlMessages['profile']['education']['degrees']
-      )} | ${edu.institution}`,
+      )} | ${edu.institution}${edu.fieldOfStudy ? ` - ${edu.fieldOfStudy}` : ''}`,
     }))
   );
 
@@ -192,9 +195,9 @@ export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
             data={formattedEducations}
             hideSearch
             commandItemProps={{
-              onSelect: (label) =>
+              onSelect: (value) =>
                 handleSelectChange('Education')(
-                  formattedEducations.find((edu) => edu.label === label)
+                  formattedEducations.find((edu) => edu.value === value)
                     ?.value || '-1'
                 ),
             }}
@@ -211,9 +214,9 @@ export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
             data={formattedJobExperiences}
             hideSearch
             commandItemProps={{
-              onSelect: (label) =>
+              onSelect: (value) =>
                 handleSelectChange('JobExperience')(
-                  formattedJobExperiences.find((job) => job.label === label)
+                  formattedJobExperiences.find((job) => job.value === value)
                     ?.value || '-1'
                 ),
             }}

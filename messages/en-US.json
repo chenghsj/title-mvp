@@ -327,5 +327,37 @@
         }
       }
     }
+  },
+  "zod": {
+    "custom": {
+      "invalid_type_error": {
+        "invalid_date": "Invalid date"
+      },
+      "invalid_string": {
+        "required": "Required",
+        "confirm_password": "Passwords do not match",
+        "string_not_match": "Input not match"
+      },
+      "invalid_number": {
+        "video_duration": "The duration must be less than {minutes} minutes"
+      },
+      "invalid_enum": {
+        "required": "Required"
+      },
+      "invalid_date": {
+        "required": "Required",
+        "later_than": "End date must be later than start date"
+      },
+      "invalid_array": {
+        "max": "Maximum {max, plural, =1 {file is}, other {files are}} allowed",
+        "max_file_size": "File size must be less than ${size}MB"
+      }
+    },
+    "invalid_string": {
+      "email": "Invalid email",
+      "url": "Invalid URL",
+      "min": "Must be at least {min} characters",
+      "max": "Must be at most {max} characters"
+    }
   }
 }

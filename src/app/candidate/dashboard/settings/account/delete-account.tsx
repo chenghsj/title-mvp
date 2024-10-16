@@ -28,9 +28,16 @@ import { deleteAccountAction } from './actions';
 
 const confirmDeleteString = 'Delete account';
 
-const deleteSchema = z.object({
-  confirm: z.string().refine((v) => v === confirmDeleteString),
-});
+const deleteSchema = (t: ReturnType<typeof useTranslations<'zod'>>) =>
+  z.object({
+    confirm: z
+      .string({ required_error: t('custom.invalid_string.required') })
+      .refine((v) => v === confirmDeleteString, {
+        message: t('custom.invalid_string.string_not_match'),
+      }),
+  });
+
+type DeleteSchemaSchemaType = z.infer<ReturnType<typeof deleteSchema>>;
 
 type Props = {};
 
@@ -40,13 +47,14 @@ export const DeleteAccount = (props: Props) => {
   const dialogState = useDialogState();
   const router = useRouter();
 
+  const tZod = useTranslations('zod');
   const tComponentsResponsiveDialog = useTranslations(
     'components.responsiveDialog'
   );
   const tSettingsSubmenusAccount = useTranslations('settings.submenus.account');
 
-  const form = useForm<z.infer<typeof deleteSchema>>({
-    resolver: zodResolver(deleteSchema),
+  const form = useForm<DeleteSchemaSchemaType>({
+    resolver: zodResolver(deleteSchema(tZod)),
     mode: 'onChange',
     defaultValues: {
       confirm: undefined,

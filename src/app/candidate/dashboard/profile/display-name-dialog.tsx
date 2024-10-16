@@ -24,6 +24,7 @@ type Props = {
 };
 
 const useGetTranslations = () => {
+  const tZod = useTranslations('zod');
   const tResponsiveDialog = useTranslations('components.responsiveDialog');
   const tProfileDisplayName = useTranslations(`profile.displayName`);
   const tProfileDisplayNameFormLabels = useTranslations(
@@ -31,6 +32,7 @@ const useGetTranslations = () => {
   );
 
   return {
+    tZod,
     tResponsiveDialog,
     tProfileDisplayName,
     tProfileDisplayNameFormLabels,
@@ -39,6 +41,7 @@ const useGetTranslations = () => {
 
 export const DisplayNameDialog = ({ displayName }: Props) => {
   const {
+    tZod,
     tResponsiveDialog,
     tProfileDisplayName,
     tProfileDisplayNameFormLabels,
@@ -49,7 +52,7 @@ export const DisplayNameDialog = ({ displayName }: Props) => {
   const { shouldReturn } = useReturnByFormType('DisplayName');
 
   const form = useForm<DisplayNameSchemaType>({
-    resolver: zodResolver(DisplayNameSchema),
+    resolver: zodResolver(DisplayNameSchema(tZod)),
     mode: 'onChange',
     defaultValues: {
       displayName,

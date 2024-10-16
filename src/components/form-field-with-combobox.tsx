@@ -129,7 +129,7 @@ export const FormFieldWithCombobox = <T extends FieldValues>({
           {data?.map((item) => {
             return (
               <CommandItem
-                value={item.label}
+                value={item.value}
                 key={item.value}
                 ref={item.value === field.value ? selectedItemRef : null}
                 {...commandItemProps}
@@ -151,7 +151,9 @@ export const FormFieldWithCombobox = <T extends FieldValues>({
                       : 'opacity-0'
                   )}
                 />
-                {item.label}
+                <div className='overflow-hidden text-ellipsis text-nowrap'>
+                  {item.label}
+                </div>
               </CommandItem>
             );
           })}
