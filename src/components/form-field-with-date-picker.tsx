@@ -9,13 +9,14 @@ import { useMask } from '@react-input/mask';
 import { format, getYear, isValid, parse } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import {
-  Drawer,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer';
+import { useDeviceDetect } from '@/hooks/use-device-detect';
 import { cn } from '@/lib/utils';
+import { NestedDrawer } from './nested-drawer';
 import { Button, ButtonProps } from './ui/button';
 import { Calendar, CalendarProps } from './ui/calendar';
 import {
@@ -51,43 +52,46 @@ export const FormFieldWithDatePicker = <T extends FieldValues>({
     name,
     control: form.control,
   });
-  // const { isMobile } = useDeviceDetect();
-  const isMobile = false;
+  const { isMobile } = useDeviceDetect();
 
   const inputRef = useMask({
     mask: 'yyyy/MM/dd',
     replacement: { y: /\d/, M: /\d/, d: /\d/ },
     separate: true,
-    // onMask: (event) => {
-    //   if (event.target.value === 'yyyy/MM/dd') {
-    //     setStringDate('');
-    //   } else {
-    //     setStringDate(event.target.value);
-    //   }
-    // },
   });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value === 'yyyy/MM/dd') {
-      setStringDate('');
-    } else {
-      setStringDate(e.target.value);
+    const value = e.target.value;
+    setStringDate(value === 'yyyy/MM/dd' ? '' : value);
+  };
+
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    if (isMobile) {
+      setTimeout(() => {
+        e.target.scrollIntoView({ behavior: 'instant', block: 'nearest' });
+      }, 100);
     }
   };
 
-  const handleBlur = () => {
+  const handleDateValidation = () => {
     const parsedDate = parse(stringDate, 'yyyy/MM/dd', new Date());
     if (!isValid(parsedDate)) {
       field.onChange(stringDate);
       return;
     }
-    if (parsedDate > new Date()) {
-      field.onChange(new Date());
-      return;
-    }
-    field.onChange(parsedDate);
+
+    const dateToUse = parsedDate > new Date() ? new Date() : parsedDate;
+    field.onChange(dateToUse);
     form.clearErrors(name);
   };
+
+  useEffect(() => {
+    if (field.value) {
+      setStringDate(
+        isValid(field.value) ? format(field.value, 'yyyy/MM/dd') : field.value
+      );
+    }
+  }, [field.value]);
 
   const trigger = (
     <FormControl>
@@ -126,14 +130,6 @@ export const FormFieldWithDatePicker = <T extends FieldValues>({
     />
   );
 
-  useEffect(() => {
-    if (field.value) {
-      setStringDate(
-        isValid(field.value) ? format(field.value, 'yyyy/MM/dd') : field.value
-      );
-    }
-  }, [field.value]);
-
   return (
     <FormField
       control={form.control}
@@ -158,22 +154,26 @@ export const FormFieldWithDatePicker = <T extends FieldValues>({
                 ref={inputRef}
                 value={stringDate}
                 placeholder='yyyy/MM/dd'
-                onBlur={handleBlur}
+                onBlur={handleDateValidation}
                 onChange={handleChange}
+                onFocus={handleFocus}
+                type='text'
+                inputMode='numeric'
               />
               {isMobile ? (
-                <Drawer open={isOpen} onOpenChange={setIsOpen}>
+                <NestedDrawer open={isOpen} onOpenChange={setIsOpen}>
                   <DrawerTrigger asChild>{trigger}</DrawerTrigger>
                   <DrawerContent
                     onOpenAutoFocus={(e) => e.preventDefault()}
                     className='h-[400px]'
+                    onInteractOutside={() => setIsOpen(false)}
                   >
                     <DrawerHeader className='hidden'>
                       <DrawerTitle></DrawerTitle>
                     </DrawerHeader>
                     {content}
                   </DrawerContent>
-                </Drawer>
+                </NestedDrawer>
               ) : (
                 <Popover open={isOpen} onOpenChange={setIsOpen}>
                   <PopoverTrigger asChild>{trigger}</PopoverTrigger>

@@ -19,7 +19,6 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import {
-  Drawer,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
@@ -37,7 +36,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { useDeviceDetect } from '@/hooks/use-device-detect';
 import { cn } from '@/lib/utils';
+import { NestedDrawer } from './nested-drawer';
 import { Input } from './ui/input';
 
 type Props<T extends FieldValues> = {
@@ -73,8 +74,7 @@ export const FormFieldWithCombobox = <T extends FieldValues>({
     'components.responsiveDialog'
   );
   const [customInput, setCustomInput] = useState('');
-  // const { isMobile } = useDeviceDetect();
-  const isMobile = false;
+  const { isMobile } = useDeviceDetect();
   const [isOpen, setIsOpen] = useState(false);
 
   const selectedItemRef = useRef<HTMLDivElement>(null);
@@ -188,18 +188,19 @@ export const FormFieldWithCombobox = <T extends FieldValues>({
         >
           <FormLabel className='leading-6'>{label}</FormLabel>
           {isMobile ? (
-            <Drawer open={isOpen} onOpenChange={setIsOpen}>
+            <NestedDrawer open={isOpen} onOpenChange={setIsOpen}>
               <DrawerTrigger asChild>{trigger}</DrawerTrigger>
               <DrawerContent
                 onOpenAutoFocus={(e) => e.preventDefault()}
                 className='pb-5'
+                onInteractOutside={() => setIsOpen(false)}
               >
                 <DrawerHeader className='hidden'>
                   <DrawerTitle></DrawerTitle>
                 </DrawerHeader>
                 {content}
               </DrawerContent>
-            </Drawer>
+            </NestedDrawer>
           ) : (
             <Popover modal={true} open={isOpen} onOpenChange={setIsOpen}>
               <PopoverTrigger asChild>{trigger}</PopoverTrigger>
