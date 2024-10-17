@@ -14,7 +14,7 @@ import { FormType, useProfileDialog } from './hooks';
 
 type Props = {};
 
-const useGetTranslations = () => {
+export const ConfirmDeleteDialog = ({}: Props) => {
   const tComponentsResponsiveDialog = useTranslations(
     'components.responsiveDialog'
   );
@@ -26,26 +26,10 @@ const useGetTranslations = () => {
   );
   const tProfileEducationDegrees = useTranslations('profile.education.degrees');
 
-  return {
-    tComponentsResponsiveDialog,
-    tProfileConfirmDeleteDialog,
-    tProfileConfirmDeleteDialogType,
-    tProfileEducationDegrees,
-  };
-};
-
-export const ConfirmDeleteDialog = ({}: Props) => {
   const { toast } = useToast();
   const profileDialog = useProfileDialog();
   const dialogState = useDialogState();
   const profileDialogTypeRef = useRef<FormType | null>(null);
-
-  const {
-    tComponentsResponsiveDialog,
-    tProfileConfirmDeleteDialog,
-    tProfileConfirmDeleteDialogType,
-    tProfileEducationDegrees,
-  } = useGetTranslations();
 
   useEffect(() => {
     profileDialogTypeRef.current = profileDialog.type;

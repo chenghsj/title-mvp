@@ -96,6 +96,7 @@ const FormLabel = React.forwardRef<
       ref={ref}
       className={cn(error && 'text-red-500 dark:text-red-900', className)}
       htmlFor={formItemId}
+      onClick={(e) => e.preventDefault()}
       {...props}
     />
   );

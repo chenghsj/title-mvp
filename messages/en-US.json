@@ -349,7 +349,7 @@
         "later_than": "End date must be later than start date"
       },
       "invalid_array": {
-        "max": "Maximum {max, plural, =1 {file is}, other {files are}} allowed",
+        "max": "Maximum {max, plural, one {file is} other {# files are}} allowed",
         "max_file_size": "File size must be less than ${size}MB"
       }
     },

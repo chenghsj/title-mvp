@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { camelCase } from 'lodash';
 import { useServerAction } from 'zsa-react';
@@ -30,7 +30,7 @@ type Props = {
   education?: Education;
 };
 
-const useGetTranslations = () => {
+export const EducationDialog = ({ education }: Props) => {
   const tZod = useTranslations('zod');
   const tComponentsResponsiveDialog = useTranslations(
     'components.responsiveDialog'
@@ -39,28 +39,11 @@ const useGetTranslations = () => {
   const tProfileEducationForm = useTranslations('profile.education.form');
   const tProfileEducationDegrees = useTranslations('profile.education.degrees');
 
-  return {
-    tZod,
-    tComponentsResponsiveDialog,
-    tProfileEducation,
-    tProfileEducationForm,
-    tProfileEducationDegrees,
-  };
-};
-
-export const EducationDialog = ({ education }: Props) => {
-  const {
-    tZod,
-    tComponentsResponsiveDialog,
-    tProfileEducation,
-    tProfileEducationForm,
-    tProfileEducationDegrees,
-  } = useGetTranslations();
-
   const { toast } = useToast();
   const dialogState = useDialogState();
   const profileDialog = useProfileDialog();
   const { shouldReturn } = useReturnByFormType('Education');
+  const locale = useLocale();
 
   const [prevDegree, setPrevDegree] = useState<DegreeType | null>(null);
 
@@ -128,7 +111,7 @@ export const EducationDialog = ({ education }: Props) => {
           ) as keyof IntlMessages['profile']['education']['degrees']
         ),
       })),
-    []
+    [locale]
   );
 
   const formattedHighSchools = useMemo(

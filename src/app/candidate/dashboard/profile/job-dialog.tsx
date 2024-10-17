@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { camelCase } from 'lodash';
 import { useServerAction } from 'zsa-react';
@@ -35,7 +35,7 @@ type Props = {
   jobExperience?: JobExperience;
 };
 
-const useGetTranslations = () => {
+export const JobDialog = ({ jobExperience }: Props) => {
   const tZod = useTranslations('zod');
   const tResponsiveDialog = useTranslations('components.responsiveDialog');
   const tProfileJobExperience = useTranslations('profile.jobExperience');
@@ -46,28 +46,11 @@ const useGetTranslations = () => {
     'profile.jobExperience.employmentTypes'
   );
 
-  return {
-    tZod,
-    tResponsiveDialog,
-    tProfileJobExperience,
-    tProfileJobExperienceForm,
-    tProfileJobExperienceEmploymentTypes,
-  };
-};
-
-export const JobDialog = ({ jobExperience }: Props) => {
-  const {
-    tZod,
-    tResponsiveDialog,
-    tProfileJobExperience,
-    tProfileJobExperienceForm,
-    tProfileJobExperienceEmploymentTypes,
-  } = useGetTranslations();
-
   const { toast } = useToast();
   const dialogState = useDialogState();
   const profileDialog = useProfileDialog();
   const { shouldReturn } = useReturnByFormType('JobExperience');
+  const locale = useLocale();
 
   const formattedEmploymentTypes = useMemo(
     () =>
@@ -79,7 +62,7 @@ export const JobDialog = ({ jobExperience }: Props) => {
           ) as keyof IntlMessages['profile']['jobExperience']['employmentTypes']
         ),
       })),
-    []
+    [locale]
   );
 
   const form = useForm<JobExperienceFormSchemaType>({

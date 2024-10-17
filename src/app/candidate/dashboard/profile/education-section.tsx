@@ -12,16 +12,9 @@ type Props = {
   education: Education;
 };
 
-const useGetTranslations = () => {
+export const EducationSection = ({ education }: Props) => {
   const tProfileEducationDegrees = useTranslations('profile.education.degrees');
   const tProfileEducationDate = useTranslations('profile.education.date');
-
-  return { tProfileEducationDegrees, tProfileEducationDate };
-};
-
-export const EducationSection = ({ education }: Props) => {
-  const { tProfileEducationDegrees, tProfileEducationDate } =
-    useGetTranslations();
 
   return (
     <div className='relative flex w-full flex-col gap-2'>

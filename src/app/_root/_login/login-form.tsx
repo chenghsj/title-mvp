@@ -35,21 +35,16 @@ type Props = {
   isSignUp: boolean;
 };
 
-const useGetTranslations = () => {
+function LoginForm({ isMail, isSignUp }: Props) {
+  const tZod = useTranslations('zod');
   const tLoginForm = useTranslations('login.form');
   const tErrorMessages = useTranslations('errorMessages');
   const tLoginForgotPassword = useTranslations('login.forgotPassword');
 
-  return { tLoginForm, tErrorMessages, tLoginForgotPassword };
-};
-
-function LoginForm({ isMail, isSignUp }: Props) {
-  const tZod = useTranslations('zod');
   const isSignUpRef = useRef(isSignUp);
   const { toast } = useToast();
   const { isMobile } = useDeviceDetect();
-  const { tLoginForm, tErrorMessages, tLoginForgotPassword } =
-    useGetTranslations();
+
   const { role } = useGetRole();
   const { setIsOpen: setDialogOpen, setEmail: setDialogEmail } =
     useEmailOTPDialog();

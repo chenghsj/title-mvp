@@ -254,23 +254,23 @@
         "present": "現在"
       },
       "employmentTypes": {
-        "fullTime": "全職",
+        "fullTime": "正職",
         "partTime": "兼職",
         "internship": "實習",
-        "contract": "合約",
-        "freelance": "自由職業"
+        "contract": "約聘",
+        "freelance": "接案"
       },
       "form": {
         "labels": {
           "title": "職稱",
           "company": "公司",
-          "employmentType": "僱用類型",
+          "employmentType": "工作類型",
           "startFrom": "開始日期",
           "endAt": "結束日期",
           "description": "描述"
         },
         "placeholders": {
-          "employmentType": "選擇僱用類型"
+          "employmentType": "選擇工作類型"
         }
       }
     }

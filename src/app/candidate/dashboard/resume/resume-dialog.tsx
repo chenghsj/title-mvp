@@ -34,7 +34,7 @@ type Props = {
   jobExperiences: JobExperience[];
 };
 
-const useGetTranslations = () => {
+export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
   const tZod = useTranslations('zod');
   const tComponentsResponsiveDialog = useTranslations(
     'components.responsiveDialog'
@@ -44,28 +44,6 @@ const useGetTranslations = () => {
   const tResumeFormPlaceholders = useTranslations('resume.form.placeholders');
   const tResumeFormSelectItem = useTranslations('resume.form.selectItem');
   const tProfileEducationDegrees = useTranslations('profile.education.degrees');
-
-  return {
-    tZod,
-    tComponentsResponsiveDialog,
-    tResume,
-    tResumeFormLabels,
-    tResumeFormPlaceholders,
-    tResumeFormSelectItem,
-    tProfileEducationDegrees,
-  };
-};
-
-export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
-  const {
-    tZod,
-    tComponentsResponsiveDialog,
-    tResume,
-    tResumeFormLabels,
-    tResumeFormPlaceholders,
-    tResumeFormSelectItem,
-    tProfileEducationDegrees,
-  } = useGetTranslations();
 
   const { toast } = useToast();
   const { resumeId } = useResumeDialog();

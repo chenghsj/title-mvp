@@ -23,29 +23,13 @@ type Props = {
   displayName: string;
 };
 
-const useGetTranslations = () => {
+export const DisplayNameDialog = ({ displayName }: Props) => {
   const tZod = useTranslations('zod');
   const tResponsiveDialog = useTranslations('components.responsiveDialog');
   const tProfileDisplayName = useTranslations(`profile.displayName`);
   const tProfileDisplayNameFormLabels = useTranslations(
     'profile.displayName.form.labels'
   );
-
-  return {
-    tZod,
-    tResponsiveDialog,
-    tProfileDisplayName,
-    tProfileDisplayNameFormLabels,
-  };
-};
-
-export const DisplayNameDialog = ({ displayName }: Props) => {
-  const {
-    tZod,
-    tResponsiveDialog,
-    tProfileDisplayName,
-    tProfileDisplayNameFormLabels,
-  } = useGetTranslations();
 
   const { toast } = useToast();
   const dialogState = useDialogState();

@@ -22,19 +22,12 @@ import { useEmailOTPDialog } from './hooks';
 
 type Props = {};
 
-const useGetTranslations = () => {
+export function InputOTPDialog({}: Props) {
   const tLoginInputOTP = useTranslations('login.inputOTP');
 
-  return {
-    tLoginInputOTP,
-  };
-};
-
-export function InputOTPDialog({}: Props) {
   const router = useRouter();
   const { toast } = useToast();
   const { isOpen, setIsOpen, email } = useEmailOTPDialog();
-  const { tLoginInputOTP } = useGetTranslations();
 
   const { execute, isPending, error, reset } = useServerAction(
     verifyEmailOTPAction,
