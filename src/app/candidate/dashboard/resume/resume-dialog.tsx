@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { useController, useForm } from 'react-hook-form';
-import ReactPlayer from 'react-player';
+import ReactPlayer from 'react-player/lazy';
 import { useTranslations } from 'next-intl';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { camelCase } from 'lodash';
@@ -257,19 +257,15 @@ export const ResumeDialog = ({ resume, educations, jobExperiences }: Props) => {
             )}
           />
           <div className='col-span-2 aspect-video sm:col-span-1'>
-            {ReactPlayer.canPlay(url) ? (
-              <ReactPlayer
-                ref={playerRef}
-                width={'100%'}
-                height={'100%'}
-                url={url}
-                controls={true}
-                onReady={handlePlayerReady}
-                fallback={<Skeleton className='aspect-video' />}
-              />
-            ) : (
-              <Skeleton className='aspect-video' />
-            )}
+            <ReactPlayer
+              ref={playerRef}
+              width={'100%'}
+              height={'100%'}
+              url={url}
+              controls={true}
+              onReady={handlePlayerReady}
+              fallback={<Skeleton className='aspect-video' />}
+            />
           </div>
         </div>
         {footer}

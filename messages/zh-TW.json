@@ -336,7 +336,10 @@
       "invalid_string": {
         "required": "必填",
         "confirm_password": "密碼不一致",
-        "string_not_match": "輸入不一致"
+        "string_not_match": "輸入不一致",
+        "invalid_url": {
+          "only_youtube": "僅允許 YouTube 網址"
+        }
       },
       "invalid_number": {
         "video_duration": "時長必須少於 {minutes} 分鐘"

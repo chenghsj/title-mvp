@@ -336,7 +336,10 @@
       "invalid_string": {
         "required": "Required",
         "confirm_password": "Passwords do not match",
-        "string_not_match": "Input not match"
+        "string_not_match": "Input not match",
+        "invalid_url": {
+          "only_youtube": "Only YouTube video URLs are allowed"
+        }
       },
       "invalid_number": {
         "video_duration": "The duration must be less than {minutes} minutes"

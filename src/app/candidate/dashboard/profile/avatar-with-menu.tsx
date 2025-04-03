@@ -35,14 +35,15 @@ export const AvatarWithMenu = ({
         avatarUrl={avatarUrl || profile?.image}
         avatarProps={{
           className: cn(
-            'ring-3 box-content cursor-pointer border-4 border-white bg-zinc-500 dark:border-zinc-900',
-            'h-28 w-28'
+            'ring-3 box-content border-4 border-white bg-zinc-500 dark:border-zinc-900',
+            'h-28 w-28',
+            canEdit && 'cursor-pointer'
           ),
         }}
         avatarFallback={
           <AvatarFallback className='bg-zinc-500'>
             <IoPersonSharp className='h-full w-full translate-y-3 text-zinc-400' />
-            <FaCamera className='absolute text-white' size={30} />
+            {canEdit && <FaCamera className='absolute text-white' size={30} />}
           </AvatarFallback>
         }
       />

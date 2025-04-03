@@ -1,5 +1,5 @@
-import React, { ComponentProps, useEffect, useState } from 'react';
-import ReactPlayer from 'react-player/youtube';
+import React, { ComponentProps } from 'react';
+import ReactPlayer from 'react-player/lazy';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { format } from 'date-fns';
@@ -16,7 +16,6 @@ type Props = {
 
 export const ResumeCard = React.memo(({ resume }: Props) => {
   const tResume = useTranslations('resume');
-  const [isPlayerReady, setIsPlayerReady] = useState(false);
 
   const { handleMenuButtonClick } = useCreateHandleMenuButtonClick();
 
@@ -27,28 +26,18 @@ export const ResumeCard = React.memo(({ resume }: Props) => {
     handleDeleteClick: handleMenuButtonClick('Delete', resume.id, resume.title),
   };
 
-  useEffect(() => {
-    if (ReactPlayer.canPlay(resume.video?.url!)) {
-      setIsPlayerReady(true);
-    }
-  }, [resume]);
-
   return (
     <Card className='h-fit cursor-pointer overflow-auto'>
       <Link href={`/candidate/dashboard/resume/${resume.id}`}>
         <CardContent className='pointer-events-none aspect-video p-0'>
-          {isPlayerReady ? (
-            <ReactPlayer
-              width={'100%'}
-              height={'100%'}
-              url={resume.video?.url!}
-              light={`https://img.youtube.com/vi/${getYouTubeVideoId(resume.video?.url!)}/0.jpg`}
-              playIcon={<></>}
-              fallback={<Skeleton className='aspect-video' />}
-            />
-          ) : (
-            <Skeleton className='aspect-video' />
-          )}
+          <ReactPlayer
+            width={'100%'}
+            height={'100%'}
+            url={resume.video?.url!}
+            light={`https://img.youtube.com/vi/${getYouTubeVideoId(resume.video?.url!)}/0.jpg`}
+            playIcon={<></>}
+            fallback={<Skeleton className='aspect-video' />}
+          />
         </CardContent>
       </Link>
       <CardFooter className='flex flex-col items-start p-2 pl-4 pr-2'>

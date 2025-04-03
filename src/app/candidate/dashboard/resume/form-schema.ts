@@ -12,7 +12,23 @@ export const ResumeFormSchema = (
         message: t.rich('invalid_string.max', { max: 50 }) as string,
       }),
     bio: z.string().max(500).optional(),
-    url: z.string().min(1).url(),
+    url: z
+      .string()
+      .min(1)
+      .url()
+      .refine(
+        (value) => {
+          console.log(value);
+          const youtubeRegex =
+            /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
+          return youtubeRegex.test(value);
+        },
+        {
+          message: t.rich(
+            'custom.invalid_string.invalid_url.only_youtube'
+          ) as string,
+        }
+      ),
     duration: z
       .number()
       .max(
